@@ -1,0 +1,13 @@
+#Directorios
+bin/
+obj/
+
+#Codeblocks
+*.layout
+*.depend
+
+#Ejecutables
+*.exe
+
+#Objeto
+*.o
