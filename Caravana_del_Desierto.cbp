@@ -32,7 +32,7 @@
 			<Add option="-Wall" />
 		</Compiler>
 		<Unit filename="include/arbol.h" />
-		<Unit filename="include/cola.h" />
+		<Unit filename="include/cola_dinamica.h" />
 		<Unit filename="include/entidades.h" />
 		<Unit filename="include/gestion_archivos.h" />
 		<Unit filename="include/interfaz_usuario.h" />
@@ -42,7 +42,7 @@
 		<Unit filename="sources/arbol.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="sources/cola.c">
+		<Unit filename="sources/cola_dinamica.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="sources/entidades.c">
