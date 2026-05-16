@@ -3,7 +3,18 @@
 
 #define MAX_NOMBRE 10
 
-typedef struct 
+#define JUGADOR  'J'
+#define BANDIDO  'B'
+#define PREMIO  'P'
+#define OASIS  'O'
+#define TORMENTA  'T'
+#define VIDA_EXTRA  'V'
+#define INICIO  'I'
+#define SALIDA  'S'
+#define VACIO  '.'
+
+
+typedef struct
 {
 
     unsigned vidas;
@@ -12,7 +23,7 @@ typedef struct
     unsigned posEnRuta;
 } tEstado_Jugador;
 
-typedef struct 
+typedef struct
 {
     unsigned id;
     char nombre [MAX_NOMBRE + 1];
