@@ -4,8 +4,13 @@
 #define ERROR_ARCHIVO_CONFIG -2
 #define TODO_OK 1
 #define TAM_MAX 200
+
 #include <stdio.h>
 #include <string.h>
+
+#define NOM_ARCH_CONFIG "config.txt"
+#define NOM_ARCH_RANKING "rankging.dat"
+#define NOM_ARCH_CARAVANA "caravana.txt"
 /// talvez podria usar signed(ya que solo podriamos usar num > 0)
 typedef struct
 {
