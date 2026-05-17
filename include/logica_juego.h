@@ -2,17 +2,60 @@
 #define LOGICA_JUEGO_H_INCLUDED
 
 #include "../include/entidades.h"
+#include "../include/cola_dinamica.h"
 
 #define MAX_DADO 6
+
+#define DIR_ADELANTE 'F'
+#define DIR_ATRAS 'B'
+
+
+typedef enum
+{
+    VACIO = 0,
+    OASIS,
+    TORMENTA,
+    VIDA_EXTRA,
+    INICIO,
+    SALIDA,
+    PREMIO,
+} tTipoEvento;
+
+typedef struct 
+{
+    unsigned numeroCasillero;
+    int jugadorAca;
+    int cantBandidos;
+    tTipoEvento evento;
+}tCasillero;
+
+typedef struct 
+{
+    unsigned cantPasos;
+    char direccion;
+    int id;
+} tMovimiento;
+
+
+typedef struct 
+{
+    unsigned cantCasilleros;
+    unsigned puntosEnPartida;
+    int cantMovsAdelante;
+    int cantMovsAtras;
+    tCola movimientos;
+    //tLista ruta;
+} tPartida;
 
 typedef struct 
 {
     int corriendo;
     tJugador jugador;
-    //tPartida partida; tengo que pensar que datos va a tener
-}tJuego;
+    tPartida partida;
+    //tLista rankingJugadores;
+} tJuego;
 
-
+int inicializarJuego (tJuego* juego);
 int generarValorDado ();
 
 #endif // LOGICA_JUEGO_H_INCLUDED
