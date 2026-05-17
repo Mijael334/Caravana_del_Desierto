@@ -16,8 +16,8 @@ int inicializarJuego (tJuego* juego)
     lectura_de_configuracion(NOM_ARCH_CONFIG, &juego->configPartida);
 
     //cargarRankingDeJugadores(tLista* &juego->ranking)
-    
-    do 
+
+    do
     {
         int pos;
         aceptar = 'Y';
@@ -37,7 +37,7 @@ int inicializarJuego (tJuego* juego)
         }
 
     } while (aceptar != 'Y');
-    
+
     juego->corriendo = 1;
 }
 
@@ -58,7 +58,7 @@ int generarRandomUniforme (int max_valor)
         random = rand();
     } while (random >= limite);
 
-    return (random % max_valor) + 1; 
+    return (random % max_valor) + 1;
 }
 
 char calcularDireccionBandido(unsigned posBandido, unsigned posJugador, unsigned cantPosiciones)
