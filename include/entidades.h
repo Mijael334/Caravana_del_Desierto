@@ -5,30 +5,36 @@
 
 #define JUGADOR  'J'
 #define BANDIDO  'B'
-#define PREMIO  'P'
-#define OASIS  'O'
-#define TORMENTA  'T'
-#define VIDA_EXTRA  'V'
-#define INICIO  'I'
-#define SALIDA  'S'
-#define VACIO  '.'
+
+
+typedef struct 
+{
+    unsigned id;
+    unsigned posEnRuta;
+} tBandido;
 
 
 typedef struct
 {
-
     unsigned vidas;
     int protegido;
     unsigned puntos;
     unsigned posEnRuta;
-} tEstado_Jugador;
+} tEstadoJugador;
 
 typedef struct
 {
     unsigned id;
     char nombre [MAX_NOMBRE + 1];
     unsigned puntos;
-    tEstado_Jugador estadoPartida;
+    tEstadoJugador estadoEnPartida;
 } tJugador;
+
+typedef struct 
+{
+    unsigned puntos;
+    char nombre [MAX_NOMBRE + 1];
+} tRanking;
+
 
 #endif // ENTIDADES_H_INCLUDED
