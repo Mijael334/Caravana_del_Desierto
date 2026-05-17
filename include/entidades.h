@@ -3,14 +3,18 @@
 
 #define MAX_NOMBRE 10
 
-#define JUGADOR  'J'
-#define BANDIDO  'B'
+#define ID_JUGADOR  1
+#define INICIO_ID_BANDIDOS 2
+
+#define VIVO 1
+#define MUERTO 0
 
 
 typedef struct 
 {
     unsigned id;
     unsigned posEnRuta;
+    int vivo;
 } tBandido;
 
 
@@ -18,6 +22,7 @@ typedef struct
 {
     unsigned vidas;
     int protegido;
+    int afectadoPorTormenta;
     unsigned puntos;
     unsigned posEnRuta;
 } tEstadoJugador;

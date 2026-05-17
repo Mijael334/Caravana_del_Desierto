@@ -9,7 +9,7 @@ int abrir_archivo(FILE **fp, const char *nombre_archivo, const char *modo)
     }
     return TODO_OK;
 }
-int lectura_de_configuracion(const char *archivo_config, tconfig *parametros)
+int lectura_de_configuracion(const char *archivo_config, tConfig *parametros)
 {
     FILE *fconfig;
     char clave[TAM_MAX];
