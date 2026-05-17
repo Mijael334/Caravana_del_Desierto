@@ -1,6 +1,23 @@
 #include "../include/logica_juego.h"
+#include "../include/gestion_archivos.h"
 #include <stdio.h>
 #include <stdlib.h>
+
+
+int inicializarJuego (tJuego* juego)
+{
+    FILE* archConfig;
+    //crearLista(&juego->rankingJugadores);
+
+    abrir_archivo(&archConfig, NOM_ARCH_CONFIG, "rt");
+
+    //crearPartida()
+
+    //cargarRankingDeJugadores
+
+
+    juego->corriendo = 1;
+}
 
 
 /// @brief genera un numero random y le saca el modulo de 6 (MAX_DADO)
