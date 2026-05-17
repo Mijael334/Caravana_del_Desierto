@@ -12,14 +12,14 @@
 #define ERROR_POS -3
 #define NO_ENCONTRADO -5
 
-typedef struct sNodo {
+typedef struct sNodoL {
     void *info;
     unsigned tam;
-    struct sNodo *sig;
-    struct sNodo *ant;
-}tNodo;
+    struct sNodoL *sig;
+    struct sNodoL *ant;
+}tNodoL;
 
-typedef tNodo* tLista;
+typedef tNodoL* tLista;
 
 void crearLista(tLista *p);
 void liberarLista(tLista *p);
@@ -29,6 +29,6 @@ int insPriLista(tLista *p, void *info, unsigned tam);
 
 void recorrerLista(const tLista *p, void (*procesar)(void*));
 
-tNodo* buscarNodoPorClaveLista(const tLista *p, const void *clave, int (*cmp)(const void*, const void*));
+tNodoL* buscarNodoPorClaveLista(const tLista *p, const void *clave, int (*cmp)(const void*, const void*));
 
 #endif // LISTA_DOBLE_CIRCULAR_H_INCLUDED

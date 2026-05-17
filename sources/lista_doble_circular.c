@@ -7,10 +7,10 @@ void crearLista(tLista *p)
 
 int insFinLista(tLista *p, void *info, unsigned tam)
 {
-    tNodo *nue;
-    tNodo *act = *p, *auxant, *auxsig;
+    tNodoL *nue;
+    tNodoL *act = *p, *auxant, *auxsig;
 
-    nue = (tNodo*)malloc(sizeof(tNodo));
+    nue = (tNodoL*)malloc(sizeof(tNodoL));
     if(!nue)
         return ERROR_MEM;
 
@@ -47,10 +47,10 @@ int insFinLista(tLista *p, void *info, unsigned tam)
 
 int insPriLista(tLista *p, void *info, unsigned tam)
 {
-    tNodo *nue;
-    tNodo *act = *p, *auxant, *auxsig;
+    tNodoL *nue;
+    tNodoL *act = *p, *auxant, *auxsig;
 
-    nue = (tNodo*)malloc(sizeof(tNodo));
+    nue = (tNodoL*)malloc(sizeof(tNodoL));
     if(!nue)
         return ERROR_MEM;
 
@@ -87,12 +87,12 @@ int insPriLista(tLista *p, void *info, unsigned tam)
 }
 
 
-tNodo* buscarNodoPorClaveLista(const tLista *p, const void *clave, int (*cmp)(const void*, const void*))
+tNodoL* buscarNodoPorClaveLista(const tLista *p, const void *clave, int (*cmp)(const void*, const void*))
 {
     if (!*p)
         return NULL;
 
-    tNodo *act = *p;
+    tNodoL *act = *p;
 
     if (cmp(act->info, clave) == 0)
         return act;
@@ -114,8 +114,8 @@ void liberarLista(tLista *p)
     if(!*p)
         return;
 
-    tNodo *act=*p;
-    tNodo *auxsig,*auxant=act->ant;
+    tNodoL *act=*p;
+    tNodoL *auxsig,*auxant=act->ant;
 
     auxant->sig=NULL;
 
@@ -136,7 +136,7 @@ void recorrerLista(const tLista *p, void (*procesar)(void*))
 {
     if(!*p)
         return;
-    tNodo *act = *p;
+    tNodoL *act = *p;
     procesar(act->info);
     act = act->sig;
     while(act != *p)
