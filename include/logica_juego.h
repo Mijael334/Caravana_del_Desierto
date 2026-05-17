@@ -3,6 +3,9 @@
 
 #include "../include/entidades.h"
 #include "../include/cola_dinamica.h"
+#include "../include/entidades.h"
+#include "../include/lista_doble_circular.h"
+
 
 #define MAX_DADO 6
 
@@ -21,7 +24,7 @@ typedef enum
     PREMIO,
 } tTipoEvento;
 
-typedef struct 
+typedef struct
 {
     unsigned numeroCasillero;
     int jugadorAca;
@@ -29,7 +32,7 @@ typedef struct
     tTipoEvento evento;
 }tCasillero;
 
-typedef struct 
+typedef struct
 {
     unsigned cantPasos;
     char direccion;
@@ -37,22 +40,22 @@ typedef struct
 } tMovimiento;
 
 
-typedef struct 
+typedef struct
 {
     unsigned cantCasilleros;
     unsigned puntosEnPartida;
     int cantMovsAdelante;
     int cantMovsAtras;
     tCola movimientos;
-    //tLista ruta;
+    tLista ruta;
 } tPartida;
 
-typedef struct 
+typedef struct
 {
     int corriendo;
     tJugador jugador;
     tPartida partida;
-    //tLista rankingJugadores;
+    tLista rankingJugadores;
 } tJuego;
 
 int inicializarJuego (tJuego* juego);
