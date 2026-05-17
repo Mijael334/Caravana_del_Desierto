@@ -3,6 +3,8 @@
 
 #include "../include/entidades.h"
 #include "../include/cola_dinamica.h"
+#include "../include/lista_doble_circular.h"
+#include "../include/gestion_archivos.h"
 
 #define MAX_DADO 6
 
@@ -44,7 +46,7 @@ typedef struct
     int cantMovsAdelante;
     int cantMovsAtras;
     tCola movimientos;
-    //tLista ruta;
+    tLista ruta;
 } tPartida;
 
 typedef struct 
@@ -52,10 +54,19 @@ typedef struct
     int corriendo;
     tJugador jugador;
     tPartida partida;
-    //tLista rankingJugadores;
+    tConfig configPartida;
+    tLista rankingJugadores;
 } tJuego;
 
 int inicializarJuego (tJuego* juego);
-int generarValorDado ();
+void ingresarNombreJugador (char* nombre);
+
+
+int buscarJugadorEnRanking (tLista* rankingJugadores, const char* nombreABusc, int (*cmp) (const void*, const void*));
+
+int generarRandomUniforme (int max_valor);
+
+
+int cmpRanking (const void* a, const void* b);
 
 #endif // LOGICA_JUEGO_H_INCLUDED
