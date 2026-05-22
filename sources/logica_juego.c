@@ -80,7 +80,7 @@ char calcularDireccionBandido(unsigned posBandido, unsigned posJugador, unsigned
 
 void encolarMovimientoJugador(tCola *cola, unsigned pasos, char direccion)
 {
-    tMovimiento mov = {pasos, direccion, -1};
+    tMovimiento mov = {pasos, direccion, ID_JUGADOR};
     ponerEnColaDin(cola, &mov, sizeof(tMovimiento));
 }
 
@@ -90,7 +90,7 @@ void encolarMovimientosBandidos(tCola *cola, tBandido *bandidos, unsigned cantBa
     char dir;
     for(i=0; i < cantBandidos; i++)
     {
-        pasos = generarValorDado();
+        pasos = generarRandomUniforme(MAX_DADO);
         dir = calcularDireccionBandido(bandidos[i].posEnRuta, posJugador, cantPosiciones);
         tMovimiento mov = {pasos, dir, bandidos[i].id};
         ponerEnColaDin(cola, &mov, sizeof(tMovimiento));
