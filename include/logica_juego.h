@@ -69,4 +69,13 @@ int generarRandomUniforme (int max_valor);
 
 int cmpRanking (const void* a, const void* b);
 
+void desencolarMovimientos(tCola *cola, tBandido *bandidos, unsigned cantBandidos, tEstadoJugador *jugador, tLista *lista, unsigned cantPosiciones);
+void encolarMovimientoJugador(tCola *cola, unsigned pasos, char direccion, unsigned posJugador);
+void encolarMovimientosBandidos(tCola *cola, tBandido *bandidos, unsigned cantBandidos, unsigned posJugador, unsigned cantPosiciones);
+
+void desencolarMovimientos(tCola *cola, tBandido *bandidos, unsigned cantBandidos, tEstadoJugador *jugador, tLista *lista, unsigned cantPosiciones);
+void moverBandido(tBandido *bandido, unsigned pasos, char direccion, unsigned cantPosiciones);
+void moverJugador(tEstadoJugador *jugador, unsigned pasos, char direccion, unsigned cantPosiciones);
+
+
 #endif // LOGICA_JUEGO_H_INCLUDED
