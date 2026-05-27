@@ -36,7 +36,7 @@
 		<Unit filename="include/entidades.h" />
 		<Unit filename="include/gestion_archivos.h" />
 		<Unit filename="include/interfaz_usuario.h" />
-		<Unit filename="include/lista.h" />
+		<Unit filename="include/lista_doble_circular.h" />
 		<Unit filename="include/logica_juego.h" />
 		<Unit filename="include/reportes.h" />
 		<Unit filename="sources/arbol.c">
@@ -54,7 +54,7 @@
 		<Unit filename="sources/interfaz_usuario.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="sources/lista.c">
+		<Unit filename="sources/lista_doble_circular.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="sources/logica_juego.c">
