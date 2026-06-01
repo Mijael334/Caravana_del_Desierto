@@ -1,4 +1,5 @@
 #include "../include/logica_juego.h"
+#include "../include/tablero.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -334,27 +335,3 @@ void moverBandidoEnRuta (tBandido* bandido, const tMovimiento* mov, tLista* ruta
     casillero->cantBandidos++;
 }
 
-/*
-    faltaria hacer:
-
-    - ver si bandido==jugador -> restar vida y matar bandido y mover jugador al inicio
-    - aplicar efectos, vida, puntos, tormenta, etc
-    - ver si gano con jugador en posicion de salida o perdio con vida==0
-
-*/
-
-int cmpCasillero (const void* a, const void* b)
-{
-    const tCasillero* c1 = (const tCasillero*) a;
-    const tCasillero* c2 = (const tCasillero*) b;
-
-    return c1->numeroCasillero - c2->numeroCasillero;
-}
-
-int cmpCasilleroEvento (const void* a, const void* b)
-{
-    const tCasillero* c1 = (const tCasillero*) a;
-    const tCasillero* c2 = (const tCasillero*) b;
-
-    return c1->evento == c2->evento;
-}

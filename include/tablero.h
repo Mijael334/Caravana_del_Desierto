@@ -23,4 +23,7 @@ int crear_tablero_circular(tLista *lista, const tConfig *configuracion, tBandido
 void renderizar_tablero(tLista *lista, int cant_posiciones, FILE *destino);
 void guardar_tablero_en_archivo(tLista *lista, int cant_posiciones);
 
+int cmpCasillero (const void* a, const void* b);
+int cmpCasilleroEvento (const void* a, const void* b);
+
 #endif // TABLERO_H_INCLUDED

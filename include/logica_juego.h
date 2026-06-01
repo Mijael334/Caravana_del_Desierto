@@ -94,7 +94,4 @@ void moverBandidoEnRuta (tBandido* bandido, const tMovimiento* mov, tLista* ruta
 void moverJugador(tEstadoJugador *jugador, unsigned pasos, char direccion, unsigned cantPosiciones);
 void moverJugadorEnRuta (tEstadoJugador* jugador, tLista* ruta, unsigned cantPosiciones);
 
-int cmpCasillero (const void* a, const void* b);
-int cmpCasilleroEvento (const void* a, const void* b);
-
 #endif // LOGICA_JUEGO_H_INCLUDED

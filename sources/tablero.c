@@ -221,3 +221,20 @@ void guardar_tablero_en_archivo(tLista *lista, int cant_posiciones)
     renderizar_tablero(lista, cant_posiciones, arch);
     fclose(arch);
 }
+
+
+int cmpCasillero (const void* a, const void* b)
+{
+    const tCasillero* c1 = (const tCasillero*) a;
+    const tCasillero* c2 = (const tCasillero*) b;
+
+    return c1->numeroCasillero - c2->numeroCasillero;
+}
+
+int cmpCasilleroEvento (const void* a, const void* b)
+{
+    const tCasillero* c1 = (const tCasillero*) a;
+    const tCasillero* c2 = (const tCasillero*) b;
+
+    return c1->evento == c2->evento;
+}
