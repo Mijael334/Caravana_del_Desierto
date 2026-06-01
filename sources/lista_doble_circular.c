@@ -95,7 +95,7 @@ void* buscarElemPorClaveLista(const tLista *p, const void *clave, int (*cmp)(con
         return NULL;
 
     if (cmp(act->info, clave) == 0)
-        return act;
+        return act->info;
 
     act = act->sig;
 
