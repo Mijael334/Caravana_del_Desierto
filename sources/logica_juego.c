@@ -132,9 +132,9 @@ int actualizarEstadoPartida (tJugador* jugador, tBandido* bandidos, unsigned can
         if(jugador->estadoEnPartida.protegido == FALSO)
         {
             //mueve al jugador al inicio
-            moverJugadorEnRuta(&jugador->estadoEnPartida, ruta, cantCasilleros);
+            moverJugadorEnRuta(&jugador->estadoEnPartida, ruta);
             jugador->estadoEnPartida.posEnRuta = 1;
-            moverJugadorEnRuta(&jugador->estadoEnPartida, ruta, cantCasilleros);
+            moverJugadorEnRuta(&jugador->estadoEnPartida, ruta);
 
             jugador->estadoEnPartida.vidas--;
 
@@ -257,9 +257,9 @@ void desencolarMovimientos(tCola *cola, tBandido *bandidos, unsigned cantBandido
         {
             if(jugador->afectadoPorTormenta == FALSO)
             {
-                moverJugadorEnRuta(jugador, ruta, cantPosiciones);
+                moverJugadorEnRuta(jugador, ruta);
                 moverJugador(jugador, mov.cantPasos, mov.direccion, cantPosiciones);
-                moverJugadorEnRuta(jugador, ruta, cantPosiciones);
+                moverJugadorEnRuta(jugador, ruta);
             }
         }
         else
@@ -289,18 +289,15 @@ void moverJugador(tEstadoJugador *jugador, unsigned pasos, char direccion, unsig
     }
 }
 
-void moverJugadorEnRuta (tEstadoJugador* jugador, tLista* ruta, unsigned cantPosiciones)
+void moverJugadorEnRuta (tEstadoJugador* jugador, tLista* ruta)
 {
     tCasillero* casillero, casilleroNum;
 
     casilleroNum.numeroCasillero = jugador->posEnRuta;
     casillero = (tCasillero*) buscarElemPorClaveLista(ruta, &casilleroNum, cmpCasillero);
-    casillero->jugadorAca = FALSO;
 
-    if(casillero->jugadorAca == VERDADERO)
-        casillero->jugadorAca = FALSO;
-    else
-        casillero->jugadorAca = VERDADERO;
+    if(casillero)
+        casillero->jugadorAca = !casillero->jugadorAca;
 }
 
 void moverBandido(tBandido *bandido, unsigned pasos, char direccion, unsigned cantPosiciones)
