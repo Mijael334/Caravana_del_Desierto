@@ -2,22 +2,22 @@
 
 int criterio_tormenta_ideal(const tCasillero *act, const tCasillero *ant, const tCasillero *sig)
 {
-    return act->evento == VACIO && ant->evento != TORMENTA && sig->evento != TORMENTA;
+    return act->evento == EVENTO_VACIO && ant->evento != EVENTO_TORMENTA && sig->evento != EVENTO_TORMENTA;
 }
 
 int criterio_bandido_ideal(const tCasillero *act, const tCasillero *ant, const tCasillero *sig)
 {
-    return act->evento == VACIO && act->cantBandidos == 0 && ant->cantBandidos == 0 && sig->cantBandidos == 0;
+    return act->evento == EVENTO_VACIO && act->cantBandidos == 0 && ant->cantBandidos == 0 && sig->cantBandidos == 0;
 }
 
 int criterio_tormenta_emergencia(const tCasillero *act, const tCasillero *ant, const tCasillero *sig)
 {
-    return act->evento == VACIO && ant->evento != TORMENTA;
+    return act->evento == EVENTO_VACIO && ant->evento != EVENTO_TORMENTA;
 }
 
 int criterio_bandido_emergencia(const tCasillero *act, const tCasillero *ant, const tCasillero *sig)
 {
-    return act->evento == VACIO && act->cantBandidos == 0;
+    return act->evento == EVENTO_VACIO && act->cantBandidos == 0;
 }
 
 tNodoL *buscar_nodo_en_posicion(tLista *lista, int posicion)
@@ -89,7 +89,7 @@ void distribuir_evento_aleatorio(tLista *lista, int cant_posiciones, int cantida
         colocado = 0;
         do{
             tCasillero *casillero = (tCasillero *)aux->info;
-            if(casillero->evento == VACIO)
+            if(casillero->evento == EVENTO_VACIO)
             {
                 casillero->evento = tipo_evento;
                 colocado = 1;
@@ -108,7 +108,7 @@ void ubicar_tormenta_segura(tLista *lista, int cant_posiciones)
 {
     tNodoL *nodo = buscar_nodo_seguro(lista, cant_posiciones, criterio_tormenta_ideal, criterio_tormenta_emergencia);
     tCasillero *cas = (tCasillero *)nodo->info;
-    cas->evento = TORMENTA;
+    cas->evento = EVENTO_TORMENTA;
 }
 
 void ubicar_bandido_seguro(tLista *lista, int cant_posiciones, tBandido *bandido, int id_bandido)
@@ -132,7 +132,7 @@ int crear_tablero_circular(tLista *lista, const tConfig *configuracion, tBandido
     for(int i = 0; i < configuracion->cant_posiciones; i++)
     {
         casillero_aux.numeroCasillero = i;
-        casillero_aux.evento = VACIO;
+        casillero_aux.evento = EVENTO_VACIO;
         casillero_aux.jugadorAca = 0;
         casillero_aux.cantBandidos = 0;
         if(insFinLista(lista, &casillero_aux, sizeof(tCasillero)) != OK)
@@ -142,13 +142,13 @@ int crear_tablero_circular(tLista *lista, const tConfig *configuracion, tBandido
         }
     }
     tCasillero *inicial = (tCasillero *)(*lista)->info;
-    inicial->evento = INICIO;
+    inicial->evento = EVENTO_INICIO;
     inicial->jugadorAca = 1;
     tCasillero *final = (tCasillero *)(*lista)->ant->info;
-    final->evento = SALIDA;
-    distribuir_evento_aleatorio(lista, configuracion->cant_posiciones, configuracion->premios_max, PREMIO);
-    distribuir_evento_aleatorio(lista, configuracion->cant_posiciones, configuracion->max_vidas_extras, VIDA_EXTRA);
-    distribuir_evento_aleatorio(lista, configuracion->cant_posiciones, configuracion->oasis_max, OASIS);
+    final->evento = EVENTO_SALIDA;
+    distribuir_evento_aleatorio(lista, configuracion->cant_posiciones, configuracion->premios_max, EVENTO_PREMIO);
+    distribuir_evento_aleatorio(lista, configuracion->cant_posiciones, configuracion->max_vidas_extras, EVENTO_VIDA_EXTRA);
+    distribuir_evento_aleatorio(lista, configuracion->cant_posiciones, configuracion->oasis_max, EVENTO_OASIS);
     for(int i = 0; i < configuracion->tormenta_max; i++)
     {
         ubicar_tormenta_segura(lista, configuracion->cant_posiciones);
@@ -187,7 +187,7 @@ void renderizar_tablero(tLista *lista, int cant_posiciones, FILE *destino)
             {
                 fprintf(destino, "[B J]\n");
             }
-            else if(act->evento == VACIO)
+            else if(act->evento == EVENTO_VACIO)
             {
                 fprintf(destino, "[J]\n");
             }

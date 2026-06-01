@@ -84,6 +84,7 @@ int procesarPartida(tJuego* juego)
                           juego->partida.cantCasilleros, &juego->estadoJuego);
 
     if(juego->estadoJuego == ESTADO_PUNTAJE_PARTIDA)
+        finalizarPartida(juego);
 
 
     return TODO_OK;
@@ -100,7 +101,7 @@ int actualizarEstadoPartida (tJugador* jugador, tBandido* bandidos, unsigned can
     if(jugador->estadoEnPartida.protegido == VERDADERO)
         jugador->estadoEnPartida.protegido = FALSO;
     
-    if(jugador->estadoEnPartida.afectadoPorTormenta = VERDADERO)
+    if(jugador->estadoEnPartida.afectadoPorTormenta == VERDADERO)
         jugador->estadoEnPartida.afectadoPorTormenta = FALSO;
 
     switch (casillero->evento)
@@ -167,9 +168,8 @@ void finalizarPartida (tJuego* juego)
 void eliminarBandido(tBandido* bandido, tLista* ruta, unsigned cantCasilleros)
 {
     tCasillero *casillero, casilleroNum;
-    int encontrado = FALSO;
 
-    casillero->numeroCasillero = bandido->posEnRuta;
+    casilleroNum.numeroCasillero = bandido->posEnRuta;
     casillero = buscarElemPorClaveLista(ruta, &casilleroNum, cmpCasillero);
     casillero->cantBandidos--;
 
@@ -246,7 +246,6 @@ void encolarMovimientosBandidos(tCola *cola, tBandido *bandidos, unsigned cantBa
 void desencolarMovimientos(tCola *cola, tBandido *bandidos, unsigned cantBandidos, tEstadoJugador *jugador, tLista *ruta, unsigned cantPosiciones)
 {
     tMovimiento mov;
-    tCasillero* casillero, casilleroNum;
     int i;
 
     while(!colaVaciaDin(cola))
