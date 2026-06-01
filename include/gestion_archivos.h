@@ -8,9 +8,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#define NOM_ARCH_CONFIG "config.txt"
+#define NOM_ARCH_CONFIG "docs/config.txt"
 #define NOM_ARCH_RANKING "ranking.dat"
-#define NOM_ARCH_CARAVANA "caravana.txt"
+#define NOM_ARCH_CARAVANA "docs/caravana.txt"
 /// talvez podria usar signed(ya que solo podriamos usar num > 0)
 typedef struct
 {

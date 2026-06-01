@@ -16,7 +16,7 @@
 #define ERR_MEM 1
 
 
-typedef struct 
+typedef struct
 {
     unsigned id;
     unsigned posEnRuta;
@@ -41,7 +41,7 @@ typedef struct
     tEstadoJugador estadoEnPartida;
 } tJugador;
 
-typedef struct 
+typedef struct
 {
     char nombre [MAX_NOMBRE + 1];
     unsigned puntos;
