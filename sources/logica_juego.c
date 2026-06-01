@@ -3,14 +3,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
+
 
 
 int inicializarJuego (tJuego* juego)
 {
     char aceptar;
 
-    srand(time(NULL));
+
 
     crearLista(&juego->rankingJugadores);
 

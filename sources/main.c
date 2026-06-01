@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "../include/entidades.h"
 #include "../include/interfaz_usuario.h"
@@ -7,6 +8,8 @@
 
 int main()
 {
+    srand(time(NULL));
+      
     const char menu_principal[][MAX_TEXTO_MENU] = {"123",
                                                    "Comenzar Nueva Partida",
                                                    "Ver Ranking",
