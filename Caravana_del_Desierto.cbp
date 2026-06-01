@@ -39,6 +39,7 @@
 		<Unit filename="include/lista_doble_circular.h" />
 		<Unit filename="include/logica_juego.h" />
 		<Unit filename="include/reportes.h" />
+		<Unit filename="include/tablero.h" />
 		<Unit filename="sources/arbol.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -64,6 +65,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="sources/reportes.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="sources/tablero.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Extensions>

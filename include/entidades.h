@@ -10,7 +10,7 @@
 #define MUERTO 0
 
 
-typedef struct 
+typedef struct
 {
     unsigned id;
     unsigned posEnRuta;
@@ -35,11 +35,10 @@ typedef struct
     tEstadoJugador estadoEnPartida;
 } tJugador;
 
-typedef struct 
+typedef struct
 {
     unsigned puntos;
     char nombre [MAX_NOMBRE + 1];
 } tRanking;
-
 
 #endif // ENTIDADES_H_INCLUDED

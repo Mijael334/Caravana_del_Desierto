@@ -29,7 +29,7 @@ typedef struct
     int jugadorAca;
     int cantBandidos;
     tTipoEvento evento;
-}tCasillero;
+} tCasillero;
 
 typedef struct
 {
@@ -37,7 +37,6 @@ typedef struct
     char direccion;
     int id;
 } tMovimiento;
-
 
 typedef struct
 {
