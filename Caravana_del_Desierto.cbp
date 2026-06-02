@@ -35,6 +35,7 @@
 		<Unit filename="include/cola_dinamica.h" />
 		<Unit filename="include/entidades.h" />
 		<Unit filename="include/gestion_archivos.h" />
+		<Unit filename="include/indice_jugador.h" />
 		<Unit filename="include/interfaz_usuario.h" />
 		<Unit filename="include/lista_doble_circular.h" />
 		<Unit filename="include/logica_juego.h" />
@@ -50,6 +51,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="sources/gestion_archivos.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="sources/indice_jugador.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="sources/interfaz_usuario.c">
