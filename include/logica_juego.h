@@ -92,6 +92,6 @@ void desencolarMovimientos(tCola *cola, tBandido *bandidos, unsigned cantBandido
 void moverBandido(tBandido *bandido, unsigned pasos, char direccion, unsigned cantPosiciones);
 void moverBandidoEnRuta (tBandido* bandido, const tMovimiento* mov, tLista* ruta, unsigned cantPosiciones);
 void moverJugador(tEstadoJugador *jugador, unsigned pasos, char direccion, unsigned cantPosiciones);
-void moverJugadorEnRuta (tEstadoJugador* jugador, tLista* ruta, unsigned cantPosiciones);
+void moverJugadorEnRuta (tEstadoJugador* jugador, tLista* ruta);
 
 #endif // LOGICA_JUEGO_H_INCLUDED
