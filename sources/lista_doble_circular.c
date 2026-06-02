@@ -87,22 +87,23 @@ int insPriLista(tLista *p, void *info, unsigned tam)
 }
 
 
-tNodoL* buscarNodoPorClaveLista(const tLista *p, const void *clave, int (*cmp)(const void*, const void*))
+void* buscarElemPorClaveLista(const tLista *p, const void *clave, int (*cmp)(const void*, const void*))
 {
+    tNodoL *act = *p;
+
     if (!*p)
         return NULL;
 
-    tNodoL *act = *p;
-
     if (cmp(act->info, clave) == 0)
-        return act;
+        return act->info;
 
     act = act->sig;
 
     while (act != *p)
     {
         if (cmp(act->info, clave) == 0)
-            return act;
+            return act->info;
+
         act = act->sig;
     }
 

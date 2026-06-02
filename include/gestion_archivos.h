@@ -2,15 +2,15 @@
 #define GESTION_ARCHIVOS_H_INCLUDED
 ///defino algunas macro que podemos que deSpues se puede cambiar para su mejor manejo
 #define ERROR_ARCHIVO_CONFIG -2
-#define TODO_OK 1
+#define TODO_OK 0
 #define TAM_MAX 200
 
 #include <stdio.h>
 #include <string.h>
 
-#define NOM_ARCH_CONFIG "config.txt"
-#define NOM_ARCH_RANKING "ranking.dat"
-#define NOM_ARCH_CARAVANA "caravana.txt"
+#define NOM_ARCH_CONFIG "docs/config.txt"
+#define NOM_ARCH_USUARIOS "docs/usuarios.dat"
+#define NOM_ARCH_CARAVANA "docs/caravana.txt"
 /// talvez podria usar signed(ya que solo podriamos usar num > 0)
 typedef struct
 {

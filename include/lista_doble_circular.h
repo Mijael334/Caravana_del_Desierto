@@ -29,6 +29,6 @@ int insPriLista(tLista *p, void *info, unsigned tam);
 
 void recorrerLista(const tLista *p, void (*procesar)(void*));
 
-void* buscarNodoPorClaveLista(const tLista *p, const void *clave, int (*cmp)(const void*, const void*));
+void* buscarElemPorClaveLista(const tLista *p, const void *clave, int (*cmp)(const void*, const void*));
 
 #endif // LISTA_DOBLE_CIRCULAR_H_INCLUDED

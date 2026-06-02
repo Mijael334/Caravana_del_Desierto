@@ -1,4 +1,5 @@
 #include "../include/logica_juego.h"
+#include "../include/tablero.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,31 +16,167 @@ int inicializarJuego (tJuego* juego)
 
     lectura_de_configuracion(NOM_ARCH_CONFIG, &juego->configPartida);
 
-    //cargarRankingDeJugadores(tLista* &juego->ranking)
+    //cargarUsuarios(tArbol* &juego->ranking)
 
     do
     {
         int pos;
         aceptar = 'Y';
 
-        ingresarNombreJugador(juego->jugador.nombre);
+        ingresarNombreJugador(juego->usuario.nombre);
 
         //pos = buscarJugadorEnRanking (ranking ,&juego->ranking, &juego->jugador);
 
         if(pos != NO_ENCONTRADO)
         {
-            printf("Es usted el jugador %s Y/N:", juego->jugador.nombre);
+            printf("Es usted el jugador %s Y/N:", juego->usuario.nombre);
             scanf (" %c", &aceptar);
             fflush(stdin);
 
             if(aceptar == 'N')
-                printf("El nombre %s ya esta en uso.\n", juego->jugador.nombre);
+                printf("El nombre %s ya esta en uso.\n", juego->usuario.nombre);
         }
 
     } while (aceptar != 'Y');
 
-    juego->corriendo = 1;
+    juego->corriendo = VERDADERO;
+
+    juego->estadoJuego = ESTADO_MENU;
+
+    return TODO_OK;
 }
+
+int procesarJuego (tJuego* juego)
+{
+    switch (juego->estadoJuego)
+    {
+    case ESTADO_MENU:
+        //mostrar menu
+        break;
+    case ESTADO_PARTIDA:
+        procesarPartida(juego);
+        break;
+    case ESTADO_PUNTAJE_PARTIDA:
+        //Se muestra el resultado de la partida jugada
+        break;
+    case ESTADO_RANKING:
+        //mostrar ranking
+    default:
+        break;
+    }
+
+    return TODO_OK;
+}
+
+int procesarPartida(tJuego* juego)
+{
+    int cantPasos = generarRandomUniforme(MAX_DADO);
+    char dirMovimiento; //= calcularDireccionBandido (); se falta la funcion para pedir la dir, hay que ver si lo tiene que escribir o lo hacemos directo con presionar la tecla
+
+    encolarMovimientoJugador(&juego->partida.movimientos, cantPasos, dirMovimiento, juego->partida.jugador.estadoEnPartida.posEnRuta);
+    
+    encolarMovimientosBandidos (&juego->partida.movimientos, juego->partida.bandidos, juego->configPartida.bandidos_max, juego->partida.jugador.estadoEnPartida.posEnRuta, 
+                                 juego->partida.cantCasilleros);
+
+    desencolarMovimientos(&juego->partida.movimientos, juego->partida.bandidos, juego->configPartida.bandidos_max, &juego->partida.jugador.estadoEnPartida, 
+                          &juego->partida.ruta, juego->partida.cantCasilleros);
+    
+    actualizarEstadoPartida(&juego->partida.jugador, juego->partida.bandidos, juego->configPartida.bandidos_max, &juego->partida.ruta, 
+                          juego->partida.cantCasilleros, &juego->estadoJuego);
+
+    if(juego->estadoJuego == ESTADO_PUNTAJE_PARTIDA)
+        finalizarPartida(juego);
+
+
+    return TODO_OK;
+}
+
+int actualizarEstadoPartida (tJugador* jugador, tBandido* bandidos, unsigned cantBandidos,tLista* ruta, unsigned cantCasilleros, tEstadoJuego* estadoJuego)
+{
+    tCasillero casilleroNum, *casillero;
+
+    casilleroNum.numeroCasillero = jugador->estadoEnPartida.posEnRuta;
+
+    casillero = buscarElemPorClaveLista(ruta, &casilleroNum, cmpCasillero);
+
+    if(jugador->estadoEnPartida.protegido == VERDADERO)
+        jugador->estadoEnPartida.protegido = FALSO;
+    
+    if(jugador->estadoEnPartida.afectadoPorTormenta == VERDADERO)
+        jugador->estadoEnPartida.afectadoPorTormenta = FALSO;
+
+    switch (casillero->evento)
+    {
+        case EVENTO_OASIS: jugador->estadoEnPartida.protegido = VERDADERO;
+            break;
+        case EVENTO_PREMIO: jugador->estadoEnPartida.puntos += PUNTOS_PREMIO;
+            break;
+        case EVENTO_VIDA_EXTRA: jugador->estadoEnPartida.vidas++;
+            break;
+        case EVENTO_TORMENTA: jugador->estadoEnPartida.afectadoPorTormenta = VERDADERO;
+            break;
+        case EVENTO_SALIDA: *estadoJuego = ESTADO_PUNTAJE_PARTIDA;
+            break;
+        default:
+            break;
+    }
+
+    if(casillero->evento == EVENTO_VACIO && casillero->cantBandidos == 0)
+        return TODO_OK;
+
+    if(casillero->cantBandidos > 0)
+    {
+        tBandido* bandido = NULL;
+        unsigned posJugador = jugador->estadoEnPartida.posEnRuta, i = 0;
+
+        if(jugador->estadoEnPartida.protegido == FALSO)
+        {
+            //mueve al jugador al inicio
+            moverJugadorEnRuta(&jugador->estadoEnPartida, ruta, cantCasilleros);
+            jugador->estadoEnPartida.posEnRuta = 1;
+            moverJugadorEnRuta(&jugador->estadoEnPartida, ruta, cantCasilleros);
+
+            jugador->estadoEnPartida.vidas--;
+
+            if(jugador->estadoEnPartida.vidas == 0)
+                *estadoJuego = ESTADO_PUNTAJE_PARTIDA;
+        }
+        
+        //busca al bandido en base a la posicion
+        while (bandido == NULL && i < cantBandidos)
+        {
+            if((bandidos + i)->posEnRuta == posJugador && (bandidos + i)->vivo == VIVO)
+                bandido = bandidos + i;
+            else
+                i++;
+        }
+        
+        eliminarBandido(bandido, ruta, cantCasilleros);
+    }
+
+    return TODO_OK;
+}
+
+void finalizarPartida (tJuego* juego)
+{
+    free(juego->partida.bandidos);
+    vaciarColaDin(&juego->partida.movimientos);
+    liberarLista(&juego->partida.ruta);
+
+    juego->usuario.puntos += juego->partida.jugador.puntos;
+}
+
+void eliminarBandido(tBandido* bandido, tLista* ruta, unsigned cantCasilleros)
+{
+    tCasillero *casillero, casilleroNum;
+
+    casilleroNum.numeroCasillero = bandido->posEnRuta;
+    casillero = buscarElemPorClaveLista(ruta, &casilleroNum, cmpCasillero);
+    casillero->cantBandidos--;
+
+    bandido->vivo = MUERTO;
+}
+
 
 void ingresarNombreJugador (char* nombre)
 {
@@ -47,19 +184,6 @@ void ingresarNombreJugador (char* nombre)
     fgets(nombre, MAX_NOMBRE + 1, stdin);
 }
 
-
-int generarRandomUniforme (int max_valor)
-{
-    int limite = RAND_MAX - (RAND_MAX % max_valor); //para que todos los numeros tengan las mismas prob de salir
-    int random;
-
-    do
-    {
-        random = rand();
-    } while (random >= limite);
-
-    return (random % max_valor) + 1;
-}
 
 /*
     logica de movimiento del jugador:
@@ -120,7 +244,7 @@ void encolarMovimientosBandidos(tCola *cola, tBandido *bandidos, unsigned cantBa
     }
 }
 
-void desencolarMovimientos(tCola *cola, tBandido *bandidos, unsigned cantBandidos, tEstadoJugador *jugador, tLista *lista, unsigned cantPosiciones)
+void desencolarMovimientos(tCola *cola, tBandido *bandidos, unsigned cantBandidos, tEstadoJugador *jugador, tLista *ruta, unsigned cantPosiciones)
 {
     tMovimiento mov;
     int i;
@@ -131,16 +255,20 @@ void desencolarMovimientos(tCola *cola, tBandido *bandidos, unsigned cantBandido
 
         if(mov.id == ID_JUGADOR)
         {
-            if(jugador->afectadoPorTormenta)
-                jugador->afectadoPorTormenta = 0; // saco el efecto de tormenta
-            else
+            if(jugador->afectadoPorTormenta == FALSO)
+            {
+                moverJugadorEnRuta(jugador, ruta, cantPosiciones);
                 moverJugador(jugador, mov.cantPasos, mov.direccion, cantPosiciones);
+                moverJugadorEnRuta(jugador, ruta, cantPosiciones);
+            }
         }
         else
         {
             for(i = 0; i < cantBandidos; i++)
+            {
                 if((bandidos+i)->id == mov.id && (bandidos+i)->vivo == VIVO)
-                    moverBandido(bandidos + i, mov.cantPasos, mov.direccion, cantPosiciones);
+                    moverBandidoEnRuta(bandidos+i, &mov, ruta, cantPosiciones);
+            }
         }
     }
 }
@@ -152,12 +280,27 @@ void moverJugador(tEstadoJugador *jugador, unsigned pasos, char direccion, unsig
         unsigned nuevaPos = jugador->posEnRuta + pasos;
         if(nuevaPos > cantPosiciones)
             nuevaPos = 2*cantPosiciones - nuevaPos; // rebote al final
+
         jugador->posEnRuta = nuevaPos;
     }
     else
     {
         jugador->posEnRuta -= pasos;
     }
+}
+
+void moverJugadorEnRuta (tEstadoJugador* jugador, tLista* ruta, unsigned cantPosiciones)
+{
+    tCasillero* casillero, casilleroNum;
+
+    casilleroNum.numeroCasillero = jugador->posEnRuta;
+    casillero = (tCasillero*) buscarElemPorClaveLista(ruta, &casilleroNum, cmpCasillero);
+    casillero->jugadorAca = FALSO;
+
+    if(casillero->jugadorAca == VERDADERO)
+        casillero->jugadorAca = FALSO;
+    else
+        casillero->jugadorAca = VERDADERO;
 }
 
 void moverBandido(tBandido *bandido, unsigned pasos, char direccion, unsigned cantPosiciones)
@@ -177,19 +320,18 @@ void moverBandido(tBandido *bandido, unsigned pasos, char direccion, unsigned ca
     }
 }
 
-/*
-    faltaria hacer:
-
-    - ver si bandido==jugador -> restar vida y matar bandido y mover jugador al inicio
-    - aplicar efectos, vida, puntos, tormenta, etc
-    - ver si gano con jugador en posicion de salida o perdio con vida==0
-
-*/
-
-int cmpRanking (const void* a, const void* b)
+void moverBandidoEnRuta (tBandido* bandido, const tMovimiento* mov, tLista* ruta, unsigned cantPosiciones)
 {
-    const tRanking* r1 = (const tRanking*) a;
-    const tRanking* r2 = (const tRanking*) b;
+    tCasillero* casillero, casilleroNum;
 
-    return strcmp(r1->nombre, r2->nombre);
+    casilleroNum.numeroCasillero = bandido->posEnRuta;
+    casillero = (tCasillero*) buscarElemPorClaveLista(ruta, &casilleroNum, cmpCasillero);
+    casillero->cantBandidos--;
+
+    moverBandido(bandido, mov->cantPasos, mov->direccion, cantPosiciones);
+
+    casilleroNum.numeroCasillero = bandido->posEnRuta;
+    casillero = (tCasillero*) buscarElemPorClaveLista(ruta, &casilleroNum, cmpCasillero);
+    casillero->cantBandidos++;
 }
+

@@ -8,20 +8,32 @@
 
 #define MAX_DADO 6
 
+
 #define DIR_ADELANTE 'F'
 #define DIR_ATRAS 'B'
+
+#define PUNTOS_PREMIO 1
 
 
 typedef enum
 {
-    VACIO = 0,
-    OASIS,
-    TORMENTA,
-    VIDA_EXTRA,
-    INICIO,
-    SALIDA,
-    PREMIO,
+    EVENTO_VACIO = 0,
+    EVENTO_OASIS,
+    EVENTO_TORMENTA,
+    EVENTO_VIDA_EXTRA,
+    EVENTO_INICIO,
+    EVENTO_SALIDA,
+    EVENTO_PREMIO,
 } tTipoEvento;
+
+typedef enum
+{
+    ESTADO_MENU = 0,
+    ESTADO_PARTIDA,
+    ESTADO_PUNTAJE_PARTIDA,
+    ESTADO_RANKING,
+    ESTADO_SALIR,
+} tEstadoJuego;
 
 typedef struct
 {
@@ -29,7 +41,7 @@ typedef struct
     int jugadorAca;
     int cantBandidos;
     tTipoEvento evento;
-}tCasillero;
+} tCasillero;
 
 typedef struct
 {
@@ -38,9 +50,10 @@ typedef struct
     int id;
 } tMovimiento;
 
-
 typedef struct
 {
+    tJugador jugador;
+    tBandido* bandidos;
     unsigned cantCasilleros;
     unsigned puntosEnPartida;
     int cantMovsAdelante;
@@ -52,22 +65,24 @@ typedef struct
 typedef struct
 {
     int corriendo;
-    tJugador jugador;
+    tEstadoJuego estadoJuego;
+    tUsuario usuario;
     tPartida partida;
     tConfig configPartida;
     tLista rankingJugadores;
 } tJuego;
 
 int inicializarJuego (tJuego* juego);
+int procesarJuego (tJuego* juego);
 void ingresarNombreJugador (char* nombre);
 
 
+int procesarPartida (tJuego* juego);
+int actualizarEstadoPartida (tJugador* jugador, tBandido* bandidos, unsigned cantBandidos,tLista* ruta, unsigned cantCasilleros, tEstadoJuego* estadoJuego);
+void finalizarPartida (tJuego* juego);
+void eliminarBandido(tBandido* bandido, tLista* ruta, unsigned cantCasilleros);
+
 int buscarJugadorEnRanking (tLista* rankingJugadores, const char* nombreABusc, int (*cmp) (const void*, const void*));
-
-int generarRandomUniforme (int max_valor);
-
-
-int cmpRanking (const void* a, const void* b);
 
 void desencolarMovimientos(tCola *cola, tBandido *bandidos, unsigned cantBandidos, tEstadoJugador *jugador, tLista *lista, unsigned cantPosiciones);
 void encolarMovimientoJugador(tCola *cola, unsigned pasos, char direccion, unsigned posJugador);
@@ -75,7 +90,8 @@ void encolarMovimientosBandidos(tCola *cola, tBandido *bandidos, unsigned cantBa
 
 void desencolarMovimientos(tCola *cola, tBandido *bandidos, unsigned cantBandidos, tEstadoJugador *jugador, tLista *lista, unsigned cantPosiciones);
 void moverBandido(tBandido *bandido, unsigned pasos, char direccion, unsigned cantPosiciones);
+void moverBandidoEnRuta (tBandido* bandido, const tMovimiento* mov, tLista* ruta, unsigned cantPosiciones);
 void moverJugador(tEstadoJugador *jugador, unsigned pasos, char direccion, unsigned cantPosiciones);
-
+void moverJugadorEnRuta (tEstadoJugador* jugador, tLista* ruta, unsigned cantPosiciones);
 
 #endif // LOGICA_JUEGO_H_INCLUDED

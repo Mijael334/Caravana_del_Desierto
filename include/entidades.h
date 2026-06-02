@@ -9,8 +9,14 @@
 #define VIVO 1
 #define MUERTO 0
 
+#define FALSO 0
+#define VERDADERO 1
 
-typedef struct 
+#define TODO_OK 0
+#define ERR_MEM 1
+
+
+typedef struct
 {
     unsigned id;
     unsigned posEnRuta;
@@ -35,11 +41,15 @@ typedef struct
     tEstadoJugador estadoEnPartida;
 } tJugador;
 
-typedef struct 
+typedef struct
 {
-    unsigned puntos;
     char nombre [MAX_NOMBRE + 1];
-} tRanking;
+    unsigned puntos;
+} tUsuario;
 
+void inicializarJugador (tJugador* jugador, const char* nombre, unsigned puntos, unsigned cantVidas);
+int crearBandidos (tBandido** bandidos, unsigned cantBandidos, unsigned cantCasilleros);
+int generarRandomUniforme (int max_valor);
+int cmpUsuario (const void* a, const void* b);
 
 #endif // ENTIDADES_H_INCLUDED

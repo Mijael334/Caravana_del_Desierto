@@ -1,14 +1,16 @@
 #include "../include/gestion_archivos.h"
+
 int abrir_archivo(FILE **fp, const char *nombre_archivo, const char *modo)
 {
     *fp = fopen(nombre_archivo, modo);
-    if(!fp)
+    if(!*fp)
     {
         fprintf(stderr,"Error en al abrir el archivo %s en modo %s \n", nombre_archivo, modo);
         return ERROR_ARCHIVO_CONFIG;
     }
     return TODO_OK;
 }
+
 int lectura_de_configuracion(const char *archivo_config, tConfig *parametros)
 {
     FILE *fconfig;
@@ -37,5 +39,4 @@ int lectura_de_configuracion(const char *archivo_config, tConfig *parametros)
             parametros->tormenta_max = valor;
     }
     return TODO_OK;
-
 }
