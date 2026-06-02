@@ -16,7 +16,8 @@ int lectura_de_configuracion(const char *archivo_config, tConfig *parametros)
     FILE *fconfig;
     char clave[TAM_MAX];
     unsigned valor;
-    if(!abrir_archivo(&fconfig, archivo_config, "rt"))
+//    if(!abrir_archivo(&fconfig, archivo_config, "rt"))
+    if(abrir_archivo(&fconfig, archivo_config, "rt"))
     {
         return ERROR_ARCHIVO_CONFIG;
     }
@@ -38,5 +39,6 @@ int lectura_de_configuracion(const char *archivo_config, tConfig *parametros)
         if(strcmp(clave, "maximo_tormentas") == 0)
             parametros->tormenta_max = valor;
     }
+    fclose(fconfig);
     return TODO_OK;
 }

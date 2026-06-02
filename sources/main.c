@@ -9,7 +9,7 @@
 int main()
 {
     srand(time(NULL));
-      
+
     const char menu_principal[][MAX_TEXTO_MENU] = {"123",
                                                    "Comenzar Nueva Partida",
                                                    "Ver Ranking",
@@ -19,6 +19,7 @@ int main()
     tConfig configuracion;
     tLista tablero;
     tBandido *lista_bandidos = NULL;
+    crearLista(&tablero);
 
     // Llamar a la carga del ABB desde el archivo binario (Integrante 3).
 
@@ -36,7 +37,7 @@ int main()
         {
             printf("No hay memoria suficiente para los bandidos\n");
         }
-        if(crear_tablero_circular(&tablero, &configuracion, lista_bandidos))
+        if(crear_tablero_circular(&tablero, &configuracion, lista_bandidos) == TODO_OK)
         {
             printf("Tablero generado exitosamente\n");
             printf("=== VISUALIZACION EN PANTALLA ===\n");
