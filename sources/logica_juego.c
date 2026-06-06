@@ -4,46 +4,56 @@
 #include <stdlib.h>
 #include <string.h>
 
-
-
 int inicializarJuego (tJuego* juego)
 {
     char aceptar;
-
-
-
+    int encontrado;
+    char nombre_propuesto[MAX_NOMBRE + 1];
+    tArbolBinBusq arbolIndice;
+    srand((unsigned)time(NULL));
     crearLista(&juego->rankingJugadores);
-
     lectura_de_configuracion(NOM_ARCH_CONFIG, &juego->configPartida);
-
-    //cargarUsuarios(tArbol* &juego->ranking)
-
+    ///Acá debe cargar el indice desde el archivo
     do
     {
-        int pos;
         aceptar = 'Y';
-
         ingresarNombreJugador(juego->usuario.nombre);
-
-        //pos = buscarJugadorEnRanking (ranking ,&juego->ranking, &juego->jugador);
-
-        if(pos != NO_ENCONTRADO)
+        ///Acá debe buscar el nombre en el índice
+        if(encontrado == CLAVE_ENCONTRADA)
         {
             printf("Es usted el jugador %s Y/N:", juego->usuario.nombre);
             scanf (" %c", &aceptar);
             fflush(stdin);
 
-            if(aceptar == 'N')
+            if(aceptar == 'N' || aceptar == 'n')
+            {
                 printf("El nombre %s ya esta en uso.\n", juego->usuario.nombre);
+                strcpy(nombre_propuesto, juego->usuario.nombre);
+                generarNombreUnico(&arbolIndice, nombre_propuesto, juego->usuario.nombre);
+                printf("Se le ha asignado el nombre alternativo: %s.\n", juego->usuario.nombre);
+            }
         }
 
     } while (aceptar != 'Y');
-
+    if(encontrado == CLAVE_NO_ENCONTRADA || aceptar =='Y')
+    {
+        ///Acá debe insertar en el índice y guardar en el archivo
+    }
+    eliminarArbol(&arbolIndice);
     juego->corriendo = VERDADERO;
-
     juego->estadoJuego = ESTADO_MENU;
-
     return TODO_OK;
+}
+
+void generarNombreUnico(const tArbolBinBusq *pa, const char *nombre_base, char *nombre_final)
+{
+    int num_random;
+    strcpy(nombre_final, nombre_base);
+    while(///Acá debe buscar en el índice == CLAVE_ENCONTRADA)
+    {
+        num_random = (rand() % 900) + 100;
+        sprintf(nombre_final, "%s_%d", nombre_base, num_random);
+    }
 }
 
 int procesarJuego (tJuego* juego)
@@ -74,14 +84,14 @@ int procesarPartida(tJuego* juego)
     char dirMovimiento; //= calcularDireccionBandido (); se falta la funcion para pedir la dir, hay que ver si lo tiene que escribir o lo hacemos directo con presionar la tecla
 
     encolarMovimientoJugador(&juego->partida.movimientos, cantPasos, dirMovimiento, juego->partida.jugador.estadoEnPartida.posEnRuta);
-    
-    encolarMovimientosBandidos (&juego->partida.movimientos, juego->partida.bandidos, juego->configPartida.bandidos_max, juego->partida.jugador.estadoEnPartida.posEnRuta, 
+
+    encolarMovimientosBandidos (&juego->partida.movimientos, juego->partida.bandidos, juego->configPartida.bandidos_max, juego->partida.jugador.estadoEnPartida.posEnRuta,
                                  juego->partida.cantCasilleros);
 
-    desencolarMovimientos(&juego->partida.movimientos, juego->partida.bandidos, juego->configPartida.bandidos_max, &juego->partida.jugador.estadoEnPartida, 
+    desencolarMovimientos(&juego->partida.movimientos, juego->partida.bandidos, juego->configPartida.bandidos_max, &juego->partida.jugador.estadoEnPartida,
                           &juego->partida.ruta, juego->partida.cantCasilleros);
-    
-    actualizarEstadoPartida(&juego->partida.jugador, juego->partida.bandidos, juego->configPartida.bandidos_max, &juego->partida.ruta, 
+
+    actualizarEstadoPartida(&juego->partida.jugador, juego->partida.bandidos, juego->configPartida.bandidos_max, &juego->partida.ruta,
                           juego->partida.cantCasilleros, &juego->estadoJuego);
 
     if(juego->estadoJuego == ESTADO_PUNTAJE_PARTIDA)
@@ -101,7 +111,7 @@ int actualizarEstadoPartida (tJugador* jugador, tBandido* bandidos, unsigned can
 
     if(jugador->estadoEnPartida.protegido == VERDADERO)
         jugador->estadoEnPartida.protegido = FALSO;
-    
+
     if(jugador->estadoEnPartida.afectadoPorTormenta == VERDADERO)
         jugador->estadoEnPartida.afectadoPorTormenta = FALSO;
 
@@ -141,7 +151,7 @@ int actualizarEstadoPartida (tJugador* jugador, tBandido* bandidos, unsigned can
             if(jugador->estadoEnPartida.vidas == 0)
                 *estadoJuego = ESTADO_PUNTAJE_PARTIDA;
         }
-        
+
         //busca al bandido en base a la posicion
         while (bandido == NULL && i < cantBandidos)
         {
@@ -150,7 +160,7 @@ int actualizarEstadoPartida (tJugador* jugador, tBandido* bandidos, unsigned can
             else
                 i++;
         }
-        
+
         eliminarBandido(bandido, ruta, cantCasilleros);
     }
 
