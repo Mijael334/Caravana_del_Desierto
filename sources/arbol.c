@@ -34,6 +34,12 @@ int insertarArbolBinBusq(tArbolBinBusq* pt, const void* d, unsigned cantbyte, in
         return SIN_MEMORIA;
     }
     nue->info = malloc(cantbyte);
+    if(!nue->info)
+    {
+        fprintf(stderr, "no se pudo reservar memoria para el dato\n");
+        free(nue);
+        return SIN_MEMORIA;
+    }
     memcpy(nue->info, d, cantbyte);
     nue->tamInfo = cantbyte;
     nue->der = NULL;
