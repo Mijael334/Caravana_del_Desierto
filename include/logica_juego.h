@@ -73,6 +73,7 @@ typedef struct
 } tJuego;
 
 int inicializarJuego (tJuego* juego);
+void generarNombreUnico(const tArbolBinBusq *pa, const char *nombre_base, char *nombre_final);
 int procesarJuego (tJuego* juego);
 void ingresarNombreJugador (char* nombre);
 

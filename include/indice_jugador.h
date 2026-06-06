@@ -15,5 +15,8 @@ typedef struct
 }tIndice;
 
 int compararClaveIndice(const void *a, const void *b);
+int cargarDesdeArchivoBinarioOrdenadoArbol(FILE *arch, tArbolBinBusq *pa, unsigned tam, int limiteInferior, int limiteSuperior);
+int prepararLimitesCargaArbol(FILE *archivoIndice, tArbolBinBusq *pa, unsigned tam);
+int cargarIndiceDesdeArchivo(tArbolBinBusq *pa, const char *nombreArchivoIndice, unsigned tam);
 
 #endif // INDICE_JUGADOR_H_INCLUDED
