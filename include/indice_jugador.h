@@ -15,5 +15,4 @@ typedef struct
 }tIndice;
 
 int compararClaveIndice(const void *a, const void *b);
-
 #endif // INDICE_JUGADOR_H_INCLUDED
