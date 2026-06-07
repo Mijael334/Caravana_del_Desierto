@@ -4,6 +4,7 @@
 #define ERROR_ARCHIVO_CONFIG -2
 #define ERROR_ARCHIVO_USUARIOS -3
 #define ERROR_ARCHIVO_INDICE -4
+
 #define TODO_OK 1
 #define TAM_MAX 200
 
@@ -11,10 +12,12 @@
 #include <string.h>
 
 #include "../include/arbol.h"
+#include "../include/cola_dinamica.h"
 
 #define NOM_ARCH_CONFIG "docs/config.txt"
 #define NOM_ARCH_USUARIOS "docs/usuarios.dat"
 #define NOM_ARCH_CARAVANA "docs/caravana.txt"
+#define ARCHIVO_INDICE "indice.bat"
 /// talvez podria usar signed(ya que solo podriamos usar num > 0)
 typedef struct
 {

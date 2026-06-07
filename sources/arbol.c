@@ -42,15 +42,15 @@ int insertarArbolBinBusq(tArbolBinBusq* pt, const void* d, unsigned cantbyte, in
     return TODO_OK;
 }
 
-int buscarEnArbolBinBusq(const tArbolBinBusq* pt,const void* d, unsigned cantbyte, int(* cmp)(const void* a1, const void* a2))
+int buscarEnArbolBinBusq(const tArbolBinBusq* pt, void* d, unsigned cantbyte, int(* cmp)(const void* a1, const void* a2))
 {
     if(!*pt)
-        return DATO_NO_ENCONTRADO;
+        return DATO_NO_ENCONTRADO;/// 0
     int res = cmp(d, (*pt)->info);
     if(res == 0)
     {
-        memcpy(d, (*pt)->info, cantbyte);
-        return DATO_ENCONTRADO;
+        ///memcpy(d, (*pt)->info, cantbyte);
+        return DATO_ENCONTRADO; /// 1
     }else
     {
         if(res > 0)

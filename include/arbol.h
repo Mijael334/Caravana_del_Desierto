@@ -22,9 +22,9 @@ typedef tNodoArbol *tArbolBinBusq;
 
 void crearArbolBinBusq(tArbolBinBusq *pt);
 int insertarArbolBinBusq(tArbolBinBusq *pt, const void *d, unsigned cantbyte, int(*cmp)(const void *a1, const void *a2));
-int buscarEnArbolBinBusq(const tArbolBinBusq *pt,const void *d, unsigned cantbyte,int(*cmp)(const void *a1, const void *a2));
+int buscarEnArbolBinBusq(const tArbolBinBusq *pt, void *d, unsigned cantbyte,int(*cmp)(const void *a1, const void *a2));
 void recorrerArbolInnorden(const tArbolBinBusq *pt, unsigned n, void *params, void (*accion)(void *info , unsigned tam, unsigned m, void *param));
-
+void eliminarArbol(tArbolBinBusq *pt);
 
 
 #endif // ARBOL_H_INCLUDED

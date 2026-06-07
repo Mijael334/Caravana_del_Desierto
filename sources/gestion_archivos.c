@@ -1,5 +1,5 @@
 #include "../include/gestion_archivos.h"
-#include "../include/arbol.h"
+
 int abrir_archivo(FILE **fp, const char *nombre_archivo, const char *modo)
 {
     *fp = fopen(nombre_archivo, modo);
@@ -45,13 +45,13 @@ int lectura_de_configuracion(const char *archivo_config, tConfig *parametros)
 
 int guardarIndiceEnArchivo(const tArbolBinBusq *pt, const char *nombreArchivoIndice)
 {
-    FILE *fIndx;
-    if(abrir_archivo(&fIndx, nombreArchivoIndice, "wb"))
+    FILE *fInd;
+    if(abrir_archivo(&fInd, nombreArchivoIndice, "wb"))
     {
         return ERROR_ARCHIVO_INDICE;
     }
-    recorrerArbolInnorden(pt, 0, fIndx, guardarNodoEnArchivo);
-    fclose(fIndx);
+    recorrerArbolInnorden(pt, 0, fInd, guardarNodoEnArchivo);
+    fclose(fInd);
     return TODO_OK;
 }
 
