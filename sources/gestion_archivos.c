@@ -42,3 +42,21 @@ int lectura_de_configuracion(const char *archivo_config, tConfig *parametros)
     fclose(fconfig);
     return TODO_OK;
 }
+
+int guardarIndiceEnArchivo(const tArbolBinBusq *pt, const char *nombreArchivoIndice)
+{
+    FILE *fInd;
+    if(abrir_archivo(&fInd, nombreArchivoIndice, "wb"))
+    {
+        return ERROR_ARCHIVO_INDICE;
+    }
+    recorrerArbolInnorden(pt, 0, fInd, guardarNodoEnArchivo);
+    fclose(fInd);
+    return TODO_OK;
+}
+
+void guardarNodoEnArchivo(void *info, unsigned tam, unsigned n, void *params)
+{
+    FILE *fp = (FILE*)params;
+    fwrite(info, tam, 1, fp);
+}

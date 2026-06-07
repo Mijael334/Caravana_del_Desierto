@@ -48,15 +48,15 @@ int insertarArbolBinBusq(tArbolBinBusq* pt, const void* d, unsigned cantbyte, in
     return TODO_OK;
 }
 
-int buscarEnArbolBinBusq(const tArbolBinBusq* pt, const void* d, unsigned cantbyte, int(* cmp)(const void* a1, const void* a2))
+int buscarEnArbolBinBusq(const tArbolBinBusq* pt, void* d, unsigned cantbyte, int(* cmp)(const void* a1, const void* a2))
 {
     if(!*pt)
-        return DATO_NO_ENCONTRADO;
+        return DATO_NO_ENCONTRADO;/// 0
     int res = cmp(d, (*pt)->info);
     if(res == 0)
     {
-        memcpy(d, (*pt)->info, cantbyte);
-        return DATO_ENCONTRADO;
+        ///memcpy(d, (*pt)->info, cantbyte);
+        return DATO_ENCONTRADO; /// 1
     }else
     {
         if(res > 0)
@@ -81,4 +81,13 @@ void eliminarArbol(tArbolBinBusq *pt)
         free(*pt);
         *pt = NULL;
     }
+}
+
+void recorrerArbolInnorden(const tArbolBinBusq *pt, unsigned n, void *params, void (*accion)(void *info , unsigned tam, unsigned m, void *param))
+{
+   if(!pt)
+        return;
+   recorrerArbolInnorden(&(*pt)->izq, n, params, accion);
+   accion((*pt)->info, (*pt)->tamInfo, n, params);
+   recorrerArbolInnorden(&(*pt)->der, n, params, accion);
 }

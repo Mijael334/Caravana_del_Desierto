@@ -1,24 +1,39 @@
 #include "../include/logica_juego.h"
 #include "../include/tablero.h"
+#include "../include/indice_jugador.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "time.h"
 
 int inicializarJuego (tJuego* juego)
 {
+    ///hay que crear el archivo indice
     char aceptar;
     int encontrado;
     char nombre_propuesto[MAX_NOMBRE + 1];
     tArbolBinBusq arbolIndice;
+    //FILE *fidx;
+    tIndice *indJugador;
+
+    crearArbolBinBusq(&arbolIndice);
     srand((unsigned)time(NULL));
     crearLista(&juego->rankingJugadores);
     lectura_de_configuracion(NOM_ARCH_CONFIG, &juego->configPartida);
     ///Acá debe cargar el indice desde el archivo
+    indexarArchivoUsuariosOrdenado(&arbolIndice, ARCHIVO_INDICE);
+
+
     do
     {
         aceptar = 'Y';
         ingresarNombreJugador(juego->usuario.nombre);
+
+        strcpy(indJugador->clave.nombre, juego->usuario.nombre);
         ///Acá debe buscar el nombre en el índice
+        encontrado = busquedaIndexada(&arbolIndice, indJugador, sizeof(tIndice), cmpClaveIndice);
+
+
         if(encontrado == CLAVE_ENCONTRADA)
         {
             printf("Es usted el jugador %s Y/N:", juego->usuario.nombre);
@@ -49,7 +64,7 @@ void generarNombreUnico(const tArbolBinBusq *pa, const char *nombre_base, char *
 {
     int num_random;
     strcpy(nombre_final, nombre_base);
-    while(///Acá debe buscar en el índice == CLAVE_ENCONTRADA)
+    while(1)///Acá debe buscar en el índice == CLAVE_ENCONTRADA)
     {
         num_random = (rand() % 900) + 100;
         sprintf(nombre_final, "%s_%d", nombre_base, num_random);
