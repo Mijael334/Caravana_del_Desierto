@@ -20,7 +20,7 @@ int inicializarJuego (tJuego* juego)
     srand((unsigned)time(NULL));
     crearLista(&juego->rankingJugadores);
     lectura_de_configuracion(NOM_ARCH_CONFIG, &juego->configPartida);
-    ///Acá debe cargar el indice desde el archivo
+    ///Acï¿½ debe cargar el indice desde el archivo
     indexarArchivoUsuariosOrdenado(&arbolIndice, ARCHIVO_INDICE);
 
 
@@ -30,7 +30,7 @@ int inicializarJuego (tJuego* juego)
         ingresarNombreJugador(juego->usuario.nombre);
 
         strcpy(indJugador->clave.nombre, juego->usuario.nombre);
-        ///Acá debe buscar el nombre en el índice
+        ///Acï¿½ debe buscar el nombre en el ï¿½ndice
         encontrado = busquedaIndexada(&arbolIndice, indJugador, sizeof(tIndice), cmpClaveIndice);
 
 
@@ -50,9 +50,9 @@ int inicializarJuego (tJuego* juego)
         }
 
     } while (aceptar != 'Y');
-    if(encontrado == CLAVE_NO_ENCONTRADA || aceptar =='Y')
+    if(encontrado == CLAVE_NO_ENCONTRADA || aceptar == 'Y')
     {
-        ///Acá debe insertar en el índice y guardar en el archivo
+        ///Acï¿½ debe insertar en el ï¿½ndice y guardar en el archivo
     }
     eliminarArbol(&arbolIndice);
     juego->corriendo = VERDADERO;
@@ -64,7 +64,7 @@ void generarNombreUnico(const tArbolBinBusq *pa, const char *nombre_base, char *
 {
     int num_random;
     strcpy(nombre_final, nombre_base);
-    while(1)///Acá debe buscar en el índice == CLAVE_ENCONTRADA)
+    while(1)///Acï¿½ debe buscar en el ï¿½ndice == CLAVE_ENCONTRADA)
     {
         num_random = (rand() % 900) + 100;
         sprintf(nombre_final, "%s_%d", nombre_base, num_random);
@@ -96,7 +96,7 @@ int procesarJuego (tJuego* juego)
 int procesarPartida(tJuego* juego)
 {
     int cantPasos = generarRandomUniforme(MAX_DADO);
-    char dirMovimiento; //= calcularDireccionBandido (); se falta la funcion para pedir la dir, hay que ver si lo tiene que escribir o lo hacemos directo con presionar la tecla
+    char dirMovimiento; //= calcularDireccion (); se falta la funcion para pedir la dir, hay que ver si lo tiene que escribir o lo hacemos directo con presionar la tecla
 
     encolarMovimientoJugador(&juego->partida.movimientos, cantPasos, dirMovimiento, juego->partida.jugador.estadoEnPartida.posEnRuta);
 

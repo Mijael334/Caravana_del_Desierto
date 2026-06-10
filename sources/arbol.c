@@ -30,13 +30,11 @@ int insertarArbolBinBusq(tArbolBinBusq* pt, const void* d, unsigned cantbyte, in
     tNodoArbol *nue = (tNodoArbol*)malloc(sizeof(tNodoArbol));
     if(!nue)
     {
-        fprintf(stderr, "no se puedo reservar memoria para el nuevo nodo\n");
         return SIN_MEMORIA;
     }
     nue->info = malloc(cantbyte);
     if(!nue->info)
     {
-        fprintf(stderr, "no se pudo reservar memoria para el dato\n");
         free(nue);
         return SIN_MEMORIA;
     }
@@ -55,7 +53,7 @@ int buscarEnArbolBinBusq(const tArbolBinBusq* pt, void* d, unsigned cantbyte, in
     int res = cmp(d, (*pt)->info);
     if(res == 0)
     {
-        ///memcpy(d, (*pt)->info, cantbyte);
+        memcpy(d, (*pt)->info, cantbyte);
         return DATO_ENCONTRADO; /// 1
     }else
     {
