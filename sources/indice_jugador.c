@@ -1,6 +1,6 @@
 #include "../include/indice_jugador.h"
 
-int compararClaveIndice(const void *a, const void *b)
+int cmpClaveIndice(const void *a, const void *b)
 {
     const tIndice *idxA = (const tIndice *)a;
     const tIndice *idxB = (const tIndice *)b;

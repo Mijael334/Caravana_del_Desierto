@@ -3,11 +3,32 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "../include/logica_juego.h"
-#include "../include/lista_doble_circular.h"
-#include "../include/gestion_archivos.h"
+
+#include "entidades.h"
+#include "lista_doble_circular.h"
+#include "gestion_archivos.h"
 
 #define MAX_SIMBOLOS 7
+
+typedef enum
+{
+    EVENTO_VACIO = 0,
+    EVENTO_OASIS,
+    EVENTO_TORMENTA,
+    EVENTO_VIDA_EXTRA,
+    EVENTO_INICIO,
+    EVENTO_SALIDA,
+    EVENTO_PREMIO,
+} tTipoEvento;
+
+typedef struct
+{
+    unsigned numeroCasillero;
+    int jugadorAca;
+    int cantBandidos;
+    tTipoEvento evento;
+} tCasillero;
+
 
 int configuracion_valida(const tConfig *configuracion);
 int criterio_tormenta_ideal(const tCasillero *act, const tCasillero *ant, const tCasillero *sig);

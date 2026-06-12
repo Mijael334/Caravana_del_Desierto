@@ -2,10 +2,13 @@
 #define INDICE_JUGADOR_H_INCLUDED
 
 
-#include "../include/gestion_archivos.h"
+#include "gestion_archivos.h"
+
 #define TAM_MAX_NOM 20
+
 #define CLAVE_ENCONTRADA 1
 #define CLAVE_NO_ENCONTRADA 0
+
 typedef struct
 {
     char nombre[TAM_MAX_NOM];

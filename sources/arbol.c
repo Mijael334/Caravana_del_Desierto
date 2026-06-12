@@ -83,8 +83,9 @@ void eliminarArbol(tArbolBinBusq *pt)
 
 void recorrerArbolInnorden(const tArbolBinBusq *pt, unsigned n, void *params, void (*accion)(void *info , unsigned tam, unsigned m, void *param))
 {
-   if(!pt)
+   if(!*pt)
         return;
+        
    recorrerArbolInnorden(&(*pt)->izq, n, params, accion);
    accion((*pt)->info, (*pt)->tamInfo, n, params);
    recorrerArbolInnorden(&(*pt)->der, n, params, accion);

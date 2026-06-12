@@ -1,18 +1,28 @@
 #ifndef GESTION_ARCHIVOS_H_INCLUDED
 #define GESTION_ARCHIVOS_H_INCLUDED
-///defino algunas macro que podemos que deSpues se puede cambiar para su mejor manejo
+
+#include "utilidades.h"
+
 #define ERROR_ARCHIVO_CONFIG -2
 #define ERROR_ARCHIVO_USUARIOS -3
 #define ERROR_ARCHIVO_INDICE -4
 
-#define TODO_OK 1
-#define TAM_MAX 200
+#define TAM_MAX 21
 
 #include <stdio.h>
 #include <string.h>
 
 #include "../include/arbol.h"
 #include "../include/cola_dinamica.h"
+
+#define NOM_CONFIG_CANT_POSICIONES "cantidad_posiciones"
+#define NOM_CONFIG_VIDAS_INI "vidas_inicio"
+#define NOM_CONFIG_MAX_BANDIDOS "maximo_bandidos"
+#define NOM_CONFIG_MAX_PREMIOS "maximo_premios"
+#define NOM_CONFIG_MAX_VIDAS_EXTRAS "maximo_vidas_extra"
+#define NOM_CONFIG_MAX_OASIS "maximo_oasis"
+#define NOM_CONFIG_MAX_TORMENTAS "maximo_tormentas"
+
 
 #define NOM_ARCH_CONFIG "docs/config.txt"
 #define NOM_ARCH_USUARIOS "docs/usuarios.dat"

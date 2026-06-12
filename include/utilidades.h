@@ -1,0 +1,10 @@
+#ifndef UTILIDADES_H_INCLUDED
+#define UTILIDADES_H_INCLUDED
+
+#define TODO_OK 0
+#define ERR_MEM -1
+
+#define FALSO 0
+#define VERDADERO 1
+
+#endif // UTILIDADES_H_INCLUDED

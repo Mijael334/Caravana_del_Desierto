@@ -1,30 +1,18 @@
 #ifndef LOGICA_JUEGO_H_INCLUDED
 #define LOGICA_JUEGO_H_INCLUDED
 
-#include "../include/entidades.h"
-#include "../include/cola_dinamica.h"
-#include "../include/lista_doble_circular.h"
-#include "../include/gestion_archivos.h"
+#include "entidades.h"
+#include "cola_dinamica.h"
+#include "lista_doble_circular.h"
+#include "gestion_archivos.h"
+#include "tablero.h"
 
 #define MAX_DADO 6
-
 
 #define DIR_ADELANTE 'F'
 #define DIR_ATRAS 'B'
 
 #define PUNTOS_PREMIO 1
-
-
-typedef enum
-{
-    EVENTO_VACIO = 0,
-    EVENTO_OASIS,
-    EVENTO_TORMENTA,
-    EVENTO_VIDA_EXTRA,
-    EVENTO_INICIO,
-    EVENTO_SALIDA,
-    EVENTO_PREMIO,
-} tTipoEvento;
 
 typedef enum
 {
@@ -34,14 +22,6 @@ typedef enum
     ESTADO_RANKING,
     ESTADO_SALIR,
 } tEstadoJuego;
-
-typedef struct
-{
-    unsigned numeroCasillero;
-    int jugadorAca;
-    int cantBandidos;
-    tTipoEvento evento;
-} tCasillero;
 
 typedef struct
 {

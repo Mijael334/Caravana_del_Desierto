@@ -1,6 +1,8 @@
 #ifndef ENTIDADES_H_INCLUDED
 #define ENTIDADES_H_INCLUDED
 
+#include "utilidades.h"
+
 #define MAX_NOMBRE 10
 
 #define ID_JUGADOR  1
@@ -9,20 +11,12 @@
 #define VIVO 1
 #define MUERTO 0
 
-#define FALSO 0
-#define VERDADERO 1
-
-#define TODO_OK 0
-#define ERR_MEM 1
-
-
 typedef struct
 {
     unsigned id;
     unsigned posEnRuta;
     int vivo;
 } tBandido;
-
 
 typedef struct
 {

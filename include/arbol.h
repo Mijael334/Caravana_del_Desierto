@@ -9,7 +9,7 @@
 #define DATO_ENCONTRADO 1
 #define DATO_DUPLICADO -1
 #define SIN_MEMORIA -2
-#define TODO_OK 1
+#define TODO_OK 0
 
 typedef struct sNodoArbol
 {
