@@ -8,6 +8,10 @@
 
 int inicializarJuego (tJuego* juego)
 {
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 3640d2e75dbe7e4d4c91e53014ea653ce9c19a80
     ///hay que crear el archivo indice
     char aceptar;
     int encontrado;
@@ -17,6 +21,13 @@ int inicializarJuego (tJuego* juego)
     tIndice *indJugador;
     crearArchivoIndiceOrdenado(NOM_ARCH_USUARIOS);
     crearArbolBinBusq(&arbolIndice);
+<<<<<<< HEAD
+=======
+=======
+    int ret;
+
+>>>>>>> 53f4fbce142154ac8953627cde6c7c53f3b1ca75
+>>>>>>> 3640d2e75dbe7e4d4c91e53014ea653ce9c19a80
     srand((unsigned)time(NULL));
     crearLista(&juego->rankingJugadores);
     lectura_de_configuracion(NOM_ARCH_CONFIG, &juego->configPartida);
