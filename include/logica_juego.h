@@ -7,7 +7,8 @@
 #include "gestion_archivos.h"
 #include "tablero.h"
 
-#define TITULO_JUEGO "CARAVANA DEL DESIERTO"
+#define MSJ_RESULTADO_VICTORIA "VICTORIA"
+#define MSJ_RESULTADO_DERROTA "DERROTA"
 
 #define MAX_DADO 6
 
@@ -60,7 +61,7 @@ int procesarJuego (tJuego* juego);
 
 int procesarMenu(tJuego* juego);
 int procesarPartida (tJuego* juego);
-void procesarPuntajePartida(const tPartida* partida, tEstadoJuego* estadoJuego);
+int procesarPuntajePartida(const tPartida* partida, tEstadoJuego* estadoJuego);
 
 int actualizarEstadoPartida (tJugador* jugador, tBandido* bandidos, unsigned cantBandidos,tLista* ruta, unsigned cantCasilleros, tEstadoJuego* estadoJuego);
 void finalizarPartida (tJuego* juego);
@@ -77,5 +78,9 @@ void moverBandido(tBandido *bandido, unsigned pasos, char direccion, unsigned ca
 void moverBandidoEnRuta (tBandido* bandido, const tMovimiento* mov, tLista* ruta, unsigned cantPosiciones);
 void moverJugador(tEstadoJugador *jugador, unsigned pasos, char direccion, unsigned cantPosiciones);
 void moverJugadorEnRuta (tEstadoJugador* jugador, tLista* ruta);
+
+void limpiarJuego (tJuego* juego);
+
+void mostrarError (int err);
 
 #endif // LOGICA_JUEGO_H_INCLUDED

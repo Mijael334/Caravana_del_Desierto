@@ -13,14 +13,13 @@ int main()
     int ret;
 
     ret = inicializarJuego(&juego);
-    if(ret != TODO_OK)
+    
+    while (juego.corriendo)
     {
-        printf("Error al inicializar el juego (codigo %d)\n", ret);
-        system("PAUSE");
-        return ret;
+        ret = procesarJuego(&juego);
     }
-
-    procesarMenu(&juego);
-
-    return 0;
+    
+    mostrarError(ret);
+    
+    return ret;
 }

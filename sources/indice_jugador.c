@@ -15,7 +15,7 @@ int indexarArchivoUsuariosOrdenado(tArbolBinBusq *pa, const char *nombreArchivoU
 
     ret = abrir_archivo(&find, nombreArchivoUsuarios, "rb");
 
-    if(ret == ERROR_ARCHIVO_USUARIOS)
+    if(ret == ERROR_ARCHIVO_INDICE)
         return ret;
 
     fseek(find, 0L, SEEK_END);

@@ -9,7 +9,7 @@
 #include "../include/indice_jugador.h"
 
 
-#define TITULO_JUEGO "=== CARAVANA DEL DESIERTO ==="
+#define TITULO_JUEGO "CARAVANA DEL DESIERTO"
 #define MAX_TEXTO_MENU 35
 
 
