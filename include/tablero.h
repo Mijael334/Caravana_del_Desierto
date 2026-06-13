@@ -36,9 +36,12 @@ int criterio_bandido_ideal(const tCasillero *act, const tCasillero *ant, const t
 int criterio_casillero_libre(const tCasillero *act, const tCasillero *ant, const tCasillero *sig);
 void distribuir_elemento(tLista *lista, int cant_posiciones, int cant_maxima, int (*criterio)(const tCasillero *, const tCasillero *, const tCasillero *), tTipoEvento tipo_evento, int es_bandido, tBandido *bandido);
 int crear_tablero_circular(tLista *lista, const tConfig *configuracion, tBandido *bandidos);
-void renderizar_tablero(tLista *lista, int cant_posiciones, FILE *destino);
-void guardar_tablero_en_archivo(tLista *lista, int cant_posiciones);
+//void renderizar_tablero(tLista *lista, int cant_posiciones, FILE *destino);
+void renderizar_tablero(const tLista *lista, FILE *destino);
+//void guardar_tablero_en_archivo(tLista *lista, int cant_posiciones);
+void guardar_tablero_en_archivo(tLista *lista);
 int cmpCasillero (const void* a, const void* b);
 int cmpCasilleroEvento (const void* a, const void* b);
+void imprimirCasillero(void *info, FILE *destino);
 
 #endif // TABLERO_H_INCLUDED

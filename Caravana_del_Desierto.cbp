@@ -38,6 +38,7 @@
 		<Unit filename="include/indice_jugador.h" />
 		<Unit filename="include/interfaz_usuario.h" />
 		<Unit filename="include/lista_doble_circular.h" />
+		<Unit filename="include/lista_enlazada.h" />
 		<Unit filename="include/logica_juego.h" />
 		<Unit filename="include/reportes.h" />
 		<Unit filename="include/tablero.h" />
@@ -61,6 +62,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="sources/lista_doble_circular.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="sources/lista_enlazada.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="sources/logica_juego.c">

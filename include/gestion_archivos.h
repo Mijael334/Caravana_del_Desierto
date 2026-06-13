@@ -6,6 +6,8 @@
 #define ERROR_ARCHIVO_CONFIG -2
 #define ERROR_ARCHIVO_USUARIOS -3
 #define ERROR_ARCHIVO_INDICE -4
+#define ERROR_ARCHIVO_NO_EXISTE -5
+#define ERROR_ARCHIVO_PARTIDAS -6
 
 #define TAM_MAX 21
 
@@ -27,7 +29,8 @@
 #define NOM_ARCH_CONFIG "docs/config.txt"
 #define NOM_ARCH_USUARIOS "docs/usuarios.dat"
 #define NOM_ARCH_CARAVANA "docs/caravana.txt"
-#define ARCHIVO_INDICE "indice.bat"
+#define NOM_ARCH_INDICE_USUARIOS "docs/indice.idx"
+#define NOM_ARCH_PARTIDAS "docs/partidas.dat"
 /// talvez podria usar signed(ya que solo podriamos usar num > 0)
 typedef struct
 {

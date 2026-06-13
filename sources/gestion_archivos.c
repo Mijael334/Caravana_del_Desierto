@@ -5,6 +5,9 @@ int abrir_archivo(FILE **fp, const char *nombre_archivo, const char *modo)
     *fp = fopen(nombre_archivo, modo);
     if(!*fp)
     {
+        if (errno == ENOENT)
+            return ERROR_ARCHIVO_NO_EXISTE;
+        
         fprintf(stderr,"Error en al abrir el archivo %s en modo %s \n", nombre_archivo, modo);
         return ERROR_ARCHIVO_CONFIG;
     }
