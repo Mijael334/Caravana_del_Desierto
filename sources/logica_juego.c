@@ -101,7 +101,7 @@ int procesarJuego (tJuego* juego)
         procesarPartida(juego);
         break;
     case ESTADO_PUNTAJE_PARTIDA:
-        //Se muestra el resultado de la partida jugada
+        procesarPuntajePartida(&juego->partida, &juego->estadoJuego);
         break;
     case ESTADO_RANKING:
         //mostrar ranking
@@ -178,6 +178,21 @@ int procesarPartida(tJuego* juego)
     return TODO_OK;
 }
 
+void procesarPuntajePartida(const tPartida* partida, tEstadoJuego* estadoJuego)
+{
+    printf("\n=============PARTIDA FINALIZADA=============\n");
+    puts("Resultado: %s", partida->jugador.estadoEnPartida.vidas );
+    printf("Jugador: %s", partida->jugador.nombre);
+    printf("puntos: %d\t\tVidas Restantes: %d", partida->jugador.estadoEnPartida.puntos, partida->jugador.estadoEnPartida.vidas);
+    printf("Forward: %d casillas\t\tBackward: %d casillas", partida->cantMovsAdelante, partida->cantMovsAtras);
+
+    //aca iria un fwrite con todos estos datos en el registro de partida
+
+    //aca debe pedir enter para seguir
+
+    *estadoJuego = ESTADO_MENU;
+}
+
 int actualizarEstadoPartida (tJugador* jugador, tBandido* bandidos, unsigned cantBandidos,tLista* ruta, unsigned cantCasilleros, tEstadoJuego* estadoJuego)
 {
     tCasillero casilleroNum, *casillero;
@@ -207,6 +222,10 @@ int actualizarEstadoPartida (tJugador* jugador, tBandido* bandidos, unsigned can
         default:
             break;
     }
+
+    if(*estadoJuego == ESTADO_PUNTAJE_PARTIDA)
+        return TODO_OK;
+
 
     if(casillero->evento == EVENTO_VACIO && casillero->cantBandidos == 0)
         return TODO_OK;

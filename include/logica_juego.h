@@ -60,6 +60,8 @@ void ingresarNombreJugador (char* nombre);
 
 int procesarMenu(tJuego* juego);
 int procesarPartida (tJuego* juego);
+void procesarPuntajePartida(const tPartida* partida, tEstadoJuego* estadoJuego);
+
 int actualizarEstadoPartida (tJugador* jugador, tBandido* bandidos, unsigned cantBandidos,tLista* ruta, unsigned cantCasilleros, tEstadoJuego* estadoJuego);
 void finalizarPartida (tJuego* juego);
 void eliminarBandido(tBandido* bandido, tLista* ruta, unsigned cantCasilleros);
