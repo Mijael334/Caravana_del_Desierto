@@ -10,14 +10,18 @@ int cmpClaveIndice(const void *a, const void *b)
 
 int indexarArchivoUsuariosOrdenado(tArbolBinBusq *pa, const char *nombreArchivoUsuarios)
 {
+    int ret;
     FILE *find;
-    if(abrir_archivo(&find, nombreArchivoUsuarios, "rb"))
-    {
-        return ERROR_ARCHIVO_USUARIOS;
-    }
+
+    ret = abrir_archivo(&find, nombreArchivoUsuarios, "rb");
+
+    if(ret == ERROR_ARCHIVO_USUARIOS)
+        return ret;
+
     fseek(find, 0L, SEEK_END);
     cargarArchivoOrdenadoEnIndiceBalanceado(pa, find, 0, ftell(find)/sizeof(tIndice) - 1);
     fclose(find);
+
     return TODO_OK;
 }
 

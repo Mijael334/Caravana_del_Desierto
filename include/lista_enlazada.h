@@ -20,7 +20,7 @@ typedef struct sNodoLista
 
 typedef tNodoLista *tLista;
 
-void crearLista(tLista *pl);
+void crearListaSimple(tLista *pl);
 int listaVacia(const tLista *pl);
 int insertarEnOrdenLista(tLista *pl, const void *d, unsigned tam, int (*comparar)(const void *, const void *));
 void vaciarLista(tLista *pl);
