@@ -1,4 +1,5 @@
 #include "../include/interfaz_usuario.h"
+#include <conio.h>
 
 char menu(const char matriz_menu[][MAX_TEXTO_MENU], const char *titulo)
 {
@@ -10,7 +11,7 @@ char menu(const char matriz_menu[][MAX_TEXTO_MENU], const char *titulo)
     }
     return opc;
 }
-
+ 
 char opcion(const char matriz_menu[][MAX_TEXTO_MENU], const char *titulo, const char *mensaje)
 {
     char opc;
@@ -25,4 +26,100 @@ char opcion(const char matriz_menu[][MAX_TEXTO_MENU], const char *titulo, const 
     fflush(stdin);
     scanf("%c", &opc);
     return toupper(opc);
+}
+ 
+void dibujarOpcionesMenu(const char *titulo, const char *opciones[], int cantOpciones, int seleccion)
+{
+    int i;
+    system("CLS");
+    printf("\n\n   === %s ===\n\n", titulo);
+    for(i = 0; i < cantOpciones; i++)
+    {
+        if(i == seleccion)
+            printf("        [ %s ]\n", opciones[i]);
+        else
+            printf("          %s  \n", opciones[i]);
+    }
+    printf("\n   [W/S] Mover    [ESPACIO] Confirmar\n");
+}
+ 
+int seleccionarOpcionMenu(const char *titulo, const char *opciones[], int cantOpciones)
+{
+    int seleccion = 0, confirmado = 0;
+    char tecla;
+ 
+    while(!confirmado)
+    {
+        dibujarOpcionesMenu(titulo, opciones, cantOpciones, seleccion);
+        tecla = getch();
+        if(tecla >= 'A' && tecla <= 'Z')
+            tecla += 32;
+ 
+        switch(tecla)
+        {
+            case 'w':
+            case 'a':
+                if(seleccion > 0)
+                    seleccion--;
+                break;
+            case 's':
+            case 'd':
+                if(seleccion < cantOpciones - 1)
+                    seleccion++;
+                break;
+            case 32:
+                confirmado = 1;
+                break;
+        }
+    }
+ 
+    return seleccion;
+}
+ 
+void leerNombrePorTeclado(char *nombre, int tamMaxNombre)
+{
+    int len;
+    system("CLS");
+    printf("\n\n   === CARAVANA DEL DESIERTO ===\n\n");
+    printf("   Ingrese su nombre: ");
+    fflush(stdin);
+    fgets(nombre, tamMaxNombre, stdin);
+    len = strlen(nombre);
+    if(len > 0 && nombre[len - 1] == '\n')
+        nombre[len - 1] = '\0';
+}
+ 
+int nombreExisteEnIndice(const char *nombre, const tArbolBinBusq *arbolIndice)
+{
+    tIndice ind;
+    strcpy(ind.clave.nombre, nombre);
+    return busquedaIndexada(arbolIndice, &ind, sizeof(tIndice), cmpClaveIndice);
+}
+ 
+int confirmarEsUsted(const char *nombre)
+{
+    char titulo[80];
+    const char *opciones[] = {"SI", "NO"};
+    sprintf(titulo, "Nombre \"%s\" ya registrado. Es usted?", nombre);
+    return seleccionarOpcionMenu(titulo, opciones, 2) == 0;
+}
+ 
+int solicitarNombreUsuario(char *nombre, int tamMaxNombre, const tArbolBinBusq *arbolIndice)
+{
+    int existe = CLAVE_NO_ENCONTRADA;
+    int listo = 0;
+ 
+    while(!listo)
+    {
+        leerNombrePorTeclado(nombre, tamMaxNombre);
+
+        existe = nombreExisteEnIndice(nombre, arbolIndice);
+ 
+        if(existe == CLAVE_NO_ENCONTRADA)
+            listo = 1;
+        else if(confirmarEsUsted(nombre))
+            listo = 1;
+    }
+ 
+    return existe;
 }
