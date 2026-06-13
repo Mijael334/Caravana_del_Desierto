@@ -27,7 +27,8 @@ void liberarLista(tLista *p);
 int insFinLista(tLista *p, void *info, unsigned tam);
 int insPriLista(tLista *p, void *info, unsigned tam);
 
-void recorrerLista(const tLista *p, void (*procesar)(void*));
+//void recorrerLista(const tLista *p, void (*procesar)(void*));
+void recorrerLista(const tLista *p, void (*procesar)(void *, FILE *), FILE *pf);
 
 void* buscarElemPorClaveLista(const tLista *p, const void *clave, int (*cmp)(const void*, const void*));
 

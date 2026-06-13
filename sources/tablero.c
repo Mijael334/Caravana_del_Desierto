@@ -168,94 +168,94 @@ int crear_tablero_circular(tLista *lista, const tConfig *configuracion, tBandido
     return TODO_OK;
 }
 
-void renderizar_tablero(tLista *lista, int cant_posiciones, FILE *destino)
-{
-    const char simbolos_eventos[] = { '.',
-                                    'O',
-                                    'T',
-                                    'V',
-                                    'I',
-                                    'S',
-                                    'P'
-                                    };
-    tCasillero clave;
-    tCasillero *actual;
-    char caracter_evento;
-    int i, j;
-    if(*lista == NULL || destino == NULL)
-    {
-        return;
-    }
-    for(i = 0; i < cant_posiciones; i++)
-    {
-        clave.numeroCasillero = i + 1;
-        actual = (tCasillero *)buscarElemPorClaveLista(lista, &clave, cmpCasillero);
-        if(!actual)
-        {
-            continue;
-        }
-        caracter_evento = simbolos_eventos[actual->evento];
-        fprintf(destino, "%02d:", actual->numeroCasillero);
-        if(actual->jugadorAca)
-        {
-            if(actual->cantBandidos > 0)
-            {
-                fprintf(destino, "[");
-                for(j = 0; j < actual->cantBandidos; j++)
-                {
-                    fprintf(destino, "B ");
-                }
-                fprintf(destino, "J]\n");
-            }
-            else if(actual->evento == EVENTO_VACIO)
-            {
-                fprintf(destino, "[J]\n");
-            }
-            else
-            {
-                fprintf(destino, "[%c J]\n", caracter_evento);
-            }
-        }
-        else
-        {
-            if(actual->cantBandidos > 0)
-            {
-                if(actual->evento != EVENTO_VACIO)
-                {
-                    fprintf(destino, "%c (", caracter_evento);
-                    for(j = 0; j < actual->cantBandidos; j++)
-                    {
-                        fprintf(destino, (j == actual->cantBandidos - 1) ? "B" : "B ");
-                    }
-                    fprintf(destino, ")\n");
-                }
-                else
-                {
-                    for(j = 0; j < actual->cantBandidos; j++)
-                    {
-                        fprintf(destino, "B ");
-                    }
-                    fprintf(destino, "\n");
-                }
-            }
-            else
-            {
-                fprintf(destino, "%c\n", caracter_evento);
-            }
-        }
-    }
-}
+//void renderizar_tablero(tLista *lista, int cant_posiciones, FILE *destino)
+//{
+//    const char simbolos_eventos[] = { '.',
+//                                    'O',
+//                                    'T',
+//                                    'V',
+//                                    'I',
+//                                    'S',
+//                                    'P'
+//                                    };
+//    tCasillero clave;
+//    tCasillero *actual;
+//    char caracter_evento;
+//    int i, j;
+//    if(*lista == NULL || destino == NULL)
+//    {
+//        return;
+//    }
+//    for(i = 0; i < cant_posiciones; i++)
+//    {
+//        clave.numeroCasillero = i + 1;
+//        actual = (tCasillero *)buscarElemPorClaveLista(lista, &clave, cmpCasillero);
+//        if(!actual)
+//        {
+//            continue;
+//        }
+//        caracter_evento = simbolos_eventos[actual->evento];
+//        fprintf(destino, "%02d:", actual->numeroCasillero);
+//        if(actual->jugadorAca)
+//        {
+//            if(actual->cantBandidos > 0)
+//            {
+//                fprintf(destino, "[");
+//                for(j = 0; j < actual->cantBandidos; j++)
+//                {
+//                    fprintf(destino, "B ");
+//                }
+//                fprintf(destino, "J]\n");
+//            }
+//            else if(actual->evento == EVENTO_VACIO)
+//            {
+//                fprintf(destino, "[J]\n");
+//            }
+//            else
+//            {
+//                fprintf(destino, "[%c J]\n", caracter_evento);
+//            }
+//        }
+//        else
+//        {
+//            if(actual->cantBandidos > 0)
+//            {
+//                if(actual->evento != EVENTO_VACIO)
+//                {
+//                    fprintf(destino, "%c (", caracter_evento);
+//                    for(j = 0; j < actual->cantBandidos; j++)
+//                    {
+//                        fprintf(destino, (j == actual->cantBandidos - 1) ? "B" : "B ");
+//                    }
+//                    fprintf(destino, ")\n");
+//                }
+//                else
+//                {
+//                    for(j = 0; j < actual->cantBandidos; j++)
+//                    {
+//                        fprintf(destino, "B ");
+//                    }
+//                    fprintf(destino, "\n");
+//                }
+//            }
+//            else
+//            {
+//                fprintf(destino, "%c\n", caracter_evento);
+//            }
+//        }
+//    }
+//}
 
-void guardar_tablero_en_archivo(tLista *lista, int cant_posiciones)
-{
-    FILE *arch;
-    if(abrir_archivo(&arch, NOM_ARCH_CARAVANA, "wt") != TODO_OK)
-    {
-        return;
-    }
-    renderizar_tablero(lista, cant_posiciones, arch);
-    fclose(arch);
-}
+//void guardar_tablero_en_archivo(tLista *lista, int cant_posiciones)
+//{
+//    FILE *arch;
+//    if(abrir_archivo(&arch, NOM_ARCH_CARAVANA, "wt") != TODO_OK)
+//    {
+//        return;
+//    }
+//    renderizar_tablero(lista, cant_posiciones, arch);
+//    fclose(arch);
+//}
 
 
 int cmpCasillero (const void* a, const void* b)
@@ -272,4 +272,87 @@ int cmpCasilleroEvento (const void* a, const void* b)
     const tCasillero* c2 = (const tCasillero*) b;
 
     return c1->evento == c2->evento;
+}
+
+void imprimirCasillero(void *info, FILE *destino)
+{
+    const char simbolos_eventos[] = { '.',
+                                     'O',
+                                     'T',
+                                     'V',
+                                     'I',
+                                     'S',
+                                     'P'
+                                    };
+    tCasillero *actual = (tCasillero *)info;
+    char caracter_evento = simbolos_eventos[actual->evento];
+    int j;
+    fprintf(destino, "%02d:", actual->numeroCasillero);
+    if(actual->jugadorAca)
+    {
+        if(actual->cantBandidos > 0)
+        {
+            fprintf(destino, "[");
+            for(j = 0; j < actual->cantBandidos; j++)
+            {
+                fprintf(destino, "B ");
+            }
+            fprintf(destino, "J]\n");
+        }
+        else if(actual->evento == EVENTO_VACIO)
+        {
+            fprintf(destino, "[J]\n");
+        }
+        else
+        {
+            fprintf(destino, "[%c J]\n", caracter_evento);
+        }
+    }
+    else
+    {
+        if(actual->cantBandidos > 0)
+        {
+            if(actual->evento != EVENTO_VACIO)
+            {
+                fprintf(destino, "%c (", caracter_evento);
+                for(j = 0; j < actual->cantBandidos; j++)
+                {
+                    fprintf(destino, (j == actual->cantBandidos - 1) ? "B" : "B ");
+                }
+                fprintf(destino, ")\n");
+            }
+            else
+            {
+                for(j = 0; j < actual->cantBandidos; j++)
+                {
+                    fprintf(destino, "B ");
+                }
+                fprintf(destino, "\n");
+            }
+        }
+        else
+        {
+            fprintf(destino, "%c\n", caracter_evento);
+        }
+    }
+}
+
+void renderizar_tablero(const tLista *lista, FILE *destino)
+{
+    if(*lista == NULL || destino == NULL)
+    {
+        return;
+    }
+    recorrerLista(lista, imprimirCasillero, destino);
+}
+
+void guardar_tablero_en_archivo(tLista *lista)
+{
+    FILE *arch;
+    if(abrir_archivo(&arch, NOM_ARCH_CARAVANA, "wt") != TODO_OK)
+    {
+        return;
+    }
+    renderizar_tablero(lista, arch);
+    fclose(arch);
 }
