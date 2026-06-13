@@ -1,6 +1,6 @@
-#include "..../include/lista_enlazada.h"
+#include "../include/lista_enlazada.h"
 
-void crearLista(tLista *pl)
+void crearListaSimple(tLista *pl)
 {
     *pl = NULL;
 }

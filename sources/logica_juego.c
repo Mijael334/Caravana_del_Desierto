@@ -10,24 +10,18 @@
 
 int inicializarJuego (tJuego* juego)
 {
-    char aceptar;
-    int encontrado, ret;
-    char nombre_propuesto[MAX_NOMBRE + 1];
-    tArbolBinBusq arbolIndice;
-    //FILE *fidx;
-    tIndice *indJugador;
+    int ret;
 
     srand((unsigned)time(NULL));
 
     juego->corriendo = FALSO;
-    
+
     juego->partida.bandidos = NULL;
     crearColaDin(&juego->partida.movimientos);
     crearArbolBinBusq(&juego->arbolIndUsuarios);
     crearLista(&juego->listaRankingJugadores);
 
-    ret = indexarArchivoUsuariosOrdenado(&arbolIndice, ARCHIVO_INDICE);
-
+    ret = indexarArchivoUsuariosOrdenado(&juego->arbolIndUsuarios, NOM_ARCH_INDICE_USUARIOS);
     if(ret == ERROR_ARCHIVO_USUARIOS)
         return ret;
 
@@ -40,54 +34,11 @@ int inicializarJuego (tJuego* juego)
 
     if(ret != TODO_OK)
         return ret;
-    
-    do
-    {
-        aceptar = 'Y';
-        ingresarNombreJugador(juego->usuario.nombre);
 
-        strcpy(indJugador->clave.nombre, juego->usuario.nombre);
-        ///Ac� debe buscar el nombre en el �ndice
-        encontrado = busquedaIndexada(&arbolIndice, indJugador, sizeof(tIndice), cmpClaveIndice);
-
-
-        if(encontrado == CLAVE_ENCONTRADA)
-        {
-            printf("Es usted el jugador %s Y/N:", juego->usuario.nombre);
-            scanf (" %c", &aceptar);
-            fflush(stdin);
-
-            if(aceptar == 'N' || aceptar == 'n')
-            {
-                printf("El nombre %s ya esta en uso.\n", juego->usuario.nombre);
-                strcpy(nombre_propuesto, juego->usuario.nombre);
-                generarNombreUnico(&arbolIndice, nombre_propuesto, juego->usuario.nombre);
-                printf("Se le ha asignado el nombre alternativo: %s.\n", juego->usuario.nombre);
-            }
-        }
-
-    } while (aceptar != 'Y');
-    if(encontrado == CLAVE_NO_ENCONTRADA || aceptar == 'Y')
-    {
-        ///Ac� debe insertar en el �ndice y guardar en el archivo
-    }
-
-    eliminarArbol(&arbolIndice);
     juego->corriendo = VERDADERO;
     juego->estadoJuego = ESTADO_MENU;
 
     return TODO_OK;
-}
-
-void generarNombreUnico(const tArbolBinBusq *pa, const char *nombre_base, char *nombre_final)
-{
-    int num_random;
-    strcpy(nombre_final, nombre_base);
-    while(1)///Ac� debe buscar en el �ndice == CLAVE_ENCONTRADA)
-    {
-        num_random = (rand() % 900) + 100;
-        sprintf(nombre_final, "%s_%d", nombre_base, num_random);
-    }
 }
 
 int procesarJuego (tJuego* juego)
@@ -114,43 +65,45 @@ int procesarJuego (tJuego* juego)
 
 int procesarMenu(tJuego* juego)
 {
-    int seleccion, ret;
+    int seleccion, ret = TODO_OK;
+    int encontradoEnIndice;
+    const char *opciones[] = {"Comenzar Nueva Partida",
+                              "Ver Ranking",
+                              "Salir del juego"};
 
-    const char menu_principal[][MAX_TEXTO_MENU] = {"123",
-                                                   "Comenzar Nueva Partida",
-                                                   "Ver Ranking",
-                                                   "Salir del juego"};
+    
+    encontradoEnIndice = solicitarNombreUsuario(juego->usuario.nombre, MAX_NOMBRE + 1, &juego->arbolIndUsuarios);
 
-      do{
-        seleccion = menu(menu_principal, TITULO_JUEGO);
-        switch(seleccion){
-    case '1':
-        system("CLS");
-        printf("\n=== NUEVA PARTIDA ===\n");
+    if(encontradoEnIndice == CLAVE_NO_ENCONTRADA)
+    {
+    }
 
-        ret = crear_tablero_circular(&juego->partida.ruta, &juego->configPartida, juego->partida.bandidos);
-        
-        if(ret != TODO_OK)
+    do
+    {
+        seleccion = seleccionarOpcionMenu(TITULO_JUEGO, opciones, 3);
+
+        switch(seleccion)
         {
-            juego->corriendo = FALSO;
-            break;
+            case 0:
+                system("CLS");
+                printf("\n=== NUEVA PARTIDA ===\n");
+                ret = crear_tablero_circular(&juego->partida.ruta, &juego->configPartida, juego->partida.bandidos);
+                if(ret == TODO_OK)
+                    guardar_tablero_en_archivo(&juego->partida.ruta, juego->configPartida.cant_posiciones);
+                else
+                    juego->corriendo = FALSO;
+                system("PAUSE");
+                break;
+            case 1:
+                system("CLS");
+                printf("\n--- RANKING ---\n");
+                system("PAUSE");
+                break;
+            case 2:
+                printf("\nSaliendo del programa\n");
+                break;
         }
-
-
-        guardar_tablero_en_archivo(&juego->partida.ruta, juego->configPartida.cant_posiciones);
-        
-        
-        break;
-    case '2':
-        system("CLS");
-        printf("\n--- RANKING ---\n");
-        system("PAUSE");
-        break;
-    case '3':
-        printf("\nSaliendo del programa\n");
-        break;
-        }
-    }while(seleccion != '3');
+    } while(seleccion != 2);
 
     return ret;
 }

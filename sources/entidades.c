@@ -26,7 +26,7 @@ int crearBandidos (tBandido** bandidos, unsigned cantBandidos, unsigned cantCasi
     *bandidos = malloc(sizeof(tBandido) * cantBandidos);
 
     if(*bandidos == NULL)
-        return ERR_MEM;
+        return ERROR_MEM;
 
     for (i = 0; i < cantBandidos; i++)
     {

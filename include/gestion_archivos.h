@@ -28,7 +28,7 @@
 #define NOM_ARCH_CONFIG "docs/config.txt"
 #define NOM_ARCH_USUARIOS "docs/usuarios.dat"
 #define NOM_ARCH_CARAVANA "docs/caravana.txt"
-#define ARCHIVO_INDICE "indice.bat"
+#define NOM_ARCH_INDICE_USUARIOS "docs/indice.idx"
 /// talvez podria usar signed(ya que solo podriamos usar num > 0)
 typedef struct
 {
