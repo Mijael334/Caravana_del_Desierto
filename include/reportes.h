@@ -14,7 +14,7 @@ typedef struct
 }tReportePartida;
 
 void registrarPartidaEnArchivo(const tJuego *juego, const char *resultado);
-void mostrarRankingJugadores(tLista *rankingJugadores);
+void mostrarRankingJugadores(tListaSE *rankingJugadores);
 void imprimirRanking(const void *d);
 int cmpPuntos(const void *a, const void *b);
 
