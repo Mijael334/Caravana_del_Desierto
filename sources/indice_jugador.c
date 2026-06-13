@@ -40,3 +40,27 @@ int busquedaIndexada(const tArbolBinBusq *pa, void *dato, unsigned cantbyte, int
 {
     return buscarEnArbolBinBusq(pa, dato, cantbyte, cmp);
 }
+
+int crearArchivoIndiceOrdenado(tArbolBinBusq *pa, const char *nombreArchivo)
+{
+    FILE *fInd;
+    tIndice ind;
+    int pos = 0;
+    ///hay que definir una estructura usuario
+    ///tenga nombre del jugador y el Id de partida
+    //por ahora usare esta
+    tJugador jugador;
+    if(abrir_archivo(fInd, nombreArchivo, "rb"))
+    {
+        return ERROR_ARCHIVO_INDICE;
+    }
+    while(fread(&jugador, sizeof(tJugador), 1, fInd))
+    {
+        memcpy(ind.clave.nombre, jugador.nombre);
+        ind.indiceRegistro = pos;
+        insertarArbolBinBusq(pa, &ind, sizeof(tIndice),cmpClaveIndice);
+        pos++;
+    }
+    fclose(fInd);
+    return TODO_OK;
+}

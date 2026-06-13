@@ -28,5 +28,5 @@ int cargarIndiceDesdeArchivo(tArbolBinBusq *pa, const char *nombreArchivoIndice,
 int busquedaIndexada(const tArbolBinBusq *pa,  void *dato, unsigned cantbyte, int(*cmp)(const void *a1, const void *a2));
 int indexarArchivoUsuariosOrdenado(tArbolBinBusq *pa, const char *nombreArchivoUsuarios);
 void cargarArchivoOrdenadoEnIndiceBalanceado(tArbolBinBusq *pa, FILE *arch, int inicio, int fin);
-
+int crearArchivoIndiceOrdenado(tArbolBinBusq *pa, const char *nombreArchivo);
 #endif // INDICE_JUGADOR_H_INCLUDED

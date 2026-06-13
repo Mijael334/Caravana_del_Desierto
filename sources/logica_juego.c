@@ -15,7 +15,7 @@ int inicializarJuego (tJuego* juego)
     tArbolBinBusq arbolIndice;
     //FILE *fidx;
     tIndice *indJugador;
-
+    crearArchivoIndiceOrdenado(NOM_ARCH_USUARIOS);
     crearArbolBinBusq(&arbolIndice);
     srand((unsigned)time(NULL));
     crearLista(&juego->rankingJugadores);
