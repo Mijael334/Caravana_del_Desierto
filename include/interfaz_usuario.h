@@ -7,7 +7,7 @@
 #include <ctype.h>
 #include "../include/arbol.h"
 #include "../include/indice_jugador.h"
-
+#include "../include/tablero.h"
 
 #define TITULO_JUEGO "=== CARAVANA DEL DESIERTO ==="
 #define MAX_TEXTO_MENU 35
@@ -18,5 +18,7 @@ char opcion(const char matriz_menu[][MAX_TEXTO_MENU], const char *titulo, const 
  
 int seleccionarOpcionMenu(const char *titulo, const char *opciones[], int cantOpciones);
 int solicitarNombreUsuario(char *nombre, int tamMaxNombre, const tArbolBinBusq *arbolIndice);
+void mostrarTableroEsperandoTurno(tLista *ruta);
+int pedirDireccionJugador(tLista *ruta, int cantPasos);
 
 #endif // INTERFAZ_USUARIO_H_INCLUDED

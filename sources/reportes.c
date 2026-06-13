@@ -1,4 +1,4 @@
-#include "../../include/reportes.h"
+#include "../include/reportes.h"
 
 void registrarPartidaEnArchivo(const tJuego *juego, const char *resultado)
 {

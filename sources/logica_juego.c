@@ -8,7 +8,7 @@
 #include <string.h>
 #include "time.h"
 
-int inicializarJuego (tJuego* juego)
+int inicializarJuego(tJuego *juego)
 {
     int ret;
 
@@ -22,17 +22,17 @@ int inicializarJuego (tJuego* juego)
     crearLista(&juego->listaRankingJugadores);
 
     ret = indexarArchivoUsuariosOrdenado(&juego->arbolIndUsuarios, NOM_ARCH_INDICE_USUARIOS);
-    if(ret == ERROR_ARCHIVO_USUARIOS)
+    if (ret == ERROR_ARCHIVO_USUARIOS)
         return ret;
 
     ret = lectura_de_configuracion(NOM_ARCH_CONFIG, &juego->configPartida);
 
-    if(ret != TODO_OK)
+    if (ret != TODO_OK)
         return ret;
 
     ret = crearBandidos(&juego->partida.bandidos, juego->configPartida.bandidos_max, juego->configPartida.cant_posiciones);
 
-    if(ret != TODO_OK)
+    if (ret != TODO_OK)
         return ret;
 
     juego->corriendo = VERDADERO;
@@ -41,21 +41,21 @@ int inicializarJuego (tJuego* juego)
     return TODO_OK;
 }
 
-int procesarJuego (tJuego* juego)
+int procesarJuego(tJuego *juego)
 {
     switch (juego->estadoJuego)
     {
     case ESTADO_MENU:
-        //mostrar menu
+        // mostrar menu
         break;
     case ESTADO_PARTIDA:
         procesarPartida(juego);
         break;
     case ESTADO_PUNTAJE_PARTIDA:
-        //Se muestra el resultado de la partida jugada
+        // Se muestra el resultado de la partida jugada
         break;
     case ESTADO_RANKING:
-        //mostrar ranking
+        // mostrar ranking
     default:
         break;
     }
@@ -63,7 +63,7 @@ int procesarJuego (tJuego* juego)
     return TODO_OK;
 }
 
-int procesarMenu(tJuego* juego)
+int procesarMenu(tJuego *juego)
 {
     int seleccion, ret = TODO_OK;
     int encontradoEnIndice;
@@ -71,10 +71,9 @@ int procesarMenu(tJuego* juego)
                               "Ver Ranking",
                               "Salir del juego"};
 
-    
     encontradoEnIndice = solicitarNombreUsuario(juego->usuario.nombre, MAX_NOMBRE + 1, &juego->arbolIndUsuarios);
 
-    if(encontradoEnIndice == CLAVE_NO_ENCONTRADA)
+    if (encontradoEnIndice == CLAVE_NO_ENCONTRADA)
     {
     }
 
@@ -82,56 +81,60 @@ int procesarMenu(tJuego* juego)
     {
         seleccion = seleccionarOpcionMenu(TITULO_JUEGO, opciones, 3);
 
-        switch(seleccion)
+        switch (seleccion)
         {
-            case 0:
-                system("CLS");
-                printf("\n=== NUEVA PARTIDA ===\n");
-                ret = crear_tablero_circular(&juego->partida.ruta, &juego->configPartida, juego->partida.bandidos);
-                if(ret == TODO_OK)
-                    guardar_tablero_en_archivo(&juego->partida.ruta, juego->configPartida.cant_posiciones);
-                else
-                    juego->corriendo = FALSO;
-                system("PAUSE");
-                break;
-            case 1:
-                system("CLS");
-                printf("\n--- RANKING ---\n");
-                system("PAUSE");
-                break;
-            case 2:
-                printf("\nSaliendo del programa\n");
-                break;
+        case 0:
+            system("CLS");
+            printf("\n=== NUEVA PARTIDA ===\n");
+            ret = crear_tablero_circular(&juego->partida.ruta, &juego->configPartida, juego->partida.bandidos);
+            if (ret == TODO_OK)
+                guardar_tablero_en_archivo(&juego->partida.ruta);
+            else
+                juego->corriendo = FALSO;
+            system("PAUSE");
+            break;
+        case 1:
+            system("CLS");
+            printf("\n--- RANKING ---\n");
+            system("PAUSE");
+            break;
+        case 2:
+            printf("\nSaliendo del programa\n");
+            break;
         }
-    } while(seleccion != 2);
+    } while (seleccion != 2);
 
     return ret;
 }
 
-int procesarPartida(tJuego* juego)
+int procesarPartida(tJuego *juego)
 {
-    int cantPasos = generarRandomUniforme(MAX_DADO);
-    char dirMovimiento; //= calcularDireccion (); se falta la funcion para pedir la dir, hay que ver si lo tiene que escribir o lo hacemos directo con presionar la tecla
+    int cantPasos;
+    char dirMovimiento;
+
+    mostrarTableroEsperandoTurno(&juego->partida.ruta);
+
+    cantPasos = generarRandomUniforme(MAX_DADO);
+    dirMovimiento = (pedirDireccionJugador(&juego->partida.ruta, cantPasos) == 0) ? DIR_ADELANTE : DIR_ATRAS;
 
     encolarMovimientoJugador(&juego->partida.movimientos, cantPasos, dirMovimiento, juego->partida.jugador.estadoEnPartida.posEnRuta);
 
-    encolarMovimientosBandidos (&juego->partida.movimientos, juego->partida.bandidos, juego->configPartida.bandidos_max, juego->partida.jugador.estadoEnPartida.posEnRuta,
-                                 juego->partida.cantCasilleros);
+    encolarMovimientosBandidos(&juego->partida.movimientos, juego->partida.bandidos, juego->configPartida.bandidos_max, juego->partida.jugador.estadoEnPartida.posEnRuta,
+                               juego->partida.cantCasilleros);
 
     desencolarMovimientos(&juego->partida.movimientos, juego->partida.bandidos, juego->configPartida.bandidos_max, &juego->partida.jugador.estadoEnPartida,
                           &juego->partida.ruta, juego->partida.cantCasilleros);
 
     actualizarEstadoPartida(&juego->partida.jugador, juego->partida.bandidos, juego->configPartida.bandidos_max, &juego->partida.ruta,
-                          juego->partida.cantCasilleros, &juego->estadoJuego);
+                            juego->partida.cantCasilleros, &juego->estadoJuego);
 
-    if(juego->estadoJuego == ESTADO_PUNTAJE_PARTIDA)
+    if (juego->estadoJuego == ESTADO_PUNTAJE_PARTIDA)
         finalizarPartida(juego);
-
 
     return TODO_OK;
 }
 
-int actualizarEstadoPartida (tJugador* jugador, tBandido* bandidos, unsigned cantBandidos,tLista* ruta, unsigned cantCasilleros, tEstadoJuego* estadoJuego)
+int actualizarEstadoPartida(tJugador *jugador, tBandido *bandidos, unsigned cantBandidos, tLista *ruta, unsigned cantCasilleros, tEstadoJuego *estadoJuego)
 {
     tCasillero casilleroNum, *casillero;
 
@@ -139,53 +142,58 @@ int actualizarEstadoPartida (tJugador* jugador, tBandido* bandidos, unsigned can
 
     casillero = buscarElemPorClaveLista(ruta, &casilleroNum, cmpCasillero);
 
-    if(jugador->estadoEnPartida.protegido == VERDADERO)
+    if (jugador->estadoEnPartida.protegido == VERDADERO)
         jugador->estadoEnPartida.protegido = FALSO;
 
-    if(jugador->estadoEnPartida.afectadoPorTormenta == VERDADERO)
+    if (jugador->estadoEnPartida.afectadoPorTormenta == VERDADERO)
         jugador->estadoEnPartida.afectadoPorTormenta = FALSO;
 
     switch (casillero->evento)
     {
-        case EVENTO_OASIS: jugador->estadoEnPartida.protegido = VERDADERO;
-            break;
-        case EVENTO_PREMIO: jugador->estadoEnPartida.puntos += PUNTOS_PREMIO;
-            break;
-        case EVENTO_VIDA_EXTRA: jugador->estadoEnPartida.vidas++;
-            break;
-        case EVENTO_TORMENTA: jugador->estadoEnPartida.afectadoPorTormenta = VERDADERO;
-            break;
-        case EVENTO_SALIDA: *estadoJuego = ESTADO_PUNTAJE_PARTIDA;
-            break;
-        default:
-            break;
+    case EVENTO_OASIS:
+        jugador->estadoEnPartida.protegido = VERDADERO;
+        break;
+    case EVENTO_PREMIO:
+        jugador->estadoEnPartida.puntos += PUNTOS_PREMIO;
+        break;
+    case EVENTO_VIDA_EXTRA:
+        jugador->estadoEnPartida.vidas++;
+        break;
+    case EVENTO_TORMENTA:
+        jugador->estadoEnPartida.afectadoPorTormenta = VERDADERO;
+        break;
+    case EVENTO_SALIDA:
+        *estadoJuego = ESTADO_PUNTAJE_PARTIDA;
+        break;
+    default:
+        break;
     }
 
-    if(casillero->evento == EVENTO_VACIO && casillero->cantBandidos == 0)
+    if (casillero->evento == EVENTO_VACIO && casillero->cantBandidos == 0)
         return TODO_OK;
 
-    if(casillero->cantBandidos > 0)
+    if (casillero->cantBandidos > 0)
     {
-        tBandido* bandido = NULL;
+        tBandido *bandido = NULL;
         unsigned posJugador = jugador->estadoEnPartida.posEnRuta, i = 0;
 
-        if(jugador->estadoEnPartida.protegido == FALSO)
+        if (jugador->estadoEnPartida.protegido == FALSO)
         {
-            //mueve al jugador al inicio
+            // mueve al jugador al inicio
             moverJugadorEnRuta(&jugador->estadoEnPartida, ruta);
             jugador->estadoEnPartida.posEnRuta = 1;
             moverJugadorEnRuta(&jugador->estadoEnPartida, ruta);
 
             jugador->estadoEnPartida.vidas--;
 
-            if(jugador->estadoEnPartida.vidas == 0)
+            if (jugador->estadoEnPartida.vidas == 0)
                 *estadoJuego = ESTADO_PUNTAJE_PARTIDA;
         }
 
-        //busca al bandido en base a la posicion
+        // busca al bandido en base a la posicion
         while (bandido == NULL && i < cantBandidos)
         {
-            if((bandidos + i)->posEnRuta == posJugador && (bandidos + i)->vivo == VIVO)
+            if ((bandidos + i)->posEnRuta == posJugador && (bandidos + i)->vivo == VIVO)
                 bandido = bandidos + i;
             else
                 i++;
@@ -197,7 +205,7 @@ int actualizarEstadoPartida (tJugador* jugador, tBandido* bandidos, unsigned can
     return TODO_OK;
 }
 
-void finalizarPartida (tJuego* juego)
+void finalizarPartida(tJuego *juego)
 {
     free(juego->partida.bandidos);
     vaciarColaDin(&juego->partida.movimientos);
@@ -206,7 +214,7 @@ void finalizarPartida (tJuego* juego)
     juego->usuario.puntos += juego->partida.jugador.puntos;
 }
 
-void eliminarBandido(tBandido* bandido, tLista* ruta, unsigned cantCasilleros)
+void eliminarBandido(tBandido *bandido, tLista *ruta, unsigned cantCasilleros)
 {
     tCasillero *casillero, casilleroNum;
 
@@ -217,13 +225,11 @@ void eliminarBandido(tBandido* bandido, tLista* ruta, unsigned cantCasilleros)
     bandido->vivo = MUERTO;
 }
 
-
-void ingresarNombreJugador (char* nombre)
+void ingresarNombreJugador(char *nombre)
 {
     printf("Ingrese su nombre: ");
     fgets(nombre, MAX_NOMBRE + 1, stdin);
 }
-
 
 /*
     logica de movimiento del jugador:
@@ -242,14 +248,14 @@ char calcularDireccionBandido(unsigned posBandido, unsigned posJugador, unsigned
 {
     unsigned distanciaAdelante, distanciaAtras;
 
-    if(posJugador >= posBandido)
+    if (posJugador >= posBandido)
         distanciaAdelante = posJugador - posBandido;
     else
         distanciaAdelante = cantPosiciones - posBandido + posJugador;
 
     distanciaAtras = cantPosiciones - distanciaAdelante;
 
-    if(distanciaAdelante <= distanciaAtras)
+    if (distanciaAdelante <= distanciaAtras)
         return DIR_ADELANTE;
     else
         return DIR_ATRAS;
@@ -258,7 +264,7 @@ char calcularDireccionBandido(unsigned posBandido, unsigned posJugador, unsigned
 void encolarMovimientoJugador(tCola *cola, unsigned pasos, char direccion, unsigned posJugador)
 {
     // si no hay lugar para retroceder, fuerza direccion adelante
-    if(direccion == DIR_ATRAS && pasos >= posJugador)
+    if (direccion == DIR_ATRAS && pasos >= posJugador)
         direccion = DIR_ADELANTE;
 
     tMovimiento mov = {pasos, direccion, ID_JUGADOR};
@@ -271,14 +277,14 @@ void encolarMovimientosBandidos(tCola *cola, tBandido *bandidos, unsigned cantBa
     unsigned pasos;
     char dir;
 
-    for(i = 0; i < cantBandidos; i++)
+    for (i = 0; i < cantBandidos; i++)
     {
-        if((bandidos+i)->vivo == VIVO)
+        if ((bandidos + i)->vivo == VIVO)
         {
             pasos = generarRandomUniforme(MAX_DADO);
-            dir = calcularDireccionBandido((bandidos+i)->posEnRuta, posJugador, cantPosiciones);
+            dir = calcularDireccionBandido((bandidos + i)->posEnRuta, posJugador, cantPosiciones);
 
-            tMovimiento mov = {pasos, dir, (bandidos+i)->id};
+            tMovimiento mov = {pasos, dir, (bandidos + i)->id};
             ponerEnColaDin(cola, &mov, sizeof(tMovimiento));
         }
     }
@@ -289,13 +295,13 @@ void desencolarMovimientos(tCola *cola, tBandido *bandidos, unsigned cantBandido
     tMovimiento mov;
     int i;
 
-    while(!colaVaciaDin(cola))
+    while (!colaVaciaDin(cola))
     {
         sacarDeColaDin(cola, &mov, sizeof(tMovimiento));
 
-        if(mov.id == ID_JUGADOR)
+        if (mov.id == ID_JUGADOR)
         {
-            if(jugador->afectadoPorTormenta == FALSO)
+            if (jugador->afectadoPorTormenta == FALSO)
             {
                 moverJugadorEnRuta(jugador, ruta);
                 moverJugador(jugador, mov.cantPasos, mov.direccion, cantPosiciones);
@@ -304,10 +310,10 @@ void desencolarMovimientos(tCola *cola, tBandido *bandidos, unsigned cantBandido
         }
         else
         {
-            for(i = 0; i < cantBandidos; i++)
+            for (i = 0; i < cantBandidos; i++)
             {
-                if((bandidos+i)->id == mov.id && (bandidos+i)->vivo == VIVO)
-                    moverBandidoEnRuta(bandidos+i, &mov, ruta, cantPosiciones);
+                if ((bandidos + i)->id == mov.id && (bandidos + i)->vivo == VIVO)
+                    moverBandidoEnRuta(bandidos + i, &mov, ruta, cantPosiciones);
             }
         }
     }
@@ -315,11 +321,11 @@ void desencolarMovimientos(tCola *cola, tBandido *bandidos, unsigned cantBandido
 
 void moverJugador(tEstadoJugador *jugador, unsigned pasos, char direccion, unsigned cantPosiciones)
 {
-    if(direccion == DIR_ADELANTE)
+    if (direccion == DIR_ADELANTE)
     {
         unsigned nuevaPos = jugador->posEnRuta + pasos;
-        if(nuevaPos > cantPosiciones)
-            nuevaPos = 2*cantPosiciones - nuevaPos; // rebote al final
+        if (nuevaPos > cantPosiciones)
+            nuevaPos = 2 * cantPosiciones - nuevaPos; // rebote al final
 
         jugador->posEnRuta = nuevaPos;
     }
@@ -329,46 +335,45 @@ void moverJugador(tEstadoJugador *jugador, unsigned pasos, char direccion, unsig
     }
 }
 
-void moverJugadorEnRuta (tEstadoJugador* jugador, tLista* ruta)
+void moverJugadorEnRuta(tEstadoJugador *jugador, tLista *ruta)
 {
-    tCasillero* casillero, casilleroNum;
+    tCasillero *casillero, casilleroNum;
 
     casilleroNum.numeroCasillero = jugador->posEnRuta;
-    casillero = (tCasillero*) buscarElemPorClaveLista(ruta, &casilleroNum, cmpCasillero);
+    casillero = (tCasillero *)buscarElemPorClaveLista(ruta, &casilleroNum, cmpCasillero);
 
-    if(casillero)
+    if (casillero)
         casillero->jugadorAca = !casillero->jugadorAca;
 }
 
 void moverBandido(tBandido *bandido, unsigned pasos, char direccion, unsigned cantPosiciones)
 {
-    if(direccion == DIR_ADELANTE)
+    if (direccion == DIR_ADELANTE)
     {
         bandido->posEnRuta += pasos;
-        if(bandido->posEnRuta > cantPosiciones)
+        if (bandido->posEnRuta > cantPosiciones)
             bandido->posEnRuta -= cantPosiciones; // atraviesa la salida
     }
     else
     {
-        if(pasos >= bandido->posEnRuta)
+        if (pasos >= bandido->posEnRuta)
             bandido->posEnRuta = cantPosiciones - (pasos - bandido->posEnRuta); // atraviesa entrada
         else
             bandido->posEnRuta -= pasos;
     }
 }
 
-void moverBandidoEnRuta (tBandido* bandido, const tMovimiento* mov, tLista* ruta, unsigned cantPosiciones)
+void moverBandidoEnRuta(tBandido *bandido, const tMovimiento *mov, tLista *ruta, unsigned cantPosiciones)
 {
-    tCasillero* casillero, casilleroNum;
+    tCasillero *casillero, casilleroNum;
 
     casilleroNum.numeroCasillero = bandido->posEnRuta;
-    casillero = (tCasillero*) buscarElemPorClaveLista(ruta, &casilleroNum, cmpCasillero);
+    casillero = (tCasillero *)buscarElemPorClaveLista(ruta, &casilleroNum, cmpCasillero);
     casillero->cantBandidos--;
 
     moverBandido(bandido, mov->cantPasos, mov->direccion, cantPosiciones);
 
     casilleroNum.numeroCasillero = bandido->posEnRuta;
-    casillero = (tCasillero*) buscarElemPorClaveLista(ruta, &casilleroNum, cmpCasillero);
+    casillero = (tCasillero *)buscarElemPorClaveLista(ruta, &casilleroNum, cmpCasillero);
     casillero->cantBandidos++;
 }
-

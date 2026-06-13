@@ -123,3 +123,66 @@ int solicitarNombreUsuario(char *nombre, int tamMaxNombre, const tArbolBinBusq *
  
     return existe;
 }
+
+int pedirDireccionJugador(tLista *ruta, int cantPasos)
+{
+    const char *opciones[] = {"ADELANTE", "ATRAS"};
+    int seleccion = 0, confirmado = 0, i;
+    char tecla;
+
+    while(!confirmado)
+    {
+        system("CLS");
+        renderizar_tablero(ruta, stdout);
+        printf("\n   Tiraste un %d! Elija direccion:\n\n", cantPasos);
+        for(i = 0; i < 2; i++)
+        {
+            if(i == seleccion)
+                printf("        [ %s ]\n", opciones[i]);
+            else
+                printf("          %s  \n", opciones[i]);
+        }
+        printf("\n   [W/A/S/D] Mover    [ESPACIO] Confirmar\n");
+
+        tecla = getch();
+        if(tecla >= 'A' && tecla <= 'Z')
+            tecla += 32;
+
+        switch(tecla)
+        {
+            case 'w':
+            case 'a':
+                if(seleccion > 0)
+                    seleccion--;
+                break;
+            case 's':
+            case 'd':
+                if(seleccion < 1)
+                    seleccion++;
+                break;
+            case 32:
+                confirmado = 1;
+                break;
+        }
+    }
+
+    return seleccion;
+}
+
+void mostrarTableroEsperandoTurno(tLista *ruta)
+{
+    int listo = 0;
+    char tecla;
+
+    while(!listo)
+    {
+        system("CLS");
+        renderizar_tablero(ruta, stdout);
+        printf("\n   Se termino el turno.\n");
+        printf("   Toca [ESPACIO] para tirar el dado...\n");
+
+        tecla = getch();
+        if(tecla == 32)
+            listo = 1;
+    }
+}
