@@ -152,11 +152,11 @@ void recorrerLista(const tLista *p, void (*procesar)(void *, FILE *), FILE *pf)
     if(!*p)
         return;
     tNodoL *act = *p;
-    procesar(act->info, destino);
+    procesar(act->info, pf);
     act = act->sig;
     while(act != *p)
     {
-        procesar(act->info, destino);
+        procesar(act->info, pf);
         act = act->sig;
     }
 }
