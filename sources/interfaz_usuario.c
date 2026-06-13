@@ -1,5 +1,7 @@
 #include "../include/interfaz_usuario.h"
 
+void procesarMenuJuego ();
+
 char menu(const char matriz_menu[][MAX_TEXTO_MENU], const char *titulo)
 {
     char opc;

@@ -6,6 +6,8 @@
 #include <string.h>
 #include <ctype.h>
 
+
+#define TITULO_JUEGO "=== CARAVANA DEL DESIERTO ==="
 #define MAX_TEXTO_MENU 35
 
 char menu(const char matriz_menu[][MAX_TEXTO_MENU], const char *titulo);

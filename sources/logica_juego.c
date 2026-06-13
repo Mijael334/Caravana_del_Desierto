@@ -1,6 +1,8 @@
 #include "../include/logica_juego.h"
 #include "../include/tablero.h"
 #include "../include/indice_jugador.h"
+#include "../include/interfaz_usuario.h"
+#include "../include/gestion_archivos.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,22 +10,37 @@
 
 int inicializarJuego (tJuego* juego)
 {
-    ///hay que crear el archivo indice
     char aceptar;
-    int encontrado;
+    int encontrado, ret;
     char nombre_propuesto[MAX_NOMBRE + 1];
     tArbolBinBusq arbolIndice;
     //FILE *fidx;
     tIndice *indJugador;
 
-    crearArbolBinBusq(&arbolIndice);
     srand((unsigned)time(NULL));
-    crearLista(&juego->rankingJugadores);
-    lectura_de_configuracion(NOM_ARCH_CONFIG, &juego->configPartida);
-    ///Ac� debe cargar el indice desde el archivo
-    indexarArchivoUsuariosOrdenado(&arbolIndice, ARCHIVO_INDICE);
 
+    juego->corriendo = FALSO;
+    
+    juego->partida.bandidos = NULL;
+    crearColaDin(&juego->partida.movimientos);
+    crearArbolBinBusq(&juego->arbolIndUsuarios);
+    crearLista(&juego->listaRankingJugadores);
 
+    ret = indexarArchivoUsuariosOrdenado(&arbolIndice, ARCHIVO_INDICE);
+
+    if(ret == ERROR_ARCHIVO_USUARIOS)
+        return ret;
+
+    ret = lectura_de_configuracion(NOM_ARCH_CONFIG, &juego->configPartida);
+
+    if(ret != TODO_OK)
+        return ret;
+
+    ret = crearBandidos(&juego->partida.bandidos, juego->configPartida.bandidos_max, juego->configPartida.cant_posiciones);
+
+    if(ret != TODO_OK)
+        return ret;
+    
     do
     {
         aceptar = 'Y';
@@ -54,9 +71,11 @@ int inicializarJuego (tJuego* juego)
     {
         ///Ac� debe insertar en el �ndice y guardar en el archivo
     }
+
     eliminarArbol(&arbolIndice);
     juego->corriendo = VERDADERO;
     juego->estadoJuego = ESTADO_MENU;
+
     return TODO_OK;
 }
 
@@ -91,6 +110,49 @@ int procesarJuego (tJuego* juego)
     }
 
     return TODO_OK;
+}
+
+int procesarMenu(tJuego* juego)
+{
+    int seleccion, ret;
+
+    const char menu_principal[][MAX_TEXTO_MENU] = {"123",
+                                                   "Comenzar Nueva Partida",
+                                                   "Ver Ranking",
+                                                   "Salir del juego"};
+
+      do{
+        seleccion = menu(menu_principal, TITULO_JUEGO);
+        switch(seleccion){
+    case '1':
+        system("CLS");
+        printf("\n=== NUEVA PARTIDA ===\n");
+
+        ret = crear_tablero_circular(&juego->partida.ruta, &juego->configPartida, juego->partida.bandidos);
+        
+        if(ret != TODO_OK)
+        {
+            juego->corriendo = FALSO;
+            break;
+        }
+
+
+        guardar_tablero_en_archivo(&juego->partida.ruta, juego->configPartida.cant_posiciones);
+        
+        
+        break;
+    case '2':
+        system("CLS");
+        printf("\n--- RANKING ---\n");
+        system("PAUSE");
+        break;
+    case '3':
+        printf("\nSaliendo del programa\n");
+        break;
+        }
+    }while(seleccion != '3');
+
+    return ret;
 }
 
 int procesarPartida(tJuego* juego)

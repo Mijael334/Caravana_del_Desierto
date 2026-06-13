@@ -49,7 +49,8 @@ typedef struct
     tUsuario usuario;
     tPartida partida;
     tConfig configPartida;
-    tLista rankingJugadores;
+    tLista listaRankingJugadores;
+    tArbolBinBusq arbolIndUsuarios;
 } tJuego;
 
 int inicializarJuego (tJuego* juego);
@@ -57,7 +58,7 @@ void generarNombreUnico(const tArbolBinBusq *pa, const char *nombre_base, char *
 int procesarJuego (tJuego* juego);
 void ingresarNombreJugador (char* nombre);
 
-
+int procesarMenu(tJuego* juego);
 int procesarPartida (tJuego* juego);
 int actualizarEstadoPartida (tJugador* jugador, tBandido* bandidos, unsigned cantBandidos,tLista* ruta, unsigned cantCasilleros, tEstadoJuego* estadoJuego);
 void finalizarPartida (tJuego* juego);
