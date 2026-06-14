@@ -1,5 +1,6 @@
 #include "../include/interfaz_usuario.h"
 #include <conio.h>
+#include <windows.h>
 
 char opcion(const char matriz_menu[][MAX_TEXTO_MENU], const char *titulo, const char *mensaje)
 {
@@ -16,7 +17,7 @@ char opcion(const char matriz_menu[][MAX_TEXTO_MENU], const char *titulo, const 
     scanf("%c", &opc);
     return toupper(opc);
 }
- 
+
 void dibujarOpcionesMenu(const char *titulo, const char *opciones[], int cantOpciones, int seleccion)
 {
     int i;
@@ -31,19 +32,19 @@ void dibujarOpcionesMenu(const char *titulo, const char *opciones[], int cantOpc
     }
     printf("\n   [W/S] Mover    [ESPACIO] Confirmar\n");
 }
- 
+
 int seleccionarOpcionMenu(const char *titulo, const char *opciones[], int cantOpciones)
 {
     int seleccion = 0, confirmado = 0;
     char tecla;
- 
+
     while(!confirmado)
     {
         dibujarOpcionesMenu(titulo, opciones, cantOpciones, seleccion);
         tecla = getch();
         if(tecla >= 'A' && tecla <= 'Z')
             tecla += 32;
- 
+
         switch(tecla)
         {
             case 'w':
@@ -61,10 +62,10 @@ int seleccionarOpcionMenu(const char *titulo, const char *opciones[], int cantOp
                 break;
         }
     }
- 
+
     return seleccion;
 }
- 
+
 void leerNombrePorTeclado(char *nombre, int tamMaxNombre)
 {
     int len;
@@ -77,7 +78,7 @@ void leerNombrePorTeclado(char *nombre, int tamMaxNombre)
     if(len > 0 && nombre[len - 1] == '\n')
         nombre[len - 1] = '\0';
 }
- 
+
 int nombreExisteEnIndice(const char *nombre, const tArbolBinBusq *arbolIndice, unsigned *indiceRegOut)
 {
     tIndice ind;
@@ -88,7 +89,7 @@ int nombreExisteEnIndice(const char *nombre, const tArbolBinBusq *arbolIndice, u
         *indiceRegOut = ind.indiceRegistro;
     return resultado;
 }
- 
+
 int confirmarUsername(const char *nombre)
 {
     char titulo[80];
@@ -96,12 +97,12 @@ int confirmarUsername(const char *nombre)
     sprintf(titulo, "Username \"%s\" ya registrado. Sos vos?", nombre);
     return seleccionarOpcionMenu(titulo, opciones, 2) == 0;
 }
- 
+
 int solicitarNombreUsuario(char *nombre, int tamMaxNombre, const tArbolBinBusq *arbolIndice, unsigned *indiceRegOut)
 {
     int existe = CLAVE_NO_ENCONTRADA;
     int listo = 0;
- 
+
     while(!listo)
     {
         leerNombrePorTeclado(nombre, tamMaxNombre);
@@ -113,7 +114,7 @@ int solicitarNombreUsuario(char *nombre, int tamMaxNombre, const tArbolBinBusq *
         else if(confirmarUsername(nombre))
             listo = 1;
     }
- 
+
     return existe;
 }
 
@@ -130,7 +131,7 @@ void leerNicknamePorTeclado(char *nickname, int tamMaxNickname)
         nickname[len - 1] = '\0';
 }
 
-void mostrarEstadoPartida(const tPartida *partida)  
+void mostrarEstadoPartida(const tPartida *partida)
 {
     printf("   Vidas: %u   |   Puntos: %u", partida->jugador.estadoEnPartida.vidas, partida->jugador.estadoEnPartida.puntos);
 
@@ -240,5 +241,67 @@ void mostrarTableroEsperandoTurno(tLista *ruta, const tPartida *partida)
         tecla = getch();
         if(tecla == 32)
             listo = 1;
+    }
+}
+
+void animarMovimientoJugador(tLista *ruta, tEstadoJugador *jugador, unsigned pasos, char direccion, unsigned cantPosiciones, const tPartida *partida)
+{
+    unsigned i;
+    char dirActual = direccion;
+
+    for(i = 0; i < pasos; i++)
+    {
+        moverJugadorEnRuta(jugador, ruta);
+
+        if(dirActual == DIR_ADELANTE && jugador->posEnRuta == cantPosiciones)
+            dirActual = DIR_ATRAS;
+
+        if(dirActual == DIR_ADELANTE)
+            jugador->posEnRuta++;
+        else
+            jugador->posEnRuta--;
+
+        moverJugadorEnRuta(jugador, ruta);
+
+        system("CLS");
+        mostrarEstadoPartida(partida);
+        renderizar_tablero(ruta, stdout);
+        Sleep(150);
+    }
+}
+
+void animarMovimientoBandido(tLista *ruta, tBandido *bandido, unsigned pasos, char direccion, unsigned cantPosiciones, const tPartida *partida)
+{
+    unsigned i;
+    tCasillero clave, *casillero;
+
+    for(i = 0; i < pasos; i++)
+    {
+        clave.numeroCasillero = bandido->posEnRuta;
+        casillero = (tCasillero*) buscarElemPorClaveLista(ruta, &clave, cmpCasillero);
+        casillero->cantBandidos--;
+
+        if(direccion == DIR_ADELANTE)
+        {
+            bandido->posEnRuta++;
+            if(bandido->posEnRuta > cantPosiciones)
+                bandido->posEnRuta = 1;
+        }
+        else
+        {
+            if(bandido->posEnRuta == 1)
+                bandido->posEnRuta = cantPosiciones;
+            else
+                bandido->posEnRuta--;
+        }
+
+        clave.numeroCasillero = bandido->posEnRuta;
+        casillero = (tCasillero*) buscarElemPorClaveLista(ruta, &clave, cmpCasillero);
+        casillero->cantBandidos++;
+
+        system("CLS");
+        mostrarEstadoPartida(partida);
+        renderizar_tablero(ruta, stdout);
+        Sleep(50);
     }
 }

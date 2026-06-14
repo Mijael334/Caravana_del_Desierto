@@ -314,12 +314,12 @@ void imprimirCasillero(void *info, FILE *destino)
         {
             if(actual->evento != EVENTO_VACIO)
             {
-                fprintf(destino, "%c (", caracter_evento);
+                fprintf(destino, "%c [", caracter_evento);
                 for(j = 0; j < actual->cantBandidos; j++)
                 {
                     fprintf(destino, (j == actual->cantBandidos - 1) ? "B" : "B ");
                 }
-                fprintf(destino, ")\n");
+                fprintf(destino, "]\n");
             }
             else
             {
