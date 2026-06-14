@@ -15,7 +15,7 @@ int indexarArchivoUsuariosOrdenado(tArbolBinBusq *pa, const char *nombreArchivoU
 
     ret = abrir_archivo(&find, nombreArchivoUsuarios, "rb");
 
-    if(ret == ERROR_ARCHIVO_USUARIOS)
+    if(ret != TODO_OK)
         return ret;
 
     fseek(find, 0L, SEEK_END);
@@ -27,10 +27,11 @@ int indexarArchivoUsuariosOrdenado(tArbolBinBusq *pa, const char *nombreArchivoU
 
 void cargarArchivoOrdenadoEnIndiceBalanceado(tArbolBinBusq *pa, FILE *arch, int inicio, int fin)
 {
-    int medio = (fin + inicio) / 2;
+    int medio;
     if(inicio > fin)
         return;
 
+    medio = (fin + inicio) / 2;
     tIndice ind;
     fseek(arch, medio * sizeof(tIndice), SEEK_SET);
     fread(&ind, 1, sizeof(tIndice), arch);
@@ -38,9 +39,4 @@ void cargarArchivoOrdenadoEnIndiceBalanceado(tArbolBinBusq *pa, FILE *arch, int 
 
     cargarArchivoOrdenadoEnIndiceBalanceado(pa ,arch, inicio, medio - 1);
     cargarArchivoOrdenadoEnIndiceBalanceado(pa , arch, medio + 1, fin);
-}
-
-int busquedaIndexada(const tArbolBinBusq *pa, void *dato, unsigned cantbyte, int(*cmp)(const void *a1, const void *a2))
-{
-    return buscarEnArbolBinBusq(pa, dato, cantbyte, cmp);
 }

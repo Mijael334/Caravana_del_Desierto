@@ -82,7 +82,7 @@ int nombreExisteEnIndice(const char *nombre, const tArbolBinBusq *arbolIndice)
 {
     tIndice ind;
     strcpy(ind.clave.nombre, nombre);
-    return busquedaIndexada(arbolIndice, &ind, sizeof(tIndice), cmpClaveIndice);
+    return buscarEnArbolBinBusq(arbolIndice, &ind, sizeof(tIndice), cmpClaveIndice);
 }
  
 int confirmarEsUsted(const char *nombre)
@@ -103,7 +103,7 @@ int solicitarNombreUsuario(char *nombre, int tamMaxNombre, const tArbolBinBusq *
         leerNombrePorTeclado(nombre, tamMaxNombre);
 
         existe = nombreExisteEnIndice(nombre, arbolIndice);
- 
+
         if(existe == CLAVE_NO_ENCONTRADA)
             listo = 1;
         else if(confirmarEsUsted(nombre))
