@@ -1,6 +1,6 @@
 #include "../include/reportes.h"
 
-void registrarPartidaEnArchivo(const tJuego *juego, const char *resultado)
+int registrarPartidaEnArchivo(const tJuego *juego, const char *resultado)
 {
     FILE *arch;
     tReportePartida reporte;
@@ -16,6 +16,8 @@ void registrarPartidaEnArchivo(const tJuego *juego, const char *resultado)
     strcpy(reporte.resultado, resultado);
     fwrite(&reporte, sizeof(tReportePartida), 1, arch);
     fclose(arch);
+
+    return TODO_OK;
 }
 
 int cmpPuntos(const void *a, const void *b)
@@ -42,7 +44,7 @@ void mostrarRankingJugadores(tLista *rankingJugadores)
     }
     while(fread(&usuario, sizeof(tUsuario), 1, arch))
     {
-        insertarEnOrdenLista(rankingJugadores, &usuario, sizeof(tUsuario), compararUsuariosPorPuntosRanking);
+        insertarEnOrdenLista(rankingJugadores, &usuario, sizeof(tUsuario), cmpPuntos);
     }
     fclose(arch);
     if(listaVacia(rankingJugadores))
@@ -51,7 +53,7 @@ void mostrarRankingJugadores(tLista *rankingJugadores)
     }
     else
     {
-        mostrarLista(rankingJugadores, imprimirRenglonRanking);
+        mostrarLista(rankingJugadores, imprimirRanking);
     }
     vaciarLista(rankingJugadores);
 }

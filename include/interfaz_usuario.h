@@ -9,7 +9,6 @@
 #include "../include/indice_jugador.h"
 #include "../include/tablero.h"
 
-#define TITULO_JUEGO "=== CARAVANA DEL DESIERTO ==="
 #define MAX_TEXTO_MENU 35
 
 
