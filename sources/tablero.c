@@ -11,7 +11,7 @@ int configuracion_valida(const tConfig *configuracion)
     {
         return 0; // no se puede usar el tablero
     }
-    if(configuracion->premios_max < 0 || configuracion->max_vidas_extras < 0 || configuracion->oasis_max < 0 || configuracion->tormenta_max < 0 || configuracion->bandidos_max < 0)
+    if(configuracion->premios_max + configuracion->max_vidas_extras + configuracion->oasis_max + configuracion->tormenta_max + configuracion->bandidos_max >= configuracion->cant_posiciones)
     {
         return 0; //error de parametros en archivos
     }
