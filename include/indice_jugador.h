@@ -25,8 +25,8 @@ int cargarDesdeArchivoBinarioOrdenadoArbol(FILE *arch, tArbolBinBusq *pa, unsign
 int prepararLimitesCargaArbol(FILE *archivoIndice, tArbolBinBusq *pa, unsigned tam);
 int cargarIndiceDesdeArchivo(tArbolBinBusq *pa, const char *nombreArchivoIndice, unsigned tam);
 
-int busquedaIndexada(const tArbolBinBusq *pa,  void *dato, unsigned cantbyte, int(*cmp)(const void *a1, const void *a2));
 int indexarArchivoUsuariosOrdenado(tArbolBinBusq *pa, const char *nombreArchivoUsuarios);
 void cargarArchivoOrdenadoEnIndiceBalanceado(tArbolBinBusq *pa, FILE *arch, int inicio, int fin);
+int registrarNuevoUsuarioEnIndice(tArbolBinBusq *arbol, const char *nombre, const char *nombreArchivoIndice);
 
 #endif // INDICE_JUGADOR_H_INCLUDED
