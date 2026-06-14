@@ -18,7 +18,6 @@ typedef struct
 {
     unsigned idPartida;
     tUsuario usuario;
-    unsigned cantMovimientos;
     unsigned puntosObtenidos;
     unsigned vidasRestantes;
     unsigned forwardCasillas;
