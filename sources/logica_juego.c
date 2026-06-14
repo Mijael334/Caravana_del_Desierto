@@ -21,6 +21,7 @@ int inicializarJuego(tJuego *juego)
     juego->usuario.nickname[0] = '\0';
     juego->partida.bandidos = NULL;
     crearColaDin(&juego->partida.movimientos);
+    crearColaDin(&juego->partida.registroMovimientos); 
     crearArbolBinBusq(&juego->arbolIndUsuarios);
     crearLista(&juego->listaRankingJugadores);
     crearLista(&juego->partida.ruta);
@@ -115,7 +116,8 @@ int procesarMenu(tJuego *juego)
                 juego->partida.puntosEnPartida = 0;
                 juego->partida.ultimoEvento = EVENTO_TURNO_INICIO;
                 juego->partida.ultimosPasos = 0;
-                juego->partida.ultimaDireccion = '-';     
+                juego->partida.ultimaDireccion = '-';
+                vaciarColaDin(&juego->partida.registroMovimientos);     
 
                 guardar_tablero_en_archivo(&juego->partida.ruta);
                 juego->estadoJuego = ESTADO_PARTIDA;
@@ -154,6 +156,12 @@ int procesarPartida(tJuego *juego)
         juego->partida.ultimosPasos = cantPasos;
         juego->partida.ultimaDireccion = dirMovimiento;
 
+        tMovimiento registro;
+        registro.cantPasos = cantPasos;
+        registro.direccion = dirMovimiento;
+        registro.id = ID_JUGADOR;
+        ponerEnColaDin(&juego->partida.registroMovimientos, &registro, sizeof(tMovimiento));
+
         encolarMovimientoJugador(&juego->partida.movimientos, cantPasos, dirMovimiento, juego->partida.jugador.estadoEnPartida.posEnRuta);
     }
 
@@ -173,9 +181,11 @@ int procesarPartida(tJuego *juego)
 }
 
 
-int procesarPuntajePartida(const tUsuario* usuario, const tPartida* partida, tEstadoJuego* estadoJuego)
+int procesarPuntajePartida(const tUsuario* usuario, tPartida* partida, tEstadoJuego* estadoJuego)
 {
     tReportePartida reporte;
+    tMovimiento mov;
+    int primero = 1;
 
     strcpy(reporte.resultado,  partida->jugador.estadoEnPartida.vidas != 0 ? MSJ_RESULTADO_VICTORIA : MSJ_RESULTADO_DERROTA);
     strcpy(reporte.usuario.username, usuario->username);
@@ -186,11 +196,22 @@ int procesarPuntajePartida(const tUsuario* usuario, const tPartida* partida, tEs
     reporte.backwardCasillas = partida->cantMovsAtras;
 
     system("CLS");
-    printf("\n=============PARTIDA FINALIZADA=============\n");
-    printf("Resultado: %s\n", partida->jugador.estadoEnPartida.vidas != 0 ? MSJ_RESULTADO_VICTORIA : MSJ_RESULTADO_DERROTA );
-    printf("Username: %s\t\tnickname:%s\n", reporte.usuario.username, reporte.usuario.nickname);
-    printf("Puntos: %d\t\t\tVidas Restantes: %d\n", reporte.puntosObtenidos, reporte.vidasRestantes);
-    printf("Forward: %d casillas\t\tBackward: %d casillas\n", reporte.forwardCasillas, reporte.backwardCasillas);
+    printf("\n=============PARTIDA FINALIZADA=============\n\n");
+    printf("Resultado: %s\n\n", partida->jugador.estadoEnPartida.vidas != 0 ? MSJ_RESULTADO_VICTORIA : MSJ_RESULTADO_DERROTA );
+    printf("Username: %s\t\t\tNickname:%s\n\n", reporte.usuario.username, reporte.usuario.nickname);
+    printf("Puntos: %d\t\t\tVidas Restantes: %d\n\n", reporte.puntosObtenidos, reporte.vidasRestantes);
+    printf("Forward: %d casillas\t\tBackward: %d casillas\n\n", reporte.forwardCasillas, reporte.backwardCasillas);
+
+    printf("Movimientos realizados: \n");
+    while(!colaVaciaDin(&partida->registroMovimientos))
+    {
+        sacarDeColaDin(&partida->registroMovimientos, &mov, sizeof(tMovimiento));
+        if(!primero)
+            printf(", ");
+        printf("%c%u", mov.direccion, mov.cantPasos);
+        primero = 0;
+    }
+    printf("\n");
 
     registrarPartidaEnArchivo(&reporte);
 
@@ -475,6 +496,7 @@ void moverBandidoEnRuta(tBandido *bandido, const tMovimiento *mov, tLista *ruta,
 void limpiarJuego (tJuego* juego)
 {
     vaciarColaDin(&juego->partida.movimientos);
+    vaciarColaDin(&juego->partida.registroMovimientos);
     liberarLista(&juego->listaRankingJugadores);
     eliminarArbol(&juego->arbolIndUsuarios);
     free(juego->partida.bandidos);
