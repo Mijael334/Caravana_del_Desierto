@@ -361,7 +361,7 @@ void vaciar_datos_casillero(void *dato, FILE *pf)
 {
     tCasillero *casillero = (tCasillero *)dato;
     casillero->evento = EVENTO_VACIO;
-    casillero->jugadorAca = 0;
+    casillero->jugadorAca = FALSO;
     casillero->cantBandidos = 0;
 }
 
@@ -377,12 +377,11 @@ int crear_tablero_circular(tLista *lista, const tConfig *configuracion, tBandido
 
     if(*lista == NULL)
     {
-        crearLista(lista);
         for(i = 0; i < configuracion->cant_posiciones; i++)
         {
             casillero_aux.numeroCasillero = i + 1;
             casillero_aux.evento = EVENTO_VACIO;
-            casillero_aux.jugadorAca = 0;
+            casillero_aux.jugadorAca = VERDADERO;
             casillero_aux.cantBandidos = 0;
             if(insFinLista(lista, &casillero_aux, sizeof(tCasillero)) != OK)
             {
@@ -391,10 +390,7 @@ int crear_tablero_circular(tLista *lista, const tConfig *configuracion, tBandido
             }
         }
     }
-    else
-    {
-        recorrerLista(lista, vaciar_datos_casillero, NULL);
-    }
+    
     clave.numeroCasillero = 1;
     inicial = (tCasillero*) buscarElemPorClaveLista(lista, &clave, cmpCasillero);
     inicial->evento = EVENTO_INICIO;

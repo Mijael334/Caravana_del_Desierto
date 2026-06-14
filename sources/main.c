@@ -21,5 +21,7 @@ int main()
     
     mostrarError(ret);
     
+    limpiarJuego(&juego);
+
     return ret;
 }

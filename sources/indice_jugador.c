@@ -48,7 +48,7 @@ int registrarNuevoUsuarioEnIndice(tArbolBinBusq *arbol, const char *nombre, unsi
 
     strncpy(nuevo.clave.nombre, nombre, TAM_MAX_NOM - 1);
     nuevo.clave.nombre[TAM_MAX_NOM - 1] = '\0';
-    nuevo.indiceRegistro = 0;
+    nuevo.indiceRegistro = posNueva;
 
     ret = insertarArbolBinBusq(arbol, &nuevo, sizeof(tIndice), cmpClaveIndice);
     if(ret != TODO_OK)

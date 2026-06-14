@@ -257,9 +257,9 @@ int actualizarEstadoPartida(tJugador *jugador, tBandido *bandidos, unsigned cant
 
 void finalizarPartida(tJuego *juego)
 {
-    free(juego->partida.bandidos);
     vaciarColaDin(&juego->partida.movimientos);
-    liberarLista(&juego->partida.ruta);
+
+    recorrerLista(&juego->partida.ruta, vaciar_datos_casillero, NULL);
 
     juego->partida.jugador.puntos += juego->partida.jugador.estadoEnPartida.puntos;
 }
