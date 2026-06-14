@@ -475,7 +475,8 @@ void moverBandidoEnRuta(tBandido *bandido, const tMovimiento *mov, tLista *ruta,
 void limpiarJuego (tJuego* juego)
 {
     vaciarColaDin(&juego->partida.movimientos);
-    liberarLista(&juego->listaRankingJugadores);
+    vaciarLista(&juego->listaRankingJugadores);
+    liberarLista(&juego->partida.ruta);
     eliminarArbol(&juego->arbolIndUsuarios);
     free(juego->partida.bandidos);
 }

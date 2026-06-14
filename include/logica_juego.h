@@ -4,6 +4,7 @@
 #include "entidades.h"
 #include "cola_dinamica.h"
 #include "lista_doble_circular.h"
+#include "lista_enlazada.h"
 #include "gestion_archivos.h"
 #include "tablero.h"
 
@@ -68,7 +69,7 @@ typedef struct
     tUsuario usuario;
     tPartida partida;
     tConfig configPartida;
-    tLista listaRankingJugadores;
+    tListaSE listaRankingJugadores;
     tArbolBinBusq arbolIndUsuarios;
 } tJuego;
 
