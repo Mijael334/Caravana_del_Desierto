@@ -1,8 +1,8 @@
 #include "../include/logica_juego.h"
-#include "../include/tablero.h"
 #include "../include/indice_jugador.h"
 #include "../include/interfaz_usuario.h"
 #include "../include/gestion_archivos.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,7 +22,8 @@ int inicializarJuego(tJuego *juego)
     crearLista(&juego->listaRankingJugadores);
 
     ret = indexarArchivoUsuariosOrdenado(&juego->arbolIndUsuarios, NOM_ARCH_INDICE_USUARIOS);
-    if (ret == ERROR_ARCHIVO_USUARIOS)
+
+    if(ret == ERROR_ARCHIVO_INDICE)
         return ret;
 
     ret = lectura_de_configuracion(NOM_ARCH_CONFIG, &juego->configPartida);
@@ -43,16 +44,18 @@ int inicializarJuego(tJuego *juego)
 
 int procesarJuego(tJuego *juego)
 {
+    int ret;
+
     switch (juego->estadoJuego)
     {
     case ESTADO_MENU:
-        // mostrar menu
+        ret = procesarMenu(juego);
         break;
     case ESTADO_PARTIDA:
-        procesarPartida(juego);
+        ret = procesarPartida(juego);
         break;
     case ESTADO_PUNTAJE_PARTIDA:
-        // Se muestra el resultado de la partida jugada
+        ret = procesarPuntajePartida(&juego->partida, &juego->estadoJuego);
         break;
     case ESTADO_RANKING:
         // mostrar ranking
@@ -60,7 +63,10 @@ int procesarJuego(tJuego *juego)
         break;
     }
 
-    return TODO_OK;
+    if(juego->estadoJuego == ESTADO_SALIR)
+        juego->corriendo = FALSO;
+
+    return ret;
 }
 
 int procesarMenu(tJuego *juego)
@@ -83,24 +89,24 @@ int procesarMenu(tJuego *juego)
 
         switch (seleccion)
         {
-        case 0:
-            system("CLS");
-            printf("\n=== NUEVA PARTIDA ===\n");
-            ret = crear_tablero_circular(&juego->partida.ruta, &juego->configPartida, juego->partida.bandidos);
-            if (ret == TODO_OK)
-                guardar_tablero_en_archivo(&juego->partida.ruta);
-            else
-                juego->corriendo = FALSO;
-            system("PAUSE");
-            break;
-        case 1:
-            system("CLS");
-            printf("\n--- RANKING ---\n");
-            system("PAUSE");
-            break;
-        case 2:
-            printf("\nSaliendo del programa\n");
-            break;
+            case 0:
+                ret = crear_tablero_circular(&juego->partida.ruta, &juego->configPartida, juego->partida.bandidos);
+
+                if(ret == TODO_OK)
+                    guardar_tablero_en_archivo(&juego->partida.ruta, juego->configPartida.cant_posiciones);
+                else
+                    juego->corriendo = FALSO;
+
+                break;
+            case 1:
+                system("CLS");
+                printf("\n--- RANKING ---\n");
+                system("PAUSE");
+                break;
+            case 2:
+                printf("\nSaliendo del programa\n");
+                juego->estadoJuego = ESTADO_SALIR;
+                break;
         }
     } while (seleccion != 2);
 
@@ -130,6 +136,40 @@ int procesarPartida(tJuego *juego)
 
     if (juego->estadoJuego == ESTADO_PUNTAJE_PARTIDA)
         finalizarPartida(juego);
+
+    return TODO_OK;
+}
+
+int procesarPuntajePartida(const tPartida* partida, tEstadoJuego* estadoJuego)
+{
+    printf("\n=============PARTIDA FINALIZADA=============\n");
+    printf("Resultado: %s", partida->jugador.estadoEnPartida.vidas != 0 ? MSJ_RESULTADO_VICTORIA : MSJ_RESULTADO_DERROTA );
+    printf("Jugador: %s", partida->jugador.nombre);
+    printf("puntos: %d\t\tVidas Restantes: %d", partida->jugador.estadoEnPartida.puntos, partida->jugador.estadoEnPartida.vidas);
+    printf("Forward: %d casillas\t\tBackward: %d casillas", partida->cantMovsAdelante, partida->cantMovsAtras);
+
+    //aca iria un fwrite con todos estos datos en el registro de partida
+
+    //aca debe pedir enter para seguir
+
+    *estadoJuego = ESTADO_MENU;
+
+    return TODO_OK;
+}
+
+int procesarPuntajePartida(const tPartida* partida, tEstadoJuego* estadoJuego)
+{
+    printf("\n=============PARTIDA FINALIZADA=============\n");
+    printf("Resultado: %s", partida->jugador.estadoEnPartida.vidas != 0 ? MSJ_RESULTADO_VICTORIA : MSJ_RESULTADO_DERROTA );
+    printf("Jugador: %s", partida->jugador.nombre);
+    printf("puntos: %d\t\tVidas Restantes: %d", partida->jugador.estadoEnPartida.puntos, partida->jugador.estadoEnPartida.vidas);
+    printf("Forward: %d casillas\t\tBackward: %d casillas", partida->cantMovsAdelante, partida->cantMovsAtras);
+
+    //aca iria un fwrite con todos estos datos en el registro de partida
+
+    //aca debe pedir enter para seguir
+
+    *estadoJuego = ESTADO_MENU;
 
     return TODO_OK;
 }
@@ -168,6 +208,14 @@ int actualizarEstadoPartida(tJugador *jugador, tBandido *bandidos, unsigned cant
     default:
         break;
     }
+
+    if(*estadoJuego == ESTADO_PUNTAJE_PARTIDA)
+        return TODO_OK;
+
+
+    if(*estadoJuego == ESTADO_PUNTAJE_PARTIDA)
+        return TODO_OK;
+
 
     if (casillero->evento == EVENTO_VACIO && casillero->cantBandidos == 0)
         return TODO_OK;
@@ -376,4 +424,31 @@ void moverBandidoEnRuta(tBandido *bandido, const tMovimiento *mov, tLista *ruta,
     casilleroNum.numeroCasillero = bandido->posEnRuta;
     casillero = (tCasillero *)buscarElemPorClaveLista(ruta, &casilleroNum, cmpCasillero);
     casillero->cantBandidos++;
+}
+
+void limpiarJuego (tJuego* juego)
+{
+    vaciarColaDin(&juego->partida.movimientos);
+    liberarLista(&juego->listaRankingJugadores);
+    eliminarArbol(&juego->arbolIndUsuarios);
+    free(juego->partida.bandidos);
+}
+
+void mostrarError (int err)
+{
+    switch (err)
+    {
+    case TODO_OK:
+        break;
+    case ERROR_MEM: puts("HUBO UN ERROR AL RESERVAR MEMORIA.");
+        break;
+    case ERROR_ARCHIVO_CONFIG: puts("HUBO UN ERROR AL ABRIR EL ARCHVOS DE CONFIGURACION.");
+        break;
+    case ERROR_ARCHIVO_INDICE: puts("HUBO UN ERROR AL ABRIR EL ARCHIVO DE INDICE DE USUARIOS.");
+        break;
+    case ERROR_ARCHIVO_USUARIOS: puts("HUBO UN ERROR AL ABRIR EL ARCHIVO DE USUARIOS.");
+        break;
+    default: puts("ERROR DESCONOCIDO.");
+        break;
+    }
 }
