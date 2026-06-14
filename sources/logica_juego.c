@@ -146,19 +146,21 @@ int procesarPartida(tJuego *juego)
 
     mostrarTableroEsperandoTurno(&juego->partida.ruta, &juego->partida);
 
-    cantPasos = generarRandomUniforme(MAX_DADO);
-    dirMovimiento = (pedirDireccionJugador(&juego->partida.ruta, &juego->partida, cantPasos) == 0) ? DIR_ADELANTE : DIR_ATRAS;
+    if(juego->partida.jugador.estadoEnPartida.afectadoPorTormenta == FALSO)
+    {
+        cantPasos = generarRandomUniforme(MAX_DADO);
+        dirMovimiento = (pedirDireccionJugador(&juego->partida.ruta, &juego->partida, cantPasos) == 0) ? DIR_ADELANTE : DIR_ATRAS;
 
-    juego->partida.ultimosPasos = cantPasos;
-    juego->partida.ultimaDireccion = dirMovimiento;
+        juego->partida.ultimosPasos = cantPasos;
+        juego->partida.ultimaDireccion = dirMovimiento;
 
-    encolarMovimientoJugador(&juego->partida.movimientos, cantPasos, dirMovimiento, juego->partida.jugador.estadoEnPartida.posEnRuta);
+        encolarMovimientoJugador(&juego->partida.movimientos, cantPasos, dirMovimiento, juego->partida.jugador.estadoEnPartida.posEnRuta);
+    }
 
     encolarMovimientosBandidos(&juego->partida.movimientos, juego->partida.bandidos, juego->configPartida.bandidos_max, juego->partida.jugador.estadoEnPartida.posEnRuta,
                                juego->partida.cantCasilleros);
 
-    desencolarMovimientos(&juego->partida.movimientos, juego->partida.bandidos, juego->configPartida.bandidos_max, &juego->partida.jugador.estadoEnPartida,
-                          &juego->partida.ruta, juego->partida.cantCasilleros, &juego->partida);
+    desencolarMovimientos(&juego->partida, juego->configPartida.bandidos_max);
 
     actualizarEstadoPartida(&juego->partida, juego->configPartida.bandidos_max, &juego->estadoJuego);
 
@@ -181,15 +183,18 @@ int procesarPuntajePartida(const tUsuario* usuario, const tPartida* partida, tEs
     reporte.puntosObtenidos = partida->jugador.estadoEnPartida.puntos;
     reporte.vidasRestantes = partida->jugador.estadoEnPartida.vidas;
     reporte.forwardCasillas = partida->cantMovsAdelante;
-    reporte.forwardCasillas = partida->cantMovsAtras;
+    reporte.backwardCasillas = partida->cantMovsAtras;
 
+    system("CLS");
     printf("\n=============PARTIDA FINALIZADA=============\n");
-    printf("Resultado: %s", partida->jugador.estadoEnPartida.vidas != 0 ? MSJ_RESULTADO_VICTORIA : MSJ_RESULTADO_DERROTA );
-    printf("Username: %s\t\tnickname", partida->jugador.nombre);
-    printf("Puntos: %d\t\tVidas Restantes: %d", partida->jugador.estadoEnPartida.puntos, partida->jugador.estadoEnPartida.vidas);
-    printf("Forward: %d casillas\t\tBackward: %d casillas", partida->cantMovsAdelante, partida->cantMovsAtras);
+    printf("Resultado: %s\n", partida->jugador.estadoEnPartida.vidas != 0 ? MSJ_RESULTADO_VICTORIA : MSJ_RESULTADO_DERROTA );
+    printf("Username: %s\t\tnickname:%s\n", reporte.usuario.username, reporte.usuario.nickname);
+    printf("Puntos: %d\t\t\tVidas Restantes: %d\n", reporte.puntosObtenidos, reporte.vidasRestantes);
+    printf("Forward: %d casillas\t\tBackward: %d casillas\n", reporte.forwardCasillas, reporte.backwardCasillas);
 
     registrarPartidaEnArchivo(&reporte);
+
+    system("pause");
 
     *estadoJuego = ESTADO_MENU;
 
@@ -199,23 +204,23 @@ int procesarPuntajePartida(const tUsuario* usuario, const tPartida* partida, tEs
 int actualizarEstadoPartida(tPartida* partida, unsigned cantBandidos, tEstadoJuego* estadoJuego)
 {
     tCasillero casilleroNum, *casillero;
+    int aplicadoEfectoAhora = FALSO;
 
     casilleroNum.numeroCasillero = partida->jugador.estadoEnPartida.posEnRuta;
 
     casillero = buscarElemPorClaveLista(&partida->ruta, &casilleroNum, cmpCasillero);
     partida->ultimoEvento = EVENTO_TURNO_NADA;
-
-    if (partida->jugador.estadoEnPartida.protegido == VERDADERO)
+    
+    
+    if (partida->jugador.estadoEnPartida.protegido == VERDADERO && !aplicadoEfectoAhora)
         partida->jugador.estadoEnPartida.protegido = FALSO;
-
-    if (partida->jugador.estadoEnPartida.afectadoPorTormenta == VERDADERO)
-        partida->jugador.estadoEnPartida.afectadoPorTormenta = FALSO;
 
     switch (casillero->evento)
     {
     case EVENTO_OASIS:
         partida->jugador.estadoEnPartida.protegido = VERDADERO;
         partida->ultimoEvento = EVENTO_TURNO_OASIS;  
+        aplicadoEfectoAhora = VERDADERO;
         break;
     case EVENTO_PREMIO:
         partida->jugador.estadoEnPartida.puntos += PUNTOS_PREMIO;
@@ -226,8 +231,14 @@ int actualizarEstadoPartida(tPartida* partida, unsigned cantBandidos, tEstadoJue
         partida->ultimoEvento = EVENTO_TURNO_VIDA_EXTRA; 
         break;
     case EVENTO_TORMENTA:
-        partida->jugador.estadoEnPartida.afectadoPorTormenta = VERDADERO;
-        partida->ultimoEvento = EVENTO_TURNO_TORMENTA;  
+        if(partida->jugador.estadoEnPartida.afectadoPorTormenta == FALSO)
+        {
+            partida->jugador.estadoEnPartida.afectadoPorTormenta = VERDADERO;
+            partida->ultimoEvento = EVENTO_TURNO_TORMENTA;  
+            aplicadoEfectoAhora = VERDADERO;
+        }
+        else
+            partida->jugador.estadoEnPartida.afectadoPorTormenta = FALSO;
         break;
     case EVENTO_SALIDA:
         *estadoJuego = ESTADO_PUNTAJE_PARTIDA;
@@ -369,26 +380,34 @@ void encolarMovimientosBandidos(tCola *cola, tBandido *bandidos, unsigned cantBa
     }
 }
 
-void desencolarMovimientos(tCola *cola, tBandido *bandidos, unsigned cantBandidos, tEstadoJugador *jugador, tLista *ruta, unsigned cantPosiciones, const tPartida *partida)
+//void desencolarMovimientos(tCola *cola, tBandido *bandidos, unsigned cantBandidos, tEstadoJugador *jugador, tLista *lista, unsigned cantPosiciones, const tPartida *partida);
+void desencolarMovimientos(tPartida *partida, unsigned cantBandidos)
 {
     tMovimiento mov;
     int i;
 
-    while (!colaVaciaDin(cola))
+    while (!colaVaciaDin(&partida->movimientos))
     {
-        sacarDeColaDin(cola, &mov, sizeof(tMovimiento));
+        sacarDeColaDin(&partida->movimientos, &mov, sizeof(tMovimiento));
 
         if (mov.id == ID_JUGADOR)
         {
-            if (jugador->afectadoPorTormenta == FALSO)
-                animarMovimientoJugador(ruta, jugador, mov.cantPasos, mov.direccion, cantPosiciones, partida);
+            if (partida->jugador.estadoEnPartida.afectadoPorTormenta == FALSO)
+            {
+                if(mov.direccion == DIR_ADELANTE)
+                    partida->cantMovsAdelante += mov.cantPasos;
+                else
+                    partida->cantMovsAtras += mov.cantPasos;
+
+                animarMovimientoJugador(partida, mov.cantPasos, mov.direccion);
+            }
         }
         else
         {
             for (i = 0; i < cantBandidos; i++)
             {
-                if ((bandidos + i)->id == mov.id && (bandidos + i)->vivo == VIVO)
-                    animarMovimientoBandido(ruta, bandidos + i, mov.cantPasos, mov.direccion, cantPosiciones, partida);
+                if ((partida->bandidos + i)->id == mov.id && (partida->bandidos + i)->vivo == VIVO)
+                    animarMovimientoBandido(partida, partida->bandidos + i, mov.cantPasos, mov.direccion);
             }
         }
     }

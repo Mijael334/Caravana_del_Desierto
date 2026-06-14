@@ -85,7 +85,7 @@ void eliminarBandido(tBandido* bandido, tLista* ruta, unsigned cantCasilleros);
 
 int buscarJugadorEnRanking (tLista* rankingJugadores, const char* nombreABusc, int (*cmp) (const void*, const void*));
 
-void desencolarMovimientos(tCola *cola, tBandido *bandidos, unsigned cantBandidos, tEstadoJugador *jugador, tLista *lista, unsigned cantPosiciones, const tPartida *partida);
+void desencolarMovimientos(tPartida *partida, unsigned cantBandidos);
 void encolarMovimientoJugador(tCola *cola, unsigned pasos, char direccion, unsigned posJugador);
 void encolarMovimientosBandidos(tCola *cola, tBandido *bandidos, unsigned cantBandidos, unsigned posJugador, unsigned cantPosiciones);
 
