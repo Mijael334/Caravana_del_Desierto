@@ -82,6 +82,7 @@ int procesarMenu(tJuego *juego)
 
     if (encontradoEnIndice == CLAVE_NO_ENCONTRADA)
     {
+        registrarNuevoUsuarioEnIndice(&juego->arbolIndUsuarios, juego->usuario.nombre, NOM_ARCH_INDICE_USUARIOS);   
     }
 
     seleccion = seleccionarOpcionMenu(TITULO_JUEGO, opciones, 3);
