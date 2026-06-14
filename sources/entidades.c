@@ -30,7 +30,7 @@ int crearBandidos (tBandido** bandidos, unsigned cantBandidos, unsigned cantCasi
 
     for (i = 0; i < cantBandidos; i++)
     {
-        bandido.id = bandido.id + i;
+        bandido.id++;
         bandido.posEnRuta = generarRandomUniforme(cantCasilleros);
 
         memcpy(*bandidos + i, &bandido, sizeof(bandido));

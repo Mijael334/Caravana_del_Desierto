@@ -2,6 +2,7 @@
 #include "../include/indice_jugador.h"
 #include "../include/interfaz_usuario.h"
 #include "../include/gestion_archivos.h"
+#include "../include/reportes.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -83,32 +84,38 @@ int procesarMenu(tJuego *juego)
     {
     }
 
-    do
+    seleccion = seleccionarOpcionMenu(TITULO_JUEGO, opciones, 3);
+
+    switch (seleccion)
     {
-        seleccion = seleccionarOpcionMenu(TITULO_JUEGO, opciones, 3);
+        case 0:
+            ret = crear_tablero_circular(&juego->partida.ruta, &juego->configPartida, juego->partida.bandidos);
 
-        switch (seleccion)
-        {
-            case 0:
-                ret = crear_tablero_circular(&juego->partida.ruta, &juego->configPartida, juego->partida.bandidos);
+            if(ret == TODO_OK)
+            {
+                inicializarJugador(&juego->partida.jugador, juego->usuario.nombre, juego->usuario.puntos, juego->configPartida.vidas_incio);
+                juego->partida.cantCasilleros = juego->configPartida.cant_posiciones;
+                juego->partida.cantMovsAdelante = juego->partida.cantMovsAtras = 0;
+                juego->partida.puntosEnPartida = 0;
 
-                if(ret == TODO_OK)
-                    guardar_tablero_en_archivo(&juego->partida.ruta);
-                else
-                    juego->corriendo = FALSO;
+                guardar_tablero_en_archivo(&juego->partida.ruta);
+                juego->estadoJuego = ESTADO_PARTIDA;
+            }
+            else
+                juego->corriendo = FALSO;
 
-                break;
-            case 1:
-                system("CLS");
-                printf("\n--- RANKING ---\n");
-                system("PAUSE");
-                break;
-            case 2:
-                printf("\nSaliendo del programa\n");
-                juego->estadoJuego = ESTADO_SALIR;
-                break;
-        }
-    } while (seleccion != 2);
+            break;
+        case 1:
+            system("CLS");
+            printf("\n--- RANKING ---\n");
+            system("PAUSE");
+            break;
+        case 2:
+            printf("\nSaliendo del programa\n");
+            juego->estadoJuego = ESTADO_SALIR;
+            break;
+    }
+
 
     return ret;
 }
@@ -134,6 +141,8 @@ int procesarPartida(tJuego *juego)
     actualizarEstadoPartida(&juego->partida.jugador, juego->partida.bandidos, juego->configPartida.bandidos_max, &juego->partida.ruta,
                             juego->partida.cantCasilleros, &juego->estadoJuego);
 
+    renderizar_tablero(&juego->partida.ruta, stdout);
+
     if (juego->estadoJuego == ESTADO_PUNTAJE_PARTIDA)
         finalizarPartida(juego);
 
@@ -148,8 +157,6 @@ int procesarPuntajePartida(const tPartida* partida, tEstadoJuego* estadoJuego)
     printf("Jugador: %s", partida->jugador.nombre);
     printf("puntos: %d\t\tVidas Restantes: %d", partida->jugador.estadoEnPartida.puntos, partida->jugador.estadoEnPartida.vidas);
     printf("Forward: %d casillas\t\tBackward: %d casillas", partida->cantMovsAdelante, partida->cantMovsAtras);
-
-    //aca iria un fwrite con todos estos datos en el registro de partida
 
     //aca debe pedir enter para seguir
 
@@ -196,11 +203,6 @@ int actualizarEstadoPartida(tJugador *jugador, tBandido *bandidos, unsigned cant
     if(*estadoJuego == ESTADO_PUNTAJE_PARTIDA)
         return TODO_OK;
 
-
-    if(*estadoJuego == ESTADO_PUNTAJE_PARTIDA)
-        return TODO_OK;
-
-
     if (casillero->evento == EVENTO_VACIO && casillero->cantBandidos == 0)
         return TODO_OK;
 
@@ -243,7 +245,7 @@ void finalizarPartida(tJuego *juego)
     vaciarColaDin(&juego->partida.movimientos);
     liberarLista(&juego->partida.ruta);
 
-    juego->usuario.puntos += juego->partida.jugador.puntos;
+    juego->partida.jugador.puntos += juego->partida.jugador.estadoEnPartida.puntos;
 }
 
 void eliminarBandido(tBandido *bandido, tLista *ruta, unsigned cantCasilleros)
