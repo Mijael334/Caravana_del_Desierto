@@ -81,9 +81,8 @@ int procesarMenu(tJuego *juego)
     int encontradoEnIndice;
     unsigned indiceReg = 0;
     unsigned posNueva;
-    const char *opciones[] = {"Comenzar Nueva Partida",
-                              "Ver Ranking",
-                              "Salir del juego"};
+    const char *opciones[] = {"Comenzar Nueva Partida", "Ver Ranking", "Salir del juego"};
+    const char *opcSalir[] = {"NO, seguir jugando", "SI, salir"};
 
     if(juego->usuario.username[0] == '\0')
     {
@@ -133,8 +132,8 @@ int procesarMenu(tJuego *juego)
             system("PAUSE");
             break;
         case 2:
-            printf("\nSaliendo del programa\n");
-            juego->estadoJuego = ESTADO_SALIR;
+            if(seleccionarOpcionMenu("Seguro que querés salir?", opcSalir, 2) == 1)
+                juego->estadoJuego = ESTADO_SALIR;
             break;
     }
 
