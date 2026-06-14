@@ -112,6 +112,7 @@ int procesarMenu(tJuego *juego)
                 juego->partida.cantCasilleros = juego->configPartida.cant_posiciones;
                 juego->partida.cantMovsAdelante = juego->partida.cantMovsAtras = 0;
                 juego->partida.puntosEnPartida = 0;
+                juego->partida.ultimoEvento = EVENTO_TURNO_INICIO;
 
                 guardar_tablero_en_archivo(&juego->partida.ruta);
                 juego->estadoJuego = ESTADO_PARTIDA;
@@ -140,10 +141,10 @@ int procesarPartida(tJuego *juego)
     int cantPasos;
     char dirMovimiento;
 
-    mostrarTableroEsperandoTurno(&juego->partida.ruta);
+    mostrarTableroEsperandoTurno(&juego->partida.ruta, &juego->partida.jugador, juego->partida.ultimoEvento);
 
     cantPasos = generarRandomUniforme(MAX_DADO);
-    dirMovimiento = (pedirDireccionJugador(&juego->partida.ruta, cantPasos) == 0) ? DIR_ADELANTE : DIR_ATRAS;
+    dirMovimiento = (pedirDireccionJugador(&juego->partida.ruta, &juego->partida.jugador, cantPasos) == 0) ? DIR_ADELANTE : DIR_ATRAS;
 
     encolarMovimientoJugador(&juego->partida.movimientos, cantPasos, dirMovimiento, juego->partida.jugador.estadoEnPartida.posEnRuta);
 
@@ -246,6 +247,7 @@ int actualizarEstadoPartida(tPartida* partida, unsigned cantBandidos, tEstadoJue
 
             if (partida->jugador.estadoEnPartida.vidas == 0)
                 *estadoJuego = ESTADO_PUNTAJE_PARTIDA;
+            
         }
 
         // busca al bandido en base a la posicion
