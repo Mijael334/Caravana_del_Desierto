@@ -23,6 +23,7 @@ int inicializarJuego(tJuego *juego)
     crearColaDin(&juego->partida.movimientos);
     crearArbolBinBusq(&juego->arbolIndUsuarios);
     crearLista(&juego->listaRankingJugadores);
+    crearLista(&juego->partida.ruta);
 
     ret = indexarArchivoUsuariosOrdenado(&juego->arbolIndUsuarios, NOM_ARCH_INDICE_USUARIOS);
 
@@ -113,6 +114,8 @@ int procesarMenu(tJuego *juego)
                 juego->partida.cantMovsAdelante = juego->partida.cantMovsAtras = 0;
                 juego->partida.puntosEnPartida = 0;
                 juego->partida.ultimoEvento = EVENTO_TURNO_INICIO;
+                juego->partida.ultimosPasos = 0;
+                juego->partida.ultimaDireccion = '-';     
 
                 guardar_tablero_en_archivo(&juego->partida.ruta);
                 juego->estadoJuego = ESTADO_PARTIDA;
@@ -141,10 +144,13 @@ int procesarPartida(tJuego *juego)
     int cantPasos;
     char dirMovimiento;
 
-    mostrarTableroEsperandoTurno(&juego->partida.ruta, &juego->partida.jugador, juego->partida.ultimoEvento);
+    mostrarTableroEsperandoTurno(&juego->partida.ruta, &juego->partida);
 
     cantPasos = generarRandomUniforme(MAX_DADO);
-    dirMovimiento = (pedirDireccionJugador(&juego->partida.ruta, &juego->partida.jugador, cantPasos) == 0) ? DIR_ADELANTE : DIR_ATRAS;
+    dirMovimiento = (pedirDireccionJugador(&juego->partida.ruta, &juego->partida, cantPasos) == 0) ? DIR_ADELANTE : DIR_ATRAS;
+
+    juego->partida.ultimosPasos = cantPasos;
+    juego->partida.ultimaDireccion = dirMovimiento;
 
     encolarMovimientoJugador(&juego->partida.movimientos, cantPasos, dirMovimiento, juego->partida.jugador.estadoEnPartida.posEnRuta);
 
@@ -197,6 +203,7 @@ int actualizarEstadoPartida(tPartida* partida, unsigned cantBandidos, tEstadoJue
     casilleroNum.numeroCasillero = partida->jugador.estadoEnPartida.posEnRuta;
 
     casillero = buscarElemPorClaveLista(&partida->ruta, &casilleroNum, cmpCasillero);
+    partida->ultimoEvento = EVENTO_TURNO_NADA;
 
     if (partida->jugador.estadoEnPartida.protegido == VERDADERO)
         partida->jugador.estadoEnPartida.protegido = FALSO;
@@ -208,18 +215,23 @@ int actualizarEstadoPartida(tPartida* partida, unsigned cantBandidos, tEstadoJue
     {
     case EVENTO_OASIS:
         partida->jugador.estadoEnPartida.protegido = VERDADERO;
+        partida->ultimoEvento = EVENTO_TURNO_OASIS;  
         break;
     case EVENTO_PREMIO:
         partida->jugador.estadoEnPartida.puntos += PUNTOS_PREMIO;
+        partida->ultimoEvento = EVENTO_TURNO_PREMIO; 
         break;
     case EVENTO_VIDA_EXTRA:
         partida->jugador.estadoEnPartida.vidas++;
+        partida->ultimoEvento = EVENTO_TURNO_VIDA_EXTRA; 
         break;
     case EVENTO_TORMENTA:
         partida->jugador.estadoEnPartida.afectadoPorTormenta = VERDADERO;
+        partida->ultimoEvento = EVENTO_TURNO_TORMENTA;  
         break;
     case EVENTO_SALIDA:
         *estadoJuego = ESTADO_PUNTAJE_PARTIDA;
+        partida->ultimoEvento = EVENTO_TURNO_VICTORIA;
         break;
     default:
         break;
@@ -246,7 +258,14 @@ int actualizarEstadoPartida(tPartida* partida, unsigned cantBandidos, tEstadoJue
             partida->jugador.estadoEnPartida.vidas--;
 
             if (partida->jugador.estadoEnPartida.vidas == 0)
+            {
                 *estadoJuego = ESTADO_PUNTAJE_PARTIDA;
+                partida->ultimoEvento = EVENTO_TURNO_MUERTE;
+            }
+            else
+            {
+                partida->ultimoEvento = EVENTO_TURNO_BANDIDO;  
+            }
             
         }
 
