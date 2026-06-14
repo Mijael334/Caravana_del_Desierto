@@ -17,6 +17,8 @@ int inicializarJuego(tJuego *juego)
 
     juego->corriendo = FALSO;
 
+    juego->usuario.username[0] = '\0';
+    juego->usuario.nickname[0] = '\0';
     juego->partida.bandidos = NULL;
     crearColaDin(&juego->partida.movimientos);
     crearArbolBinBusq(&juego->arbolIndUsuarios);
@@ -74,15 +76,27 @@ int procesarMenu(tJuego *juego)
 {
     int seleccion, ret = TODO_OK;
     int encontradoEnIndice;
+    unsigned indiceReg = 0;
+    unsigned posNueva;
     const char *opciones[] = {"Comenzar Nueva Partida",
                               "Ver Ranking",
                               "Salir del juego"};
 
-    encontradoEnIndice = solicitarNombreUsuario(juego->usuario.username, MAX_NOMBRE + 1, &juego->arbolIndUsuarios);
-
-    if (encontradoEnIndice == CLAVE_NO_ENCONTRADA)
+    if(juego->usuario.username[0] == '\0')
     {
-        registrarNuevoUsuarioEnIndice(&juego->arbolIndUsuarios, juego->usuario.username, NOM_ARCH_INDICE_USUARIOS);
+        encontradoEnIndice = solicitarNombreUsuario(juego->usuario.username, MAX_NOMBRE + 1, &juego->arbolIndUsuarios, &indiceReg);
+
+
+        if(encontradoEnIndice == CLAVE_ENCONTRADA)
+        {
+            leerUsuarioDeArchivo(&juego->usuario, indiceReg, NOM_ARCH_USUARIOS);
+        }
+        else
+        {
+            leerNicknamePorTeclado(juego->usuario.nickname, MAX_NOMBRE + 1);
+            agregarUsuarioEnArchivo(&juego->usuario, NOM_ARCH_USUARIOS, &posNueva);
+            registrarNuevoUsuarioEnIndice(&juego->arbolIndUsuarios, juego->usuario.username, posNueva, NOM_ARCH_INDICE_USUARIOS);
+        }
     }
 
     seleccion = seleccionarOpcionMenu(TITULO_JUEGO, opciones, 3);
@@ -91,6 +105,7 @@ int procesarMenu(tJuego *juego)
     {
         case 0:
             ret = crear_tablero_circular(&juego->partida.ruta, &juego->configPartida, juego->partida.bandidos);
+
 
             if(ret == TODO_OK)
             {

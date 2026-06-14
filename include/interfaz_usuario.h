@@ -18,7 +18,8 @@ char menu(const char matriz_menu[][MAX_TEXTO_MENU], const char *titulo);
 char opcion(const char matriz_menu[][MAX_TEXTO_MENU], const char *titulo, const char *mensaje);
  
 int seleccionarOpcionMenu(const char *titulo, const char *opciones[], int cantOpciones);
-int solicitarNombreUsuario(char *nombre, int tamMaxNombre, const tArbolBinBusq *arbolIndice);
+int solicitarNombreUsuario(char *nombre, int tamMaxNombre, const tArbolBinBusq *arbolIndice, unsigned *indiceReg);
+void leerNicknamePorTeclado(char *nickname, int tamMaxNickname);
 void mostrarTableroEsperandoTurno(tLista *ruta);
 int pedirDireccionJugador(tLista *ruta, int cantPasos);
 

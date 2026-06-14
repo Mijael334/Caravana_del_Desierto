@@ -45,5 +45,7 @@ void inicializarJugador (tJugador* jugador, const char* nombre, unsigned puntos,
 int crearBandidos (tBandido** bandidos, unsigned cantBandidos, unsigned cantCasilleros);
 int generarRandomUniforme (int max_valor);
 int cmpUsuario (const void* a, const void* b);
+int agregarUsuarioEnArchivo(const tUsuario *usuario, const char *nombreArchivo, unsigned *posOut);
+int leerUsuarioDeArchivo(tUsuario *usuario, unsigned pos, const char *nombreArchivo);
 
 #endif // ENTIDADES_H_INCLUDED

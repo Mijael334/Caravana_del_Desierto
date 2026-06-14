@@ -70,7 +70,7 @@ void leerNombrePorTeclado(char *nombre, int tamMaxNombre)
     int len;
     system("CLS");
     printf("\n\n   === CARAVANA DEL DESIERTO ===\n\n");
-    printf("   Ingrese su nombre: ");
+    printf("   Ingrese su username: ");
     fflush(stdin);
     fgets(nombre, tamMaxNombre, stdin);
     len = strlen(nombre);
@@ -78,22 +78,26 @@ void leerNombrePorTeclado(char *nombre, int tamMaxNombre)
         nombre[len - 1] = '\0';
 }
  
-int nombreExisteEnIndice(const char *nombre, const tArbolBinBusq *arbolIndice)
+int nombreExisteEnIndice(const char *nombre, const tArbolBinBusq *arbolIndice, unsigned *indiceRegOut)
 {
     tIndice ind;
+    int resultado;
     strcpy(ind.clave.nombre, nombre);
-    return buscarEnArbolBinBusq(arbolIndice, &ind, sizeof(tIndice), cmpClaveIndice);
+    resultado = buscarEnArbolBinBusq(arbolIndice, &ind, sizeof(tIndice), cmpClaveIndice);
+    if(resultado == CLAVE_ENCONTRADA && indiceRegOut != NULL)
+        *indiceRegOut = ind.indiceRegistro;
+    return resultado;
 }
  
-int confirmarEsUsted(const char *nombre)
+int confirmarUsername(const char *nombre)
 {
     char titulo[80];
     const char *opciones[] = {"SI", "NO"};
-    sprintf(titulo, "Nombre \"%s\" ya registrado. Es usted?", nombre);
+    sprintf(titulo, "Username \"%s\" ya registrado. Sos vos?", nombre);
     return seleccionarOpcionMenu(titulo, opciones, 2) == 0;
 }
  
-int solicitarNombreUsuario(char *nombre, int tamMaxNombre, const tArbolBinBusq *arbolIndice)
+int solicitarNombreUsuario(char *nombre, int tamMaxNombre, const tArbolBinBusq *arbolIndice, unsigned *indiceRegOut)
 {
     int existe = CLAVE_NO_ENCONTRADA;
     int listo = 0;
@@ -102,15 +106,28 @@ int solicitarNombreUsuario(char *nombre, int tamMaxNombre, const tArbolBinBusq *
     {
         leerNombrePorTeclado(nombre, tamMaxNombre);
 
-        existe = nombreExisteEnIndice(nombre, arbolIndice);
+        existe = nombreExisteEnIndice(nombre, arbolIndice, indiceRegOut);
 
         if(existe == CLAVE_NO_ENCONTRADA)
             listo = 1;
-        else if(confirmarEsUsted(nombre))
+        else if(confirmarUsername(nombre))
             listo = 1;
     }
  
     return existe;
+}
+
+void leerNicknamePorTeclado(char *nickname, int tamMaxNickname)
+{
+    int len;
+    system("CLS");
+    printf("\n\n   === CARAVANA DEL DESIERTO ===\n\n");
+    printf("   Ingrese su nickname: ");
+    fflush(stdin);
+    fgets(nickname, tamMaxNickname, stdin);
+    len = strlen(nickname);
+    if(len > 0 && nickname[len - 1] == '\n')
+        nickname[len - 1] = '\0';
 }
 
 int pedirDireccionJugador(tLista *ruta, int cantPasos)
