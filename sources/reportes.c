@@ -9,7 +9,7 @@ int registrarPartidaEnArchivo(tReportePartida *reporte)
     }
     fseek(arch, 0L, SEEK_END);
     reporte->idPartida = (ftell(arch) / sizeof(tReportePartida)) + 1;
-    fwrite(&reporte, sizeof(tReportePartida), 1, arch);
+    fwrite(reporte, sizeof(tReportePartida), 1, arch);
     fclose(arch);
 
     return TODO_OK;
@@ -22,33 +22,28 @@ int cmpPuntos(const void *a, const void *b)
     return r1->puntos - r2->puntos;
 }
 
-void imprimirRanking(const void *d)
+void imprimirRegistroRanking(const void *d)
 {
     const tRanking *r = (const tRanking *)d;
-    printf("     %-20s %-20s %10u pts\n", r->usuario.username, r->usuario.nickname, r->puntos);
+    printf(" \t%s\t\t%s\t\t%d\n", r->usuario.username, r->usuario.nickname, r->puntos);
 }
 
-void mostrarRankingJugadores(tListaSE *rankingJugadores)
+void mostrarRanking(const tListaSE *ranking, void (*mostrarRegistro)(const void *))
 {
-    FILE *arch;
-    tUsuario usuario;
-    vaciarLista(rankingJugadores);
-    if(abrir_archivo(&arch, NOM_ARCH_USUARIOS, "rb"))
+    system("CLS");
+    printf("\n=================== RANKING ===================\n\n");
+
+    if(listaVacia(ranking))
     {
-        return;
-    }
-    while(fread(&usuario, sizeof(tUsuario), 1, arch))
-    {
-        insertarEnOrdenLista(rankingJugadores, &usuario, sizeof(tUsuario), cmpPuntos);
-    }
-    fclose(arch);
-    if(listaVacia(rankingJugadores))
-    {
-        printf("Rankig vacio\n");
+        printf("  Ranking vacio.\n");
     }
     else
     {
-        mostrarLista(rankingJugadores, imprimirRanking);
+        printf(" \tNickname\t\tUsername\t\tPuntos\n");
+        printf("  ---------------------------------------------\n");
+        mostrarLista(ranking, mostrarRegistro);
     }
-    vaciarLista(rankingJugadores);
+
+    printf("\n===============================================\n");
+    system("pause");
 }
