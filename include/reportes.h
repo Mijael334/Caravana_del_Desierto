@@ -32,8 +32,8 @@ typedef struct
 } tRanking;
 
 int registrarPartidaEnArchivo(tReportePartida *reporte);
-void mostrarRankingJugadores(tListaSE *rankingJugadores);
-void imprimirRanking(const void *d);
+void mostrarRanking(const tListaSE *ranking, void (*mostrarRegistro)(const void *));
+void imprimirRegistroRanking(const void *d);
 int cmpPuntos(const void *a, const void *b);
 
 #endif // REPORTES_H_INCLUDED
