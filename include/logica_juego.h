@@ -57,6 +57,8 @@ typedef struct
     tCola movimientos;
     tLista ruta;
     tEventoTurno ultimoEvento;
+    unsigned ultimosPasos;
+    char ultimaDireccion;
 } tPartida;
 
 typedef struct

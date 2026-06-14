@@ -130,9 +130,14 @@ void leerNicknamePorTeclado(char *nickname, int tamMaxNickname)
         nickname[len - 1] = '\0';
 }
 
-void mostrarEstadoJugador(const tJugador *jugador)
+void mostrarEstadoPartida(const tPartida *partida)  
 {
-    printf("   Vidas: %u   |   Puntos: %u\n\n", jugador->estadoEnPartida.vidas, jugador->estadoEnPartida.puntos);
+    printf("   Vidas: %u   |   Puntos: %u", partida->jugador.estadoEnPartida.vidas, partida->jugador.estadoEnPartida.puntos);
+
+    if(partida->ultimosPasos == 0)
+        printf("   |   --\n\n");
+    else
+        printf("   |   Ultimo movimiento: %c%u\n\n", partida->ultimaDireccion, partida->ultimosPasos);
 }
 
 void mostrarMensajeEvento(tEventoTurno evento)
@@ -169,26 +174,30 @@ void mostrarMensajeEvento(tEventoTurno evento)
     }
 }
 
-int pedirDireccionJugador(tLista *ruta, const tJugador *jugador, int cantPasos)
+int pedirDireccionJugador(tLista *ruta, const tPartida *partida, int cantPasos)
 {
     const char *opciones[] = {"ADELANTE", "ATRAS"};
     int seleccion = 0, confirmado = 0, i;
     char tecla;
+    int puedeRetroceder = (cantPasos < (int)partida->jugador.estadoEnPartida.posEnRuta);
+    int cantOpciones = puedeRetroceder ? 2 : 1;
 
     while(!confirmado)
     {
         system("CLS");
-        mostrarEstadoJugador(jugador);
+        mostrarEstadoPartida(partida);
         renderizar_tablero(ruta, stdout);
         printf("\n   Tiraste un %d! Elija direccion:\n\n", cantPasos);
-        for(i = 0; i < 2; i++)
+        for(i = 0; i < cantOpciones; i++)
         {
             if(i == seleccion)
                 printf("        [ %s ]\n", opciones[i]);
             else
                 printf("          %s  \n", opciones[i]);
         }
-        printf("\n   [W/A/S/D] Mover    [ESPACIO] Confirmar\n");
+        if(!puedeRetroceder)
+            printf("\n   (No hay espacio para retroceder)\n");
+        printf("\n   [A/S] Mover    [ESPACIO] Confirmar\n");
 
         tecla = getch();
         if(tecla >= 'A' && tecla <= 'Z')
@@ -203,7 +212,7 @@ int pedirDireccionJugador(tLista *ruta, const tJugador *jugador, int cantPasos)
                 break;
             case 's':
             case 'd':
-                if(seleccion < 1)
+                if(seleccion < cantOpciones - 1)
                     seleccion++;
                 break;
             case 32:
@@ -215,7 +224,7 @@ int pedirDireccionJugador(tLista *ruta, const tJugador *jugador, int cantPasos)
     return seleccion;
 }
 
-void mostrarTableroEsperandoTurno(tLista *ruta, const tJugador *jugador, tEventoTurno evento)
+void mostrarTableroEsperandoTurno(tLista *ruta, const tPartida *partida)
 {
     int listo = 0;
     char tecla;
@@ -223,9 +232,9 @@ void mostrarTableroEsperandoTurno(tLista *ruta, const tJugador *jugador, tEvento
     while(!listo)
     {
         system("CLS");
-        mostrarEstadoJugador(jugador);
+        mostrarEstadoPartida(partida);
         renderizar_tablero(ruta, stdout);
-        mostrarMensajeEvento(evento);
+        mostrarMensajeEvento(partida->ultimoEvento);
         printf("   Toca [ESPACIO] para tirar el dado...\n");
 
         tecla = getch();

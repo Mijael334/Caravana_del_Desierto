@@ -21,9 +21,9 @@ char opcion(const char matriz_menu[][MAX_TEXTO_MENU], const char *titulo, const 
 int seleccionarOpcionMenu(const char *titulo, const char *opciones[], int cantOpciones);
 int solicitarNombreUsuario(char *nombre, int tamMaxNombre, const tArbolBinBusq *arbolIndice, unsigned *indiceReg);
 void leerNicknamePorTeclado(char *nickname, int tamMaxNickname);
-void mostrarEstadoJugador(const tJugador *jugador);
+void mostrarEstadoPartida(const tPartida *partida);
 void mostrarMensajeEvento(tEventoTurno evento);
-void mostrarTableroEsperandoTurno(tLista *ruta, const tJugador *jugador, tEventoTurno evento);
-int pedirDireccionJugador(tLista *ruta, const tJugador *jugador, int cantPasos);
+void mostrarTableroEsperandoTurno(tLista *ruta, const tPartida *partida);
+int pedirDireccionJugador(tLista *ruta, const tPartida *partida, int cantPasos);
 
 #endif // INTERFAZ_USUARIO_H_INCLUDED
