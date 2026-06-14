@@ -57,5 +57,5 @@ int cmpUsuario (const void* a, const void* b)
     const tUsuario* u1 = (const tUsuario*) a;
     const tUsuario* u2 = (const tUsuario*) b;
 
-    return strcmp(u1->nombre, u2->nombre);
+    return strcmp(u1->username, u2->username);
 }

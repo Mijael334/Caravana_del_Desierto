@@ -22,15 +22,15 @@ int registrarPartidaEnArchivo(const tJuego *juego, const char *resultado)
 
 int cmpPuntos(const void *a, const void *b)
 {
-    const tUsuario *usuario1 = (const tUsuario *)a;
-    const tUsuario *usuario2 = (const tUsuario *)b;
-    return usuario2->puntos - usuario1->puntos;
+    const tRanking *r1 = (const tRanking *)a;
+    const tRanking *r2 = (const tRanking *)b;
+    return r1->puntos - r2->puntos;
 }
 
 void imprimirRanking(const void *d)
 {
-    const tUsuario *u = (const tUsuario *)d;
-    printf("     %-15s %10u pts\n", u->nombre, u->puntos);
+    const tRanking *r = (const tRanking *)d;
+    printf("     %-20s %-20s %10u pts\n", r->usuario.username, r->usuario.nickname, r->puntos);
 }
 
 void mostrarRankingJugadores(tListaSE *rankingJugadores)

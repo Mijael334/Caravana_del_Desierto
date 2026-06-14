@@ -13,6 +13,12 @@ typedef struct
     char resultado[10];
 }tReportePartida;
 
+typedef struct
+{
+    tUsuario usuario;
+    unsigned puntos;
+} tRanking;
+
 int registrarPartidaEnArchivo(const tJuego *juego, const char *resultado);
 void mostrarRankingJugadores(tListaSE *rankingJugadores);
 void imprimirRanking(const void *d);

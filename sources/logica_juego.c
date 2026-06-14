@@ -78,11 +78,11 @@ int procesarMenu(tJuego *juego)
                               "Ver Ranking",
                               "Salir del juego"};
 
-    encontradoEnIndice = solicitarNombreUsuario(juego->usuario.nombre, MAX_NOMBRE + 1, &juego->arbolIndUsuarios);
+    encontradoEnIndice = solicitarNombreUsuario(juego->usuario.username, MAX_NOMBRE + 1, &juego->arbolIndUsuarios);
 
     if (encontradoEnIndice == CLAVE_NO_ENCONTRADA)
     {
-        registrarNuevoUsuarioEnIndice(&juego->arbolIndUsuarios, juego->usuario.nombre, NOM_ARCH_INDICE_USUARIOS);   
+        registrarNuevoUsuarioEnIndice(&juego->arbolIndUsuarios, juego->usuario.username, NOM_ARCH_INDICE_USUARIOS);
     }
 
     seleccion = seleccionarOpcionMenu(TITULO_JUEGO, opciones, 3);
@@ -94,7 +94,7 @@ int procesarMenu(tJuego *juego)
 
             if(ret == TODO_OK)
             {
-                inicializarJugador(&juego->partida.jugador, juego->usuario.nombre, juego->usuario.puntos, juego->configPartida.vidas_incio);
+                inicializarJugador(&juego->partida.jugador, juego->usuario.username, juego->partida.jugador.puntos, juego->configPartida.vidas_incio);
                 juego->partida.cantCasilleros = juego->configPartida.cant_posiciones;
                 juego->partida.cantMovsAdelante = juego->partida.cantMovsAtras = 0;
                 juego->partida.puntosEnPartida = 0;

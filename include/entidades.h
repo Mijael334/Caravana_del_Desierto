@@ -37,8 +37,8 @@ typedef struct
 
 typedef struct
 {
-    char nombre [MAX_NOMBRE + 1];
-    unsigned puntos;
+    char username [MAX_NOMBRE + 1];
+    char nickname [MAX_NOMBRE + 1];
 } tUsuario;
 
 void inicializarJugador (tJugador* jugador, const char* nombre, unsigned puntos, unsigned cantVidas);
