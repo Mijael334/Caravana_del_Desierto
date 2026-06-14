@@ -243,34 +243,34 @@ void mostrarTableroEsperandoTurno(tLista *ruta, const tPartida *partida)
             listo = 1;
     }
 }
-
-void animarMovimientoJugador(tLista *ruta, tEstadoJugador *jugador, unsigned pasos, char direccion, unsigned cantPosiciones, const tPartida *partida)
+//void animarMovimientoJugador(tLista *ruta, tEstadoJugador *jugador, unsigned pasos, char direccion, unsigned cantPosiciones, const tPartida *partida)
+void animarMovimientoJugador(tPartida *partida, unsigned pasos, char direccion)
 {
     unsigned i;
     char dirActual = direccion;
 
     for(i = 0; i < pasos; i++)
     {
-        moverJugadorEnRuta(jugador, ruta);
+        moverJugadorEnRuta(&partida->jugador.estadoEnPartida, &partida->ruta);
 
-        if(dirActual == DIR_ADELANTE && jugador->posEnRuta == cantPosiciones)
+        if(dirActual == DIR_ADELANTE && partida->jugador.estadoEnPartida.posEnRuta == partida->cantCasilleros)
             dirActual = DIR_ATRAS;
 
         if(dirActual == DIR_ADELANTE)
-            jugador->posEnRuta++;
+            partida->jugador.estadoEnPartida.posEnRuta++;
         else
-            jugador->posEnRuta--;
+            partida->jugador.estadoEnPartida.posEnRuta--;
 
-        moverJugadorEnRuta(jugador, ruta);
+        moverJugadorEnRuta(&partida->jugador.estadoEnPartida, &partida->ruta);
 
         system("CLS");
         mostrarEstadoPartida(partida);
-        renderizar_tablero(ruta, stdout);
-        Sleep(150);
+        renderizar_tablero(&partida->ruta, stdout);
+        Sleep(TIEMPO_ANIMACION_JUGADOR_MS);
     }
 }
-
-void animarMovimientoBandido(tLista *ruta, tBandido *bandido, unsigned pasos, char direccion, unsigned cantPosiciones, const tPartida *partida)
+//void animarMovimientoBandido(tLista *ruta, tBandido *bandido, unsigned pasos, char direccion, unsigned cantPosiciones, const tPartida *partida)
+void animarMovimientoBandido(tPartida *partida,tBandido *bandido, unsigned pasos, char direccion)
 {
     unsigned i;
     tCasillero clave, *casillero;
@@ -278,30 +278,30 @@ void animarMovimientoBandido(tLista *ruta, tBandido *bandido, unsigned pasos, ch
     for(i = 0; i < pasos; i++)
     {
         clave.numeroCasillero = bandido->posEnRuta;
-        casillero = (tCasillero*) buscarElemPorClaveLista(ruta, &clave, cmpCasillero);
+        casillero = (tCasillero*) buscarElemPorClaveLista(&partida->ruta, &clave, cmpCasillero);
         casillero->cantBandidos--;
 
         if(direccion == DIR_ADELANTE)
         {
             bandido->posEnRuta++;
-            if(bandido->posEnRuta > cantPosiciones)
+            if(bandido->posEnRuta > partida->cantCasilleros)
                 bandido->posEnRuta = 1;
         }
         else
         {
             if(bandido->posEnRuta == 1)
-                bandido->posEnRuta = cantPosiciones;
+                bandido->posEnRuta = partida->cantCasilleros;
             else
                 bandido->posEnRuta--;
         }
 
         clave.numeroCasillero = bandido->posEnRuta;
-        casillero = (tCasillero*) buscarElemPorClaveLista(ruta, &clave, cmpCasillero);
+        casillero = (tCasillero*) buscarElemPorClaveLista(&partida->ruta, &clave, cmpCasillero);
         casillero->cantBandidos++;
 
         system("CLS");
         mostrarEstadoPartida(partida);
-        renderizar_tablero(ruta, stdout);
-        Sleep(50);
+        renderizar_tablero(&partida->ruta, stdout);
+        Sleep(TIEMPO_ANIMACION_BANDIDO_MS);
     }
 }

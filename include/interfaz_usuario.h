@@ -12,6 +12,9 @@
 
 #define TITULO_JUEGO "CARAVANA DEL DESIERTO"
 
+#define TIEMPO_ANIMACION_JUGADOR_MS 150
+#define TIEMPO_ANIMACION_BANDIDO_MS 50
+
 #define MAX_TEXTO_MENU 35
 
 
@@ -26,7 +29,7 @@ void mostrarMensajeEvento(tEventoTurno evento);
 void mostrarTableroEsperandoTurno(tLista *ruta, const tPartida *partida);
 int pedirDireccionJugador(tLista *ruta, const tPartida *partida, int cantPasos);
 
-void animarMovimientoJugador(tLista *ruta, tEstadoJugador *jugador, unsigned pasos, char direccion, unsigned cantPosiciones, const tPartida *partida);
-void animarMovimientoBandido(tLista *ruta, tBandido *bandido, unsigned pasos, char direccion, unsigned cantPosiciones, const tPartida *partida);
+void animarMovimientoJugador(tPartida *partida, unsigned pasos, char direccion);
+void animarMovimientoBandido(tPartida *partida,tBandido *bandido, unsigned pasos, char direccion);
 
 #endif // INTERFAZ_USUARIO_H_INCLUDED
