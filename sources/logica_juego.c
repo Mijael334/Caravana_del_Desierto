@@ -93,7 +93,7 @@ int procesarMenu(tJuego *juego)
                 ret = crear_tablero_circular(&juego->partida.ruta, &juego->configPartida, juego->partida.bandidos);
 
                 if(ret == TODO_OK)
-                    guardar_tablero_en_archivo(&juego->partida.ruta, juego->configPartida.cant_posiciones);
+                    guardar_tablero_en_archivo(&juego->partida.ruta);
                 else
                     juego->corriendo = FALSO;
 
@@ -140,22 +140,6 @@ int procesarPartida(tJuego *juego)
     return TODO_OK;
 }
 
-int procesarPuntajePartida(const tPartida* partida, tEstadoJuego* estadoJuego)
-{
-    printf("\n=============PARTIDA FINALIZADA=============\n");
-    printf("Resultado: %s", partida->jugador.estadoEnPartida.vidas != 0 ? MSJ_RESULTADO_VICTORIA : MSJ_RESULTADO_DERROTA );
-    printf("Jugador: %s", partida->jugador.nombre);
-    printf("puntos: %d\t\tVidas Restantes: %d", partida->jugador.estadoEnPartida.puntos, partida->jugador.estadoEnPartida.vidas);
-    printf("Forward: %d casillas\t\tBackward: %d casillas", partida->cantMovsAdelante, partida->cantMovsAtras);
-
-    //aca iria un fwrite con todos estos datos en el registro de partida
-
-    //aca debe pedir enter para seguir
-
-    *estadoJuego = ESTADO_MENU;
-
-    return TODO_OK;
-}
 
 int procesarPuntajePartida(const tPartida* partida, tEstadoJuego* estadoJuego)
 {
