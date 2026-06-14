@@ -1,19 +1,14 @@
 #include "../include/reportes.h"
 
-int registrarPartidaEnArchivo(const tJuego *juego, const char *resultado)
+int registrarPartidaEnArchivo(tReportePartida *reporte)
 {
     FILE *arch;
-    tReportePartida reporte;
     if(abrir_archivo(&arch, NOM_ARCH_PARTIDAS, "a+b"))
     {
         return ERROR_ARCHIVO_PARTIDAS;
     }
     fseek(arch, 0L, SEEK_END);
-    reporte.idPartida = (ftell(arch) / sizeof(tReportePartida)) + 1;
-    reporte.usuario = juego->usuario;
-    reporte.datosPartida = juego->partida.jugador.estadoEnPartida;
-    reporte.cantMovimientos = juego->partida.cantMovsAdelante + juego->partida.cantMovsAtras;
-    strcpy(reporte.resultado, resultado);
+    reporte->idPartida = (ftell(arch) / sizeof(tReportePartida)) + 1;
     fwrite(&reporte, sizeof(tReportePartida), 1, arch);
     fclose(arch);
 

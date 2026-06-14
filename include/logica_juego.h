@@ -61,9 +61,9 @@ int procesarJuego (tJuego* juego);
 
 int procesarMenu(tJuego* juego);
 int procesarPartida (tJuego* juego);
-int procesarPuntajePartida(const tPartida* partida, tEstadoJuego* estadoJuego);
+int procesarPuntajePartida(const tUsuario* usuario, const tPartida* partida, tEstadoJuego* estadoJuego);
 
-int actualizarEstadoPartida (tJugador* jugador, tBandido* bandidos, unsigned cantBandidos,tLista* ruta, unsigned cantCasilleros, tEstadoJuego* estadoJuego);
+int actualizarEstadoPartida(tPartida* partida, unsigned cantBandidos, tEstadoJuego* estadoJuego);
 void finalizarPartida (tJuego* juego);
 void eliminarBandido(tBandido* bandido, tLista* ruta, unsigned cantCasilleros);
 

@@ -1,16 +1,29 @@
 #ifndef REPORTES_H_INCLUDED
 #define REPORTES_H_INCLUDED
 
-#include "../include/logica_juego.h"
-#include "../include/lista_enlazada.h"
+#include "utilidades.h"
+#include "lista_enlazada.h"
+#include "gestion_archivos.h"
+
+
+#define TAM_RESULTADO 9
+
+typedef struct
+{
+    char username [TAM_MAX_NOM + 1];
+    char nickname [TAM_MAX_NOM + 1];
+} tUsuario;
 
 typedef struct
 {
     unsigned idPartida;
     tUsuario usuario;
-    tEstadoJugador datosPartida;
     unsigned cantMovimientos;
-    char resultado[10];
+    unsigned puntosObtenidos;
+    unsigned vidasRestantes;
+    unsigned forwardCasillas;
+    unsigned backwardCasillas;
+    char resultado[TAM_RESULTADO];
 }tReportePartida;
 
 typedef struct
@@ -19,7 +32,7 @@ typedef struct
     unsigned puntos;
 } tRanking;
 
-int registrarPartidaEnArchivo(const tJuego *juego, const char *resultado);
+int registrarPartidaEnArchivo(tReportePartida *reporte);
 void mostrarRankingJugadores(tListaSE *rankingJugadores);
 void imprimirRanking(const void *d);
 int cmpPuntos(const void *a, const void *b);

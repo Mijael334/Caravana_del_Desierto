@@ -58,7 +58,7 @@ int procesarJuego(tJuego *juego)
         ret = procesarPartida(juego);
         break;
     case ESTADO_PUNTAJE_PARTIDA:
-        ret = procesarPuntajePartida(&juego->partida, &juego->estadoJuego);
+        ret = procesarPuntajePartida(&juego->usuario, &juego->partida, &juego->estadoJuego);
         break;
     case ESTADO_RANKING:
         // mostrar ranking
@@ -84,7 +84,7 @@ int procesarMenu(tJuego *juego)
 
     if(juego->usuario.username[0] == '\0')
     {
-        encontradoEnIndice = solicitarNombreUsuario(juego->usuario.username, MAX_NOMBRE + 1, &juego->arbolIndUsuarios, &indiceReg);
+        encontradoEnIndice = solicitarNombreUsuario(juego->usuario.username, TAM_MAX_NOM + 1, &juego->arbolIndUsuarios, &indiceReg);
 
 
         if(encontradoEnIndice == CLAVE_ENCONTRADA)
@@ -93,7 +93,7 @@ int procesarMenu(tJuego *juego)
         }
         else
         {
-            leerNicknamePorTeclado(juego->usuario.nickname, MAX_NOMBRE + 1);
+            leerNicknamePorTeclado(juego->usuario.nickname, TAM_MAX_NOM + 1);
             agregarUsuarioEnArchivo(&juego->usuario, NOM_ARCH_USUARIOS, &posNueva);
             registrarNuevoUsuarioEnIndice(&juego->arbolIndUsuarios, juego->usuario.username, posNueva, NOM_ARCH_INDICE_USUARIOS);
         }
@@ -106,10 +106,9 @@ int procesarMenu(tJuego *juego)
         case 0:
             ret = crear_tablero_circular(&juego->partida.ruta, &juego->configPartida, juego->partida.bandidos);
 
-
             if(ret == TODO_OK)
             {
-                inicializarJugador(&juego->partida.jugador, juego->usuario.username, juego->partida.jugador.puntos, juego->configPartida.vidas_incio);
+                inicializarJugador(&juego->partida.jugador, juego->usuario.nickname, juego->partida.jugador.puntos, juego->configPartida.vidas_incio);
                 juego->partida.cantCasilleros = juego->configPartida.cant_posiciones;
                 juego->partida.cantMovsAdelante = juego->partida.cantMovsAtras = 0;
                 juego->partida.puntosEnPartida = 0;
@@ -154,8 +153,7 @@ int procesarPartida(tJuego *juego)
     desencolarMovimientos(&juego->partida.movimientos, juego->partida.bandidos, juego->configPartida.bandidos_max, &juego->partida.jugador.estadoEnPartida,
                           &juego->partida.ruta, juego->partida.cantCasilleros);
 
-    actualizarEstadoPartida(&juego->partida.jugador, juego->partida.bandidos, juego->configPartida.bandidos_max, &juego->partida.ruta,
-                            juego->partida.cantCasilleros, &juego->estadoJuego);
+    actualizarEstadoPartida(&juego->partida, juego->configPartida.bandidos_max, &juego->estadoJuego);
 
     renderizar_tablero(&juego->partida.ruta, stdout);
 
@@ -166,48 +164,58 @@ int procesarPartida(tJuego *juego)
 }
 
 
-int procesarPuntajePartida(const tPartida* partida, tEstadoJuego* estadoJuego)
+int procesarPuntajePartida(const tUsuario* usuario, const tPartida* partida, tEstadoJuego* estadoJuego)
 {
+    tReportePartida reporte;
+
+    strcpy(reporte.resultado,  partida->jugador.estadoEnPartida.vidas != 0 ? MSJ_RESULTADO_VICTORIA : MSJ_RESULTADO_DERROTA);
+    strcpy(reporte.usuario.username, usuario->username);
+    strcpy(reporte.usuario.nickname, usuario->nickname);
+    reporte.puntosObtenidos = partida->jugador.estadoEnPartida.puntos;
+    reporte.vidasRestantes = partida->jugador.estadoEnPartida.vidas;
+    reporte.forwardCasillas = partida->cantMovsAdelante;
+    reporte.forwardCasillas = partida->cantMovsAtras;
+
     printf("\n=============PARTIDA FINALIZADA=============\n");
     printf("Resultado: %s", partida->jugador.estadoEnPartida.vidas != 0 ? MSJ_RESULTADO_VICTORIA : MSJ_RESULTADO_DERROTA );
-    printf("Jugador: %s", partida->jugador.nombre);
-    printf("puntos: %d\t\tVidas Restantes: %d", partida->jugador.estadoEnPartida.puntos, partida->jugador.estadoEnPartida.vidas);
+    printf("Username: %s\t\tnickname", partida->jugador.nombre);
+    printf("Puntos: %d\t\tVidas Restantes: %d", partida->jugador.estadoEnPartida.puntos, partida->jugador.estadoEnPartida.vidas);
     printf("Forward: %d casillas\t\tBackward: %d casillas", partida->cantMovsAdelante, partida->cantMovsAtras);
 
-    //aca debe pedir enter para seguir
+    registrarPartidaEnArchivo(&reporte);
 
     *estadoJuego = ESTADO_MENU;
 
     return TODO_OK;
 }
 
-int actualizarEstadoPartida(tJugador *jugador, tBandido *bandidos, unsigned cantBandidos, tLista *ruta, unsigned cantCasilleros, tEstadoJuego *estadoJuego)
+int actualizarEstadoPartida(tPartida* partida, unsigned cantBandidos, tEstadoJuego* estadoJuego)
 {
     tCasillero casilleroNum, *casillero;
 
-    casilleroNum.numeroCasillero = jugador->estadoEnPartida.posEnRuta;
+    casilleroNum.numeroCasillero = partida->jugador.estadoEnPartida.posEnRuta;
 
-    casillero = buscarElemPorClaveLista(ruta, &casilleroNum, cmpCasillero);
+    casillero = buscarElemPorClaveLista(&partida->ruta, &casilleroNum, cmpCasillero);
 
-    if (jugador->estadoEnPartida.protegido == VERDADERO)
-        jugador->estadoEnPartida.protegido = FALSO;
+    if (partida->jugador.estadoEnPartida.protegido == VERDADERO)
+        partida->jugador.estadoEnPartida.protegido = FALSO;
 
-    if (jugador->estadoEnPartida.afectadoPorTormenta == VERDADERO)
-        jugador->estadoEnPartida.afectadoPorTormenta = FALSO;
+    if (partida->jugador.estadoEnPartida.afectadoPorTormenta == VERDADERO)
+        partida->jugador.estadoEnPartida.afectadoPorTormenta = FALSO;
 
     switch (casillero->evento)
     {
     case EVENTO_OASIS:
-        jugador->estadoEnPartida.protegido = VERDADERO;
+        partida->jugador.estadoEnPartida.protegido = VERDADERO;
         break;
     case EVENTO_PREMIO:
-        jugador->estadoEnPartida.puntos += PUNTOS_PREMIO;
+        partida->jugador.estadoEnPartida.puntos += PUNTOS_PREMIO;
         break;
     case EVENTO_VIDA_EXTRA:
-        jugador->estadoEnPartida.vidas++;
+        partida->jugador.estadoEnPartida.vidas++;
         break;
     case EVENTO_TORMENTA:
-        jugador->estadoEnPartida.afectadoPorTormenta = VERDADERO;
+        partida->jugador.estadoEnPartida.afectadoPorTormenta = VERDADERO;
         break;
     case EVENTO_SALIDA:
         *estadoJuego = ESTADO_PUNTAJE_PARTIDA;
@@ -225,31 +233,31 @@ int actualizarEstadoPartida(tJugador *jugador, tBandido *bandidos, unsigned cant
     if (casillero->cantBandidos > 0)
     {
         tBandido *bandido = NULL;
-        unsigned posJugador = jugador->estadoEnPartida.posEnRuta, i = 0;
+        unsigned posJugador = partida->jugador.estadoEnPartida.posEnRuta, i = 0;
 
-        if (jugador->estadoEnPartida.protegido == FALSO)
+        if (partida->jugador.estadoEnPartida.protegido == FALSO)
         {
             // mueve al jugador al inicio
-            moverJugadorEnRuta(&jugador->estadoEnPartida, ruta);
-            jugador->estadoEnPartida.posEnRuta = 1;
-            moverJugadorEnRuta(&jugador->estadoEnPartida, ruta);
+            moverJugadorEnRuta(&partida->jugador.estadoEnPartida, &partida->ruta);
+            partida->jugador.estadoEnPartida.posEnRuta = 1;
+            moverJugadorEnRuta(&partida->jugador.estadoEnPartida, &partida->ruta);
 
-            jugador->estadoEnPartida.vidas--;
+            partida->jugador.estadoEnPartida.vidas--;
 
-            if (jugador->estadoEnPartida.vidas == 0)
+            if (partida->jugador.estadoEnPartida.vidas == 0)
                 *estadoJuego = ESTADO_PUNTAJE_PARTIDA;
         }
 
         // busca al bandido en base a la posicion
         while (bandido == NULL && i < cantBandidos)
         {
-            if ((bandidos + i)->posEnRuta == posJugador && (bandidos + i)->vivo == VIVO)
-                bandido = bandidos + i;
+            if ((partida->bandidos + i)->posEnRuta == posJugador && (partida->bandidos + i)->vivo == VIVO)
+                bandido = partida->bandidos + i;
             else
                 i++;
         }
 
-        eliminarBandido(bandido, ruta, cantCasilleros);
+        eliminarBandido(bandido, &partida->ruta, partida->cantCasilleros);
     }
 
     return TODO_OK;
@@ -278,7 +286,7 @@ void eliminarBandido(tBandido *bandido, tLista *ruta, unsigned cantCasilleros)
 void ingresarNombreJugador(char *nombre)
 {
     printf("Ingrese su nombre: ");
-    fgets(nombre, MAX_NOMBRE + 1, stdin);
+    fgets(nombre, TAM_MAX_NOM + 1, stdin);
 }
 
 /*
@@ -444,7 +452,7 @@ void mostrarError (int err)
         break;
     case ERROR_MEM: puts("HUBO UN ERROR AL RESERVAR MEMORIA.");
         break;
-    case ERROR_ARCHIVO_CONFIG: puts("HUBO UN ERROR AL ABRIR EL ARCHVOS DE CONFIGURACION.");
+    case ERROR_ARCHIVO_CONFIG: puts("HUBO UN ERROR AL ABRIR EL ARCHIVO DE CONFIGURACION.");
         break;
     case ERROR_ARCHIVO_INDICE: puts("HUBO UN ERROR AL ABRIR EL ARCHIVO DE INDICE DE USUARIOS.");
         break;

@@ -381,7 +381,7 @@ int crear_tablero_circular(tLista *lista, const tConfig *configuracion, tBandido
         {
             casillero_aux.numeroCasillero = i + 1;
             casillero_aux.evento = EVENTO_VACIO;
-            casillero_aux.jugadorAca = VERDADERO;
+            casillero_aux.jugadorAca = FALSO;
             casillero_aux.cantBandidos = 0;
             if(insFinLista(lista, &casillero_aux, sizeof(tCasillero)) != OK)
             {
@@ -394,7 +394,7 @@ int crear_tablero_circular(tLista *lista, const tConfig *configuracion, tBandido
     clave.numeroCasillero = 1;
     inicial = (tCasillero*) buscarElemPorClaveLista(lista, &clave, cmpCasillero);
     inicial->evento = EVENTO_INICIO;
-    inicial->jugadorAca = 1;
+    inicial->jugadorAca = VERDADERO;
     clave.numeroCasillero = configuracion->cant_posiciones;
     final = (tCasillero*) buscarElemPorClaveLista(lista, &clave, cmpCasillero);
     final->evento = EVENTO_SALIDA;
