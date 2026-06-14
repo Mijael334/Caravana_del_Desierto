@@ -23,7 +23,7 @@ int inicializarJuego(tJuego *juego)
     crearColaDin(&juego->partida.movimientos);
     crearColaDin(&juego->partida.registroMovimientos); 
     crearArbolBinBusq(&juego->arbolIndUsuarios);
-    crearLista(&juego->listaRankingJugadores);
+    crearListaSimple(&juego->listaRankingJugadores);
     crearLista(&juego->partida.ruta);
 
     ret = indexarArchivoUsuariosOrdenado(&juego->arbolIndUsuarios, NOM_ARCH_INDICE_USUARIOS);
