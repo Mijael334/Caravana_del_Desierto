@@ -56,6 +56,7 @@ typedef struct
     int cantMovsAdelante;
     int cantMovsAtras;
     tCola movimientos;
+    tCola registroMovimientos; 
     tLista ruta;
     tEventoTurno ultimoEvento;
     unsigned ultimosPasos;
@@ -78,7 +79,7 @@ int procesarJuego (tJuego* juego);
 
 int procesarMenu(tJuego* juego);
 int procesarPartida (tJuego* juego);
-int procesarPuntajePartida(const tUsuario* usuario, const tPartida* partida, tEstadoJuego* estadoJuego);
+int procesarPuntajePartida(const tUsuario* usuario, tPartida* partida, tEstadoJuego* estadoJuego);
 
 int actualizarEstadoPartida(tPartida* partida, unsigned cantBandidos, tEstadoJuego* estadoJuego);
 void finalizarPartida (tJuego* juego);
