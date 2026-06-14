@@ -33,7 +33,7 @@ void imprimirRanking(const void *d)
     printf("     %-15s %10u pts\n", u->nombre, u->puntos);
 }
 
-void mostrarRankingJugadores(tLista *rankingJugadores)
+void mostrarRankingJugadores(tListaSE *rankingJugadores)
 {
     FILE *arch;
     tUsuario usuario;

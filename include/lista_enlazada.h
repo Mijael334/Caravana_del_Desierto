@@ -18,12 +18,12 @@ typedef struct sNodoLista
     struct sNodoLista *sig;
 }tNodoLista;
 
-typedef tNodoLista *tLista;
+typedef tNodoLista *tListaSE;
 
-void crearListaSimple(tLista *pl);
-int listaVacia(const tLista *pl);
-int insertarEnOrdenLista(tLista *pl, const void *d, unsigned tam, int (*comparar)(const void *, const void *));
-void vaciarLista(tLista *pl);
-void mostrarLista(const tLista *pl, void (*mostrar)(const void *));
+void crearListaSimple(tListaSE *pl);
+int listaVacia(const tListaSE *pl);
+int insertarEnOrdenLista(tListaSE *pl, const void *d, unsigned tam, int (*comparar)(const void *, const void *));
+void vaciarLista(tListaSE *pl);
+void mostrarLista(const tListaSE *pl, void (*mostrar)(const void *));
 
 #endif // LISTA_ENLAZADA_H_INCLUDED
