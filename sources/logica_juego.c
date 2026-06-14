@@ -158,7 +158,7 @@ int procesarPartida(tJuego *juego)
                                juego->partida.cantCasilleros);
 
     desencolarMovimientos(&juego->partida.movimientos, juego->partida.bandidos, juego->configPartida.bandidos_max, &juego->partida.jugador.estadoEnPartida,
-                          &juego->partida.ruta, juego->partida.cantCasilleros);
+                          &juego->partida.ruta, juego->partida.cantCasilleros, &juego->partida);
 
     actualizarEstadoPartida(&juego->partida, juego->configPartida.bandidos_max, &juego->estadoJuego);
 
@@ -369,7 +369,7 @@ void encolarMovimientosBandidos(tCola *cola, tBandido *bandidos, unsigned cantBa
     }
 }
 
-void desencolarMovimientos(tCola *cola, tBandido *bandidos, unsigned cantBandidos, tEstadoJugador *jugador, tLista *ruta, unsigned cantPosiciones)
+void desencolarMovimientos(tCola *cola, tBandido *bandidos, unsigned cantBandidos, tEstadoJugador *jugador, tLista *ruta, unsigned cantPosiciones, const tPartida *partida)
 {
     tMovimiento mov;
     int i;
@@ -381,18 +381,14 @@ void desencolarMovimientos(tCola *cola, tBandido *bandidos, unsigned cantBandido
         if (mov.id == ID_JUGADOR)
         {
             if (jugador->afectadoPorTormenta == FALSO)
-            {
-                moverJugadorEnRuta(jugador, ruta);
-                moverJugador(jugador, mov.cantPasos, mov.direccion, cantPosiciones);
-                moverJugadorEnRuta(jugador, ruta);
-            }
+                animarMovimientoJugador(ruta, jugador, mov.cantPasos, mov.direccion, cantPosiciones, partida);
         }
         else
         {
             for (i = 0; i < cantBandidos; i++)
             {
                 if ((bandidos + i)->id == mov.id && (bandidos + i)->vivo == VIVO)
-                    moverBandidoEnRuta(bandidos + i, &mov, ruta, cantPosiciones);
+                    animarMovimientoBandido(ruta, bandidos + i, mov.cantPasos, mov.direccion, cantPosiciones, partida);
             }
         }
     }

@@ -26,4 +26,7 @@ void mostrarMensajeEvento(tEventoTurno evento);
 void mostrarTableroEsperandoTurno(tLista *ruta, const tPartida *partida);
 int pedirDireccionJugador(tLista *ruta, const tPartida *partida, int cantPasos);
 
+void animarMovimientoJugador(tLista *ruta, tEstadoJugador *jugador, unsigned pasos, char direccion, unsigned cantPosiciones, const tPartida *partida);
+void animarMovimientoBandido(tLista *ruta, tBandido *bandido, unsigned pasos, char direccion, unsigned cantPosiciones, const tPartida *partida);
+
 #endif // INTERFAZ_USUARIO_H_INCLUDED
