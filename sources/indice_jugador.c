@@ -41,18 +41,18 @@ void cargarArchivoOrdenadoEnIndiceBalanceado(tArbolBinBusq *pa, FILE *arch, int 
     cargarArchivoOrdenadoEnIndiceBalanceado(pa , arch, medio + 1, fin);
 }
 
-int registrarNuevoUsuarioEnIndice(tArbolBinBusq *arbol, const char *nombre, const char *nombreArchivoIndice)
+int registrarNuevoUsuarioEnIndice(tArbolBinBusq *arbol, const char *nombre, unsigned posNueva, const char *nombreArchivoIndice)
 {
     tIndice nuevo;
     int ret;
- 
+
     strncpy(nuevo.clave.nombre, nombre, TAM_MAX_NOM - 1);
     nuevo.clave.nombre[TAM_MAX_NOM - 1] = '\0';
     nuevo.indiceRegistro = 0;
- 
+
     ret = insertarArbolBinBusq(arbol, &nuevo, sizeof(tIndice), cmpClaveIndice);
     if(ret != TODO_OK)
         return ret;
- 
+
     return guardarIndiceEnArchivo(arbol, nombreArchivoIndice);
 }
