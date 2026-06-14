@@ -26,6 +26,19 @@ typedef enum
     ESTADO_SALIR,
 } tEstadoJuego;
 
+typedef enum
+{
+    EVENTO_TURNO_INICIO = 0,
+    EVENTO_TURNO_NADA,
+    EVENTO_TURNO_OASIS,
+    EVENTO_TURNO_PREMIO,
+    EVENTO_TURNO_VIDA_EXTRA,
+    EVENTO_TURNO_TORMENTA,
+    EVENTO_TURNO_BANDIDO,
+    EVENTO_TURNO_MUERTE,
+    EVENTO_TURNO_VICTORIA,
+} tEventoTurno;
+
 typedef struct
 {
     unsigned cantPasos;
@@ -43,6 +56,7 @@ typedef struct
     int cantMovsAtras;
     tCola movimientos;
     tLista ruta;
+    tEventoTurno ultimoEvento;
 } tPartida;
 
 typedef struct
@@ -63,7 +77,7 @@ int procesarMenu(tJuego* juego);
 int procesarPartida (tJuego* juego);
 int procesarPuntajePartida(const tPartida* partida, tEstadoJuego* estadoJuego);
 
-int actualizarEstadoPartida (tJugador* jugador, tBandido* bandidos, unsigned cantBandidos,tLista* ruta, unsigned cantCasilleros, tEstadoJuego* estadoJuego);
+int actualizarEstadoPartida (tJugador* jugador, tBandido* bandidos, unsigned cantBandidos,tLista* ruta, unsigned cantCasilleros, tEstadoJuego* estadoJuego, tEventoTurno *eventoActual);
 void finalizarPartida (tJuego* juego);
 void eliminarBandido(tBandido* bandido, tLista* ruta, unsigned cantCasilleros);
 
