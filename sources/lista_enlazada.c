@@ -1,16 +1,16 @@
 #include "../include/lista_enlazada.h"
 
-void crearListaSimple(tLista *pl)
+void crearListaSimple(tListaSE *pl)
 {
     *pl = NULL;
 }
 
-int listaVacia(const tLista *pl)
+int listaVacia(const tListaSE *pl)
 {
     return *pl == NULL;
 }
 
-int insertarEnOrdenLista(tLista *pl, const void *d, unsigned tam, int (*comparar)(const void *, const void *))
+int insertarEnOrdenLista(tListaSE *pl, const void *d, unsigned tam, int (*comparar)(const void *, const void *))
 {
     tNodoLista *nue;
     while(*pl && comparar((*pl)->info, d) > 0)
@@ -35,7 +35,7 @@ int insertarEnOrdenLista(tLista *pl, const void *d, unsigned tam, int (*comparar
     return OK;
 }
 
-void vaciarLista(tLista *pl)
+void vaciarLista(tListaSE *pl)
 {
     while(*pl)
     {
@@ -46,7 +46,7 @@ void vaciarLista(tLista *pl)
     }
 }
 
-void mostrarLista(const tLista *pl, void (*mostrar)(const void *))
+void mostrarLista(const tListaSE *pl, void (*mostrar)(const void *))
 {
     while(*pl)
     {

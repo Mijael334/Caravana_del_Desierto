@@ -1,4 +1,6 @@
 #include "../include/entidades.h"
+#include "../include/gestion_archivos.h"
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -30,10 +32,10 @@ int crearBandidos (tBandido** bandidos, unsigned cantBandidos, unsigned cantCasi
 
     for (i = 0; i < cantBandidos; i++)
     {
-        bandido.id = bandido.id + i;
+        bandido.id++;
         bandido.posEnRuta = generarRandomUniforme(cantCasilleros);
 
-        memcpy(bandidos + i, &bandido, sizeof(bandido));
+        memcpy(*bandidos + i, &bandido, sizeof(bandido));
     }
     
     return TODO_OK;
@@ -57,5 +59,47 @@ int cmpUsuario (const void* a, const void* b)
     const tUsuario* u1 = (const tUsuario*) a;
     const tUsuario* u2 = (const tUsuario*) b;
 
-    return strcmp(u1->nombre, u2->nombre);
+    return strcmp(u1->username, u2->username);
+}
+
+int agregarUsuarioEnArchivo(const tUsuario *usuario, const char *nombreArchivo, unsigned *posOut)
+{
+    FILE *arch;
+    long offset;
+ 
+    arch = fopen(nombreArchivo, "ab");
+    if(arch == NULL)
+        return ERROR_ARCHIVO_USUARIOS;
+ 
+    offset = ftell(arch);
+    if(offset < 0)
+    {
+        fclose(arch);
+        return ERROR_ARCHIVO_USUARIOS;
+    }
+ 
+    fwrite(usuario, sizeof(tUsuario), 1, arch);
+    fclose(arch);
+ 
+    *posOut = (offset / sizeof(tUsuario));
+    return TODO_OK;
+}
+ 
+int leerUsuarioDeArchivo(tUsuario *usuario, unsigned pos, const char *nombreArchivo)
+{
+    FILE *arch;
+ 
+    arch = fopen(nombreArchivo, "rb");
+    if(arch == NULL)
+        return ERROR_ARCHIVO_USUARIOS;
+ 
+    fseek(arch, pos * sizeof(tUsuario), SEEK_SET);
+    if(fread(usuario, sizeof(tUsuario), 1, arch) != 1)
+    {
+        fclose(arch);
+        return ERROR_ARCHIVO_USUARIOS;
+    }
+ 
+    fclose(arch);
+    return TODO_OK;
 }

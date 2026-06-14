@@ -2,6 +2,10 @@
 #define GESTION_ARCHIVOS_H_INCLUDED
 
 #include "utilidades.h"
+#include <stdio.h>
+#include <string.h>
+#include "../include/arbol.h"
+#include "../include/cola_dinamica.h"
 
 #define ERROR_ARCHIVO_CONFIG -2
 #define ERROR_ARCHIVO_USUARIOS -3
@@ -11,11 +15,6 @@
 
 #define TAM_MAX 21
 
-#include <stdio.h>
-#include <string.h>
-
-#include "../include/arbol.h"
-#include "../include/cola_dinamica.h"
 
 #define NOM_CONFIG_CANT_POSICIONES "cantidad_posiciones"
 #define NOM_CONFIG_VIDAS_INI "vidas_inicio"
@@ -31,7 +30,7 @@
 #define NOM_ARCH_CARAVANA "docs/caravana.txt"
 #define NOM_ARCH_INDICE_USUARIOS "docs/indice.idx"
 #define NOM_ARCH_PARTIDAS "docs/partidas.dat"
-/// talvez podria usar signed(ya que solo podriamos usar num > 0)
+
 typedef struct
 {
     unsigned cant_posiciones;

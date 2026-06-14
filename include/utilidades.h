@@ -4,6 +4,8 @@
 #define TODO_OK 0
 #define ERROR_MEM -1
 
+#define TAM_MAX_NOM 20
+
 #define FALSO 0
 #define VERDADERO 1
 

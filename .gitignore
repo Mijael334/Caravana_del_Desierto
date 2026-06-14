@@ -11,3 +11,7 @@ obj/
 
 #Objeto
 *.o
+
+#Archivos
+*.dat
+*.idx

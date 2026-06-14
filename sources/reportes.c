@@ -1,37 +1,34 @@
-#include "../../include/reportes.h"
+#include "../include/reportes.h"
 
-void registrarPartidaEnArchivo(const tJuego *juego, const char *resultado)
+int registrarPartidaEnArchivo(tReportePartida *reporte)
 {
     FILE *arch;
-    tReportePartida reporte;
     if(abrir_archivo(&arch, NOM_ARCH_PARTIDAS, "a+b"))
     {
         return ERROR_ARCHIVO_PARTIDAS;
     }
     fseek(arch, 0L, SEEK_END);
-    reporte.idPartida = (ftell(arch) / sizeof(tReportePartida)) + 1;
-    reporte.usuario = juego->usuario;
-    reporte.datosPartida = juego->partida.jugador.estadoEnPartida;
-    reporte.cantMovimientos = juego->partida.cantMovsAdelante + juego->partida.cantMovsAtras;
-    strcpy(reporte.resultado, resultado);
+    reporte->idPartida = (ftell(arch) / sizeof(tReportePartida)) + 1;
     fwrite(&reporte, sizeof(tReportePartida), 1, arch);
     fclose(arch);
+
+    return TODO_OK;
 }
 
 int cmpPuntos(const void *a, const void *b)
 {
-    const tUsuario *usuario1 = (const tUsuario *)a;
-    const tUsuario *usuario2 = (const tUsuario *)b;
-    return usuario2->puntos - usuario1->puntos;
+    const tRanking *r1 = (const tRanking *)a;
+    const tRanking *r2 = (const tRanking *)b;
+    return r1->puntos - r2->puntos;
 }
 
 void imprimirRanking(const void *d)
 {
-    const tUsuario *u = (const tUsuario *)d;
-    printf("     %-15s %10u pts\n", u->nombre, u->puntos);
+    const tRanking *r = (const tRanking *)d;
+    printf("     %-20s %-20s %10u pts\n", r->usuario.username, r->usuario.nickname, r->puntos);
 }
 
-void mostrarRankingJugadores(tLista *rankingJugadores)
+void mostrarRankingJugadores(tListaSE *rankingJugadores)
 {
     FILE *arch;
     tUsuario usuario;
@@ -42,7 +39,7 @@ void mostrarRankingJugadores(tLista *rankingJugadores)
     }
     while(fread(&usuario, sizeof(tUsuario), 1, arch))
     {
-        insertarEnOrdenLista(rankingJugadores, &usuario, sizeof(tUsuario), compararUsuariosPorPuntosRanking);
+        insertarEnOrdenLista(rankingJugadores, &usuario, sizeof(tUsuario), cmpPuntos);
     }
     fclose(arch);
     if(listaVacia(rankingJugadores))
@@ -51,7 +48,7 @@ void mostrarRankingJugadores(tLista *rankingJugadores)
     }
     else
     {
-        mostrarLista(rankingJugadores, imprimirRenglonRanking);
+        mostrarLista(rankingJugadores, imprimirRanking);
     }
     vaciarLista(rankingJugadores);
 }

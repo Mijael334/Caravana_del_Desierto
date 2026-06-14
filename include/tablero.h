@@ -43,5 +43,6 @@ void guardar_tablero_en_archivo(tLista *lista);
 int cmpCasillero (const void* a, const void* b);
 int cmpCasilleroEvento (const void* a, const void* b);
 void imprimirCasillero(void *info, FILE *destino);
+void vaciar_datos_casillero(void *dato, FILE *pf);
 
 #endif // TABLERO_H_INCLUDED
