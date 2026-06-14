@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <conio.h>
 #include "time.h"
 
 int inicializarJuego(tJuego *juego)
@@ -175,7 +176,15 @@ int procesarPartida(tJuego *juego)
     renderizar_tablero(&juego->partida.ruta, stdout);
 
     if (juego->estadoJuego == ESTADO_PUNTAJE_PARTIDA)
+    {
+        system("CLS");
+        mostrarEstadoPartida(&juego->partida);
+        renderizar_tablero(&juego->partida.ruta, stdout);
+        mostrarMensajeEvento(juego->partida.ultimoEvento);
+        printf("\n   Presione [ESPACIO] para continuar...\n");
+        while(getch() != 32);
         finalizarPartida(juego);
+    }
 
     return TODO_OK;
 }
@@ -384,7 +393,7 @@ void encolarMovimientoJugador(tCola *cola, unsigned pasos, char direccion, unsig
 
 void encolarMovimientosBandidos(tCola *cola, tBandido *bandidos, unsigned cantBandidos, unsigned posJugador, unsigned cantPosiciones)
 {
-    int i;
+    unsigned i;
     unsigned pasos;
     char dir;
 
@@ -405,7 +414,7 @@ void encolarMovimientosBandidos(tCola *cola, tBandido *bandidos, unsigned cantBa
 void desencolarMovimientos(tPartida *partida, unsigned cantBandidos)
 {
     tMovimiento mov;
-    int i;
+    unsigned i;
 
     while (!colaVaciaDin(&partida->movimientos))
     {
@@ -498,6 +507,7 @@ void limpiarJuego (tJuego* juego)
     vaciarColaDin(&juego->partida.movimientos);
     vaciarColaDin(&juego->partida.registroMovimientos);
     liberarLista(&juego->listaRankingJugadores);
+    liberarLista(&juego->partida.ruta); 
     eliminarArbol(&juego->arbolIndUsuarios);
     free(juego->partida.bandidos);
 }
