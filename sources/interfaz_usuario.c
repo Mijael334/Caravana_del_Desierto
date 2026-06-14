@@ -130,7 +130,46 @@ void leerNicknamePorTeclado(char *nickname, int tamMaxNickname)
         nickname[len - 1] = '\0';
 }
 
-int pedirDireccionJugador(tLista *ruta, int cantPasos)
+void mostrarEstadoJugador(const tJugador *jugador)
+{
+    printf("   Vidas: %u   |   Puntos: %u\n\n", jugador->estadoEnPartida.vidas, jugador->estadoEnPartida.puntos);
+}
+
+void mostrarMensajeEvento(tEventoTurno evento)
+{
+    switch(evento)
+    {
+        case EVENTO_TURNO_INICIO:
+            printf("   >> Comienza la partida!\n");
+            break;
+        case EVENTO_TURNO_NADA:
+            printf("   >> Estas en un desierto, no sucede nada.\n");
+            break;
+        case EVENTO_TURNO_OASIS:
+            printf("   >> Caiste en un oasis, Estas protegido por este turno.\n");
+            break;
+        case EVENTO_TURNO_PREMIO:
+            printf("   >> Caiste en un premio, +%d puntos.\n", PUNTOS_PREMIO);
+            break;
+        case EVENTO_TURNO_VIDA_EXTRA:
+            printf("   >> Caiste en una vida extra, Obtenes +1 de vida.\n");
+            break;
+        case EVENTO_TURNO_TORMENTA:
+            printf("   >> Caiste en una tormenta, Perdes el proximo turno.\n");
+            break;
+        case EVENTO_TURNO_BANDIDO:
+            printf("   >> Te ataco un bandido, Perdiste 1 vida y volviste al inicio.\n");
+            break;
+        case EVENTO_TURNO_MUERTE:
+            printf("   >> Los bandidos te mataron. Fin de la partida.\n");
+            break;
+        case EVENTO_TURNO_VICTORIA:
+            printf("   >> Llegaste a la salida, Victoria!\n");
+            break;
+    }
+}
+
+int pedirDireccionJugador(tLista *ruta, const tJugador *jugador, int cantPasos)
 {
     const char *opciones[] = {"ADELANTE", "ATRAS"};
     int seleccion = 0, confirmado = 0, i;
@@ -139,6 +178,7 @@ int pedirDireccionJugador(tLista *ruta, int cantPasos)
     while(!confirmado)
     {
         system("CLS");
+        mostrarEstadoJugador(jugador);
         renderizar_tablero(ruta, stdout);
         printf("\n   Tiraste un %d! Elija direccion:\n\n", cantPasos);
         for(i = 0; i < 2; i++)
@@ -175,7 +215,7 @@ int pedirDireccionJugador(tLista *ruta, int cantPasos)
     return seleccion;
 }
 
-void mostrarTableroEsperandoTurno(tLista *ruta)
+void mostrarTableroEsperandoTurno(tLista *ruta, const tJugador *jugador, tEventoTurno evento)
 {
     int listo = 0;
     char tecla;
@@ -183,8 +223,9 @@ void mostrarTableroEsperandoTurno(tLista *ruta)
     while(!listo)
     {
         system("CLS");
+        mostrarEstadoJugador(jugador);
         renderizar_tablero(ruta, stdout);
-        printf("\n   Se termino el turno.\n");
+        mostrarMensajeEvento(evento);
         printf("   Toca [ESPACIO] para tirar el dado...\n");
 
         tecla = getch();

@@ -104,7 +104,8 @@ int procesarMenu(tJuego *juego)
     switch (seleccion)
     {
         case 0:
-            ret = crear_tablero_circular(&juego->partida.ruta, &juego->configPartida, juego->partida.bandidos);
+            
+        ret = crear_tablero_circular(&juego->partida.ruta, &juego->configPartida, juego->partida.bandidos);
 
 
             if(ret == TODO_OK)
@@ -113,6 +114,7 @@ int procesarMenu(tJuego *juego)
                 juego->partida.cantCasilleros = juego->configPartida.cant_posiciones;
                 juego->partida.cantMovsAdelante = juego->partida.cantMovsAtras = 0;
                 juego->partida.puntosEnPartida = 0;
+                juego->partida.ultimoEvento = EVENTO_TURNO_INICIO;
 
                 guardar_tablero_en_archivo(&juego->partida.ruta);
                 juego->estadoJuego = ESTADO_PARTIDA;
@@ -141,10 +143,10 @@ int procesarPartida(tJuego *juego)
     int cantPasos;
     char dirMovimiento;
 
-    mostrarTableroEsperandoTurno(&juego->partida.ruta);
+    mostrarTableroEsperandoTurno(&juego->partida.ruta, &juego->partida.jugador, juego->partida.ultimoEvento);
 
     cantPasos = generarRandomUniforme(MAX_DADO);
-    dirMovimiento = (pedirDireccionJugador(&juego->partida.ruta, cantPasos) == 0) ? DIR_ADELANTE : DIR_ATRAS;
+    dirMovimiento = (pedirDireccionJugador(&juego->partida.ruta, &juego->partida.jugador, cantPasos) == 0) ? DIR_ADELANTE : DIR_ATRAS;
 
     encolarMovimientoJugador(&juego->partida.movimientos, cantPasos, dirMovimiento, juego->partida.jugador.estadoEnPartida.posEnRuta);
 
@@ -155,9 +157,7 @@ int procesarPartida(tJuego *juego)
                           &juego->partida.ruta, juego->partida.cantCasilleros);
 
     actualizarEstadoPartida(&juego->partida.jugador, juego->partida.bandidos, juego->configPartida.bandidos_max, &juego->partida.ruta,
-                            juego->partida.cantCasilleros, &juego->estadoJuego);
-
-    renderizar_tablero(&juego->partida.ruta, stdout);
+                            juego->partida.cantCasilleros, &juego->estadoJuego, &juego->partida.ultimoEvento);
 
     if (juego->estadoJuego == ESTADO_PUNTAJE_PARTIDA)
         finalizarPartida(juego);
@@ -181,9 +181,11 @@ int procesarPuntajePartida(const tPartida* partida, tEstadoJuego* estadoJuego)
     return TODO_OK;
 }
 
-int actualizarEstadoPartida(tJugador *jugador, tBandido *bandidos, unsigned cantBandidos, tLista *ruta, unsigned cantCasilleros, tEstadoJuego *estadoJuego)
+int actualizarEstadoPartida(tJugador *jugador, tBandido *bandidos, unsigned cantBandidos, tLista *ruta, unsigned cantCasilleros, tEstadoJuego *estadoJuego, tEventoTurno *eventoActual)
 {
     tCasillero casilleroNum, *casillero;
+
+    *eventoActual = EVENTO_TURNO_NADA;
 
     casilleroNum.numeroCasillero = jugador->estadoEnPartida.posEnRuta;
 
@@ -199,18 +201,23 @@ int actualizarEstadoPartida(tJugador *jugador, tBandido *bandidos, unsigned cant
     {
     case EVENTO_OASIS:
         jugador->estadoEnPartida.protegido = VERDADERO;
+        *eventoActual = EVENTO_TURNO_OASIS;
         break;
     case EVENTO_PREMIO:
         jugador->estadoEnPartida.puntos += PUNTOS_PREMIO;
+        *eventoActual = EVENTO_TURNO_PREMIO;
         break;
     case EVENTO_VIDA_EXTRA:
         jugador->estadoEnPartida.vidas++;
+        *eventoActual = EVENTO_TURNO_VIDA_EXTRA;
         break;
     case EVENTO_TORMENTA:
         jugador->estadoEnPartida.afectadoPorTormenta = VERDADERO;
+        *eventoActual = EVENTO_TURNO_TORMENTA;
         break;
     case EVENTO_SALIDA:
         *estadoJuego = ESTADO_PUNTAJE_PARTIDA;
+        *eventoActual = EVENTO_TURNO_VICTORIA;
         break;
     default:
         break;
@@ -237,7 +244,12 @@ int actualizarEstadoPartida(tJugador *jugador, tBandido *bandidos, unsigned cant
             jugador->estadoEnPartida.vidas--;
 
             if (jugador->estadoEnPartida.vidas == 0)
+            {
                 *estadoJuego = ESTADO_PUNTAJE_PARTIDA;
+                *eventoActual = EVENTO_TURNO_MUERTE;
+            }
+            else
+                *eventoActual = EVENTO_TURNO_BANDIDO;
         }
 
         // busca al bandido en base a la posicion
