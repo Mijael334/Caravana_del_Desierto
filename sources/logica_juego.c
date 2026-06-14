@@ -11,26 +11,9 @@
 
 int inicializarJuego(tJuego *juego)
 {
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 3640d2e75dbe7e4d4c91e53014ea653ce9c19a80
-    ///hay que crear el archivo indice
-    char aceptar;
-    int encontrado;
-    char nombre_propuesto[MAX_NOMBRE + 1];
-    tArbolBinBusq arbolIndice;
-    //FILE *fidx;
-    tIndice *indJugador;
-    crearArchivoIndiceOrdenado(NOM_ARCH_USUARIOS);
-    crearArbolBinBusq(&arbolIndice);
-<<<<<<< HEAD
-=======
-=======
+
     int ret;
 
->>>>>>> 53f4fbce142154ac8953627cde6c7c53f3b1ca75
->>>>>>> 3640d2e75dbe7e4d4c91e53014ea653ce9c19a80
     srand((unsigned)time(NULL));
 
     juego->corriendo = FALSO;
@@ -63,16 +46,7 @@ int inicializarJuego(tJuego *juego)
     return TODO_OK;
 }
 
-void generarNombreUnico(const tArbolBinBusq *pa, const char *nombre_base, char *nombre_final)
-{
-    int num_random;
-    strcpy(nombre_final, nombre_base);
-    while(1)///Ac� debe buscar en el �ndice == CLAVE_ENCONTRADA)
-    {
-        num_random = (rand() % 900) + 100;
-        sprintf(nombre_final, "%s_%d", nombre_base, num_random);
-    }
-}
+
 
 int procesarJuego(tJuego *juego)
 {
