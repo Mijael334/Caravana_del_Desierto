@@ -5,15 +5,15 @@ int configuracion_valida(const tConfig *configuracion)
     int disponibles, total_elementos;
     if(configuracion == NULL)
     {
-        return 0; // no hay arch config
+        return ERROR_ARCHIVO_CONFIG; // no hay arch config
     }
     if(configuracion->cant_posiciones <= 2)
     {
-        return 0; // no se puede usar el tablero
+        return ERROR_ARCHIVO_CONFIG; // no se puede usar el tablero
     }
     if(configuracion->premios_max < 0 || configuracion->max_vidas_extras < 0 || configuracion->oasis_max < 0 || configuracion->tormenta_max < 0 || configuracion->bandidos_max < 0)
     {
-        return 0; //error de parametros en archivos
+        return ERROR_ARCHIVO_CONFIG; //error de parametros en archivos
     }
     disponibles = configuracion->cant_posiciones - 2;
     total_elementos = configuracion->premios_max + configuracion->max_vidas_extras + configuracion->oasis_max + configuracion->tormenta_max + configuracion->bandidos_max;

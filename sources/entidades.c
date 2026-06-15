@@ -54,13 +54,6 @@ int generarRandomUniforme (int max_valor)
     return (random % max_valor) + 1;
 }
 
-int cmpUsuario (const void* a, const void* b)
-{
-    const tUsuario* u1 = (const tUsuario*) a;
-    const tUsuario* u2 = (const tUsuario*) b;
-
-    return strcmp(u1->username, u2->username);
-}
 
 int agregarUsuarioEnArchivo(const tUsuario *usuario, const char *nombreArchivo, unsigned *posOut)
 {
