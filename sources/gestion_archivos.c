@@ -9,7 +9,7 @@ int abrir_archivo(FILE **fp, const char *nombre_archivo, const char *modo)
             return ERROR_ARCHIVO_NO_EXISTE;
 
         fprintf(stderr,"Error en al abrir el archivo %s en modo %s \n", nombre_archivo, modo);
-        return ERROR_ARCHIVO_CONFIG;
+        return ERROR_ARCHIVO_APERTURA;
     }
     return TODO_OK;
 }
@@ -19,12 +19,12 @@ int lectura_de_configuracion(const char *archivo_config, tConfig *parametros)
     FILE *fconfig;
     char clave[TAM_MAX];
     unsigned valor;
-//    if(!abrir_archivo(&fconfig, archivo_config, "rt"))
+
     if(abrir_archivo(&fconfig, archivo_config, "rt"))
     {
         return ERROR_ARCHIVO_CONFIG;
     }
-    ///tal vez pueda validar cada ingreso que sea valor > 0, para evitar errores
+
     while (fscanf(fconfig, "%[^:]:%u\n",clave, &valor) ==  2)
     {
         if(strcmp(clave, NOM_CONFIG_CANT_POSICIONES) == 0)

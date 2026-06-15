@@ -14,6 +14,7 @@ int inicializarJuego(tJuego *juego)
 {
 
     int ret;
+    FILE* arch;
 
     srand((unsigned)time(NULL));
 
@@ -23,18 +24,49 @@ int inicializarJuego(tJuego *juego)
     juego->usuario.nickname[0] = '\0';
     juego->partida.jugador.puntos = 0;
     juego->partida.bandidos = NULL;
+    juego->archPartidas = NULL;
+
     crearColaDin(&juego->partida.movimientos);
     crearColaDin(&juego->partida.registroMovimientos); 
     crearArbolBinBusq(&juego->arbolIndUsuarios);
     crearListaSimple(&juego->listaRankingJugadores);
     crearLista(&juego->partida.ruta);
-    //crearArchivoIndiceOrdenado(&juego->arbolIndUsuarios, NOM_ARCH_USUARIOS);
-    //eliminarArbol(&juego->arbolIndUsuarios);
+
 
     ret = indexarArchivoUsuariosOrdenado(&juego->arbolIndUsuarios, NOM_ARCH_INDICE_USUARIOS);
 
-    if(ret == ERROR_ARCHIVO_INDICE)
-        return ret;
+    if(ret == ERROR_ARCHIVO_NO_EXISTE)
+    {
+        ret = abrir_archivo(&arch, NOM_ARCH_INDICE_USUARIOS, "wb");
+
+        if(ret != TODO_OK)
+            return ERROR_ARCHIVO_APERTURA;
+
+        fclose(arch);
+
+        ret = indexarArchivoUsuariosOrdenado(&juego->arbolIndUsuarios, NOM_ARCH_INDICE_USUARIOS);
+    }
+
+    if(ret != TODO_OK)
+        return ERROR_ARCHIVO_INDICE;
+
+    ret = abrir_archivo(&juego->archPartidas, NOM_ARCH_PARTIDAS, "r+b");
+
+    if(ret == ERROR_ARCHIVO_NO_EXISTE)
+    {
+        ret = abrir_archivo(&juego->archPartidas, NOM_ARCH_PARTIDAS, "wb");
+
+        if(ret != TODO_OK)
+            return ERROR_ARCHIVO_APERTURA;
+
+        fclose(juego->archPartidas);
+
+        ret = abrir_archivo(&juego->archPartidas, NOM_ARCH_PARTIDAS, "r+b");
+    }
+
+    if(ret != TODO_OK)
+        return ERROR_ARCHIVO_PARTIDAS;
+
 
     ret = lectura_de_configuracion(NOM_ARCH_CONFIG, &juego->configPartida);
 
@@ -46,9 +78,6 @@ int inicializarJuego(tJuego *juego)
     if (ret != TODO_OK)
         return ret;
 
-    juego->archPartidas = fopen(NOM_ARCH_PARTIDAS, "a+b");
-    if(!juego->archPartidas)
-        return ERROR_ARCHIVO_PARTIDAS;
 
     juego->corriendo = VERDADERO;
     juego->estadoJuego = ESTADO_MENU;
@@ -540,8 +569,10 @@ void limpiarJuego (tJuego* juego)
     vaciarLista(&juego->listaRankingJugadores);
     liberarLista(&juego->partida.ruta); 
     eliminarArbol(&juego->arbolIndUsuarios);
+
     if(juego->archPartidas)
         fclose(juego->archPartidas);
+        
     free(juego->partida.bandidos);
 }
 
@@ -558,6 +589,8 @@ void mostrarError (int err)
     case ERROR_ARCHIVO_INDICE: puts("HUBO UN ERROR AL ABRIR EL ARCHIVO DE INDICE DE USUARIOS.");
         break;
     case ERROR_ARCHIVO_USUARIOS: puts("HUBO UN ERROR AL ABRIR EL ARCHIVO DE USUARIOS.");
+        break;
+    case ERROR_ARCHIVO_APERTURA: puts("HUBO UN ERROR AL ABRIR UN ARCHIVO.");
         break;
     default: puts("ERROR DESCONOCIDO.");
         break;
