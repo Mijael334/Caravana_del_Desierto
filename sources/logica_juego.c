@@ -12,6 +12,7 @@
 
 int inicializarJuego(tJuego *juego)
 {
+
     int ret;
 
     srand((unsigned)time(NULL));
@@ -27,6 +28,8 @@ int inicializarJuego(tJuego *juego)
     crearArbolBinBusq(&juego->arbolIndUsuarios);
     crearListaSimple(&juego->listaRankingJugadores);
     crearLista(&juego->partida.ruta);
+    //crearArchivoIndiceOrdenado(&juego->arbolIndUsuarios, NOM_ARCH_USUARIOS);
+    //eliminarArbol(&juego->arbolIndUsuarios);
 
     ret = indexarArchivoUsuariosOrdenado(&juego->arbolIndUsuarios, NOM_ARCH_INDICE_USUARIOS);
 
@@ -49,9 +52,10 @@ int inicializarJuego(tJuego *juego)
 
     juego->corriendo = VERDADERO;
     juego->estadoJuego = ESTADO_MENU;
-
     return TODO_OK;
 }
+
+
 
 int procesarJuego(tJuego *juego)
 {
@@ -329,9 +333,9 @@ int actualizarEstadoPartida(tPartida* partida, unsigned cantBandidos, tEstadoJue
             }
             else
             {
-                partida->ultimoEvento = EVENTO_TURNO_BANDIDO;  
+                partida->ultimoEvento = EVENTO_TURNO_BANDIDO;
             }
-            
+
         }
 
         // busca al bandido en base a la posicion
