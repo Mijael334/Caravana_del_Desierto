@@ -53,7 +53,7 @@ int buscarEnArbolBinBusq(const tArbolBinBusq* pt, void* d, unsigned cantbyte, in
     int res = cmp(d, (*pt)->info);
     if(res == 0)
     {
-        memcpy(d, (*pt)->info, cantbyte);
+        memcpy(d, (*pt)->info, MINIMO((*pt)->tamInfo, cantbyte));
         return DATO_ENCONTRADO; /// 1
     }else
     {
@@ -85,7 +85,7 @@ void recorrerArbolInnorden(const tArbolBinBusq *pt, unsigned n, void *params, vo
 {
    if(!*pt)
         return;
-        
+
    recorrerArbolInnorden(&(*pt)->izq, n, params, accion);
    accion((*pt)->info, (*pt)->tamInfo, n, params);
    recorrerArbolInnorden(&(*pt)->der, n, params, accion);
