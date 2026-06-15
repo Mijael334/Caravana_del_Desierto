@@ -184,7 +184,7 @@ int procesarPartida(tJuego *juego)
         renderizar_tablero(&juego->partida.ruta, stdout);
         mostrarMensajeEvento(juego->partida.ultimoEvento);
         printf("\n   Presione [ESPACIO] para continuar...\n");
-        while(getch() != 32);
+        while(getch() != TECLA_ESPACIO);
         finalizarPartida(juego);
     }
 
@@ -204,8 +204,7 @@ int procesarRanking(tJuego* juego)
 
     vaciarLista(&juego->listaRankingJugadores);
 
-    printf("\n   Presione [ESPACIO] para continuar...\n");
-        while(getch() != TECLA_ESPACIO);
+    juego->estadoJuego = ESTADO_MENU;
 
     return TODO_OK;
 }

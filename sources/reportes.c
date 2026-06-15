@@ -1,6 +1,8 @@
 #include "../include/reportes.h"
 #include "../include/lista_enlazada.h"
 #include "../include/gestion_archivos.h"
+#include "../include/interfaz_usuario.h"
+#include <conio.h>
 
 int cmpUsuario (const void* a, const void* b)
 {
@@ -90,5 +92,7 @@ void mostrarRanking(const tListaSE *ranking, void (*mostrarRegistro)(const void 
     }
 
     printf("\n===============================================\n");
-    system("pause");
+
+    printf("\n   Presione [ESPACIO] para continuar...\n");
+    while(getch() != TECLA_ESPACIO);
 }
