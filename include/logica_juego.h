@@ -72,6 +72,7 @@ typedef struct
     tConfig configPartida;
     tListaSE listaRankingJugadores;
     tArbolBinBusq arbolIndUsuarios;
+    FILE* archPartidas;
 } tJuego;
 
 int inicializarJuego (tJuego* juego);
@@ -79,7 +80,8 @@ int procesarJuego (tJuego* juego);
 
 int procesarMenu(tJuego* juego);
 int procesarPartida (tJuego* juego);
-int procesarPuntajePartida(const tUsuario* usuario, tPartida* partida, tEstadoJuego* estadoJuego);
+int procesarPuntajePartida(const tUsuario* usuario, tPartida* partida, tEstadoJuego* estadoJuego, FILE* archPartidas);
+int procesarRanking(tJuego* juego);
 
 int actualizarEstadoPartida(tPartida* partida, unsigned cantBandidos, tEstadoJuego* estadoJuego);
 void finalizarPartida (tJuego* juego);

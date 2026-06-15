@@ -61,10 +61,10 @@ int procesarJuego(tJuego *juego)
         ret = procesarPartida(juego);
         break;
     case ESTADO_PUNTAJE_PARTIDA:
-        ret = procesarPuntajePartida(&juego->usuario, &juego->partida, &juego->estadoJuego);
+        ret = procesarPuntajePartida(&juego->usuario, &juego->partida, &juego->estadoJuego, juego->archPartidas);
         break;
     case ESTADO_RANKING:
-        // mostrar ranking
+        ret = procesarRanking(juego);
     default:
         break;
     }
@@ -127,9 +127,7 @@ int procesarMenu(tJuego *juego)
 
             break;
         case 1:
-            system("CLS");
-            printf("\n--- RANKING ---\n");
-            system("PAUSE");
+            juego->estadoJuego = ESTADO_RANKING;
             break;
         case 2:
             if(seleccionarOpcionMenu("Seguro que querés salir?", opcSalir, 2) == 1)
@@ -188,8 +186,27 @@ int procesarPartida(tJuego *juego)
     return TODO_OK;
 }
 
+int procesarRanking(tJuego* juego)
+{
+    
+    if (cargarRankingDesdeArch(&juego->listaRankingJugadores, juego->archPartidas) != TODO_OK)
+    {
+        juego->estadoJuego = ESTADO_SALIR;
+        return ERROR_MEM;
+    }
 
-int procesarPuntajePartida(const tUsuario* usuario, tPartida* partida, tEstadoJuego* estadoJuego)
+    mostrarRanking(&juego->listaRankingJugadores, imprimirRegistroRanking);
+
+    vaciarLista(&juego->listaRankingJugadores);
+
+    printf("\n   Presione [ESPACIO] para continuar...\n");
+        while(getch() != TECLA_ESPACIO);
+
+    return TODO_OK;
+}
+
+
+int procesarPuntajePartida(const tUsuario* usuario, tPartida* partida, tEstadoJuego* estadoJuego, FILE* archPartidas)
 {
     tReportePartida reporte;
     tMovimiento mov;
@@ -221,7 +238,7 @@ int procesarPuntajePartida(const tUsuario* usuario, tPartida* partida, tEstadoJu
     }
     printf("\n");
 
-    registrarPartidaEnArchivo(&reporte);
+    registrarPartidaEnArchivo(&reporte, archPartidas);
 
     system("pause");
 

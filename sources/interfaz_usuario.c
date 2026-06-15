@@ -2,21 +2,7 @@
 #include <conio.h>
 #include <windows.h>
 
-char opcion(const char matriz_menu[][MAX_TEXTO_MENU], const char *titulo, const char *mensaje)
-{
-    char opc;
-    int i;
-    system("CLS");
-    printf("\n\n %s \n", titulo);
-    for(i = 1; i <= strlen(matriz_menu[0]); i++)
-    {
-        printf("\n %c - %s", matriz_menu[0][i - 1], matriz_menu[i]);
-    }
-    printf("\n\n%s: ", mensaje);
-    fflush(stdin);
-    scanf("%c", &opc);
-    return toupper(opc);
-}
+
 
 void dibujarOpcionesMenu(const char *titulo, const char *opciones[], int cantOpciones, int seleccion)
 {
@@ -43,7 +29,7 @@ int seleccionarOpcionMenu(const char *titulo, const char *opciones[], int cantOp
         dibujarOpcionesMenu(titulo, opciones, cantOpciones, seleccion);
         tecla = getch();
         if(tecla >= 'A' && tecla <= 'Z')
-            tecla += 32;
+            tecla += DIFERENCIA_MAYUS_Y_MINUS;
 
         switch(tecla)
         {
@@ -57,8 +43,8 @@ int seleccionarOpcionMenu(const char *titulo, const char *opciones[], int cantOp
                 if(seleccion < cantOpciones - 1)
                     seleccion++;
                 break;
-            case 32:
-                confirmado = 1;
+            case TECLA_ESPACIO:
+                confirmado = VERDADERO;
                 break;
         }
     }
@@ -202,7 +188,7 @@ int pedirDireccionJugador(tLista *ruta, const tPartida *partida, int cantPasos)
 
         tecla = getch();
         if(tecla >= 'A' && tecla <= 'Z')
-            tecla += 32;
+            tecla += DIFERENCIA_MAYUS_Y_MINUS;
 
         switch(tecla)
         {
@@ -216,8 +202,8 @@ int pedirDireccionJugador(tLista *ruta, const tPartida *partida, int cantPasos)
                 if(seleccion < cantOpciones - 1)
                     seleccion++;
                 break;
-            case 32:
-                confirmado = 1;
+            case TECLA_ESPACIO:
+                confirmado = VERDADERO;
                 break;
         }
     }
@@ -227,7 +213,7 @@ int pedirDireccionJugador(tLista *ruta, const tPartida *partida, int cantPasos)
 
 void mostrarTableroEsperandoTurno(tLista *ruta, const tPartida *partida)
 {
-    int listo = 0;
+    int listo = FALSO;
     char tecla;
 
     while(!listo)
@@ -239,8 +225,8 @@ void mostrarTableroEsperandoTurno(tLista *ruta, const tPartida *partida)
         printf("   Toca [ESPACIO] para tirar el dado...\n");
 
         tecla = getch();
-        if(tecla == 32)
-            listo = 1;
+        if(tecla == TECLA_ESPACIO)
+            listo = VERDADERO;
     }
 }
 //void animarMovimientoJugador(tLista *ruta, tEstadoJugador *jugador, unsigned pasos, char direccion, unsigned cantPosiciones, const tPartida *partida)
