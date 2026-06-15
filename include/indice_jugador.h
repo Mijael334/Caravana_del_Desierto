@@ -3,6 +3,7 @@
 
 
 #include "gestion_archivos.h"
+#include "reportes.h"
 
 #define TAM_MAX_NOM 20
 
@@ -28,4 +29,5 @@ int cargarIndiceDesdeArchivo(tArbolBinBusq *pa, const char *nombreArchivoIndice,
 int indexarArchivoUsuariosOrdenado(tArbolBinBusq *pa, const char *nombreArchivoUsuarios);
 void cargarArchivoOrdenadoEnIndiceBalanceado(tArbolBinBusq *pa, FILE *arch, int inicio, int fin);
 int crearArchivoIndiceOrdenado(tArbolBinBusq *pa, const char *nombreArchivo);
+int registrarNuevoUsuarioEnIndice(tArbolBinBusq *arbol, const char *nombre, unsigned posNueva, const char *nombreArchivoIndice);
 #endif // INDICE_JUGADOR_H_INCLUDED

@@ -28,11 +28,11 @@ int indexarArchivoUsuariosOrdenado(tArbolBinBusq *pa, const char *nombreArchivoU
 void cargarArchivoOrdenadoEnIndiceBalanceado(tArbolBinBusq *pa, FILE *arch, int inicio, int fin)
 {
     int medio;
+    tIndice ind;
     if(inicio > fin)
         return;
 
     medio = (fin + inicio) / 2;
-    tIndice ind;
     fseek(arch, medio * sizeof(tIndice), SEEK_SET);
     fread(&ind, 1, sizeof(tIndice), arch);
     insertarArbolBinBusq(pa, &ind, sizeof(tIndice), cmpClaveIndice);
@@ -54,25 +54,25 @@ int registrarNuevoUsuarioEnIndice(tArbolBinBusq *arbol, const char *nombre, unsi
     if(ret != TODO_OK)
         return ret;
 
-    return guardarIndiceEnArchivo(arbol, nombreArchivoIndice);
+    return grabarIndiceEnArchivo(arbol, nombreArchivoIndice);
 }
 
 int crearArchivoIndiceOrdenado(tArbolBinBusq *pa, const char *nombreArchivo)
 {
     FILE *fInd;
     tIndice ind;
-    int pos = 0;
-    ///hay que definir una estructura usuario
-    ///tenga nombre del jugador y el Id de partida
-    //por ahora usare esta
-    tJugador jugador;
-    if(abrir_archivo(fInd, nombreArchivo, "rb"))
+    int pos = 0,
+        ret;
+    tUsuario usuario;
+
+    ret = abrir_archivo(&fInd, nombreArchivo, "rb");
+
+    if(ret != TODO_OK)
+        return ret;
+
+    while(fread(&usuario, sizeof(tUsuario), 1, fInd))
     {
-        return ERROR_ARCHIVO_INDICE;
-    }
-    while(fread(&jugador, sizeof(tJugador), 1, fInd))
-    {
-        memcpy(ind.clave.nombre, jugador.nombre);
+        strcpy(ind.clave.nombre, usuario.username);
         ind.indiceRegistro = pos;
         insertarArbolBinBusq(pa, &ind, sizeof(tIndice),cmpClaveIndice);
         pos++;
