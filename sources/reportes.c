@@ -57,7 +57,7 @@ int cmpPuntos(const void *a, const void *b)
 {
     const tRanking *r1 = (const tRanking *)a;
     const tRanking *r2 = (const tRanking *)b;
-    return r1->puntos - r2->puntos;
+    return r2->puntos - r1->puntos;
 }
 
 void imprimirRegistroRanking(const void *d, void* paramExtra)

@@ -20,6 +20,7 @@ int inicializarJuego(tJuego *juego)
 
     juego->usuario.username[0] = '\0';
     juego->usuario.nickname[0] = '\0';
+    juego->partida.jugador.puntos = 0;
     juego->partida.bandidos = NULL;
     crearColaDin(&juego->partida.movimientos);
     crearColaDin(&juego->partida.registroMovimientos); 
@@ -41,6 +42,10 @@ int inicializarJuego(tJuego *juego)
 
     if (ret != TODO_OK)
         return ret;
+
+    juego->archPartidas = fopen(NOM_ARCH_PARTIDAS, "a+b");
+    if(!juego->archPartidas)
+        return ERROR_ARCHIVO_PARTIDAS;
 
     juego->corriendo = VERDADERO;
     juego->estadoJuego = ESTADO_MENU;
@@ -250,23 +255,20 @@ int procesarPuntajePartida(const tUsuario* usuario, tPartida* partida, tEstadoJu
 int actualizarEstadoPartida(tPartida* partida, unsigned cantBandidos, tEstadoJuego* estadoJuego)
 {
     tCasillero casilleroNum, *casillero;
-    int aplicadoEfectoAhora = FALSO;
+    int estabaProtegido;
 
     casilleroNum.numeroCasillero = partida->jugador.estadoEnPartida.posEnRuta;
 
     casillero = buscarElemPorClaveLista(&partida->ruta, &casilleroNum, cmpCasillero);
     partida->ultimoEvento = EVENTO_TURNO_NADA;
     
-    
-    if (partida->jugador.estadoEnPartida.protegido == VERDADERO && !aplicadoEfectoAhora)
-        partida->jugador.estadoEnPartida.protegido = FALSO;
+    estabaProtegido = partida->jugador.estadoEnPartida.protegido;
 
     switch (casillero->evento)
     {
     case EVENTO_OASIS:
         partida->jugador.estadoEnPartida.protegido = VERDADERO;
         partida->ultimoEvento = EVENTO_TURNO_OASIS;  
-        aplicadoEfectoAhora = VERDADERO;
         break;
     case EVENTO_PREMIO:
         partida->jugador.estadoEnPartida.puntos += PUNTOS_PREMIO;
@@ -277,11 +279,14 @@ int actualizarEstadoPartida(tPartida* partida, unsigned cantBandidos, tEstadoJue
         partida->ultimoEvento = EVENTO_TURNO_VIDA_EXTRA; 
         break;
     case EVENTO_TORMENTA:
-        if(partida->jugador.estadoEnPartida.afectadoPorTormenta == FALSO)
+        if(estabaProtegido)
+        {
+            partida->ultimoEvento = EVENTO_TURNO_OASIS;
+        }
+        else if(partida->jugador.estadoEnPartida.afectadoPorTormenta == FALSO)
         {
             partida->jugador.estadoEnPartida.afectadoPorTormenta = VERDADERO;
             partida->ultimoEvento = EVENTO_TURNO_TORMENTA;  
-            aplicadoEfectoAhora = VERDADERO;
         }
         else
             partida->jugador.estadoEnPartida.afectadoPorTormenta = FALSO;
@@ -298,7 +303,11 @@ int actualizarEstadoPartida(tPartida* partida, unsigned cantBandidos, tEstadoJue
         return TODO_OK;
 
     if (casillero->evento == EVENTO_VACIO && casillero->cantBandidos == 0)
+    {
+        if(estabaProtegido && casillero->evento != EVENTO_OASIS)
+            partida->jugador.estadoEnPartida.protegido = FALSO;
         return TODO_OK;
+    }
 
     if (casillero->cantBandidos > 0)
     {
@@ -337,6 +346,9 @@ int actualizarEstadoPartida(tPartida* partida, unsigned cantBandidos, tEstadoJue
 
         eliminarBandido(bandido, &partida->ruta, partida->cantCasilleros);
     }
+
+    if(partida->jugador.estadoEnPartida.protegido == VERDADERO && casillero->evento != EVENTO_OASIS)
+        partida->jugador.estadoEnPartida.protegido = FALSO;
 
     return TODO_OK;
 }
@@ -522,9 +534,11 @@ void limpiarJuego (tJuego* juego)
 {
     vaciarColaDin(&juego->partida.movimientos);
     vaciarColaDin(&juego->partida.registroMovimientos);
-    liberarLista(&juego->listaRankingJugadores);
+    vaciarLista(&juego->listaRankingJugadores);
     liberarLista(&juego->partida.ruta); 
     eliminarArbol(&juego->arbolIndUsuarios);
+    if(juego->archPartidas)
+        fclose(juego->archPartidas);
     free(juego->partida.bandidos);
 }
 
