@@ -25,6 +25,8 @@ int inicializarJuego(tJuego *juego)
     crearArbolBinBusq(&juego->arbolIndUsuarios);
     crearLista(&juego->listaRankingJugadores);
     crearLista(&juego->partida.ruta);
+    //crearArchivoIndiceOrdenado(&juego->arbolIndUsuarios, NOM_ARCH_USUARIOS);
+    //eliminarArbol(&juego->arbolIndUsuarios);
 
     ret = indexarArchivoUsuariosOrdenado(&juego->arbolIndUsuarios, NOM_ARCH_INDICE_USUARIOS);
 
@@ -266,9 +268,9 @@ int actualizarEstadoPartida(tPartida* partida, unsigned cantBandidos, tEstadoJue
             }
             else
             {
-                partida->ultimoEvento = EVENTO_TURNO_BANDIDO;  
+                partida->ultimoEvento = EVENTO_TURNO_BANDIDO;
             }
-            
+
         }
 
         // busca al bandido en base a la posicion
