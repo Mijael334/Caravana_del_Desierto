@@ -11,6 +11,8 @@
 #define SIN_MEMORIA -2
 #define TODO_OK 0
 
+#define MINIMO(X, Y)((X) < (Y)? (X): (Y))
+
 typedef struct sNodoArbol
 {
     void *info;

@@ -12,6 +12,7 @@
 #define ERROR_ARCHIVO_INDICE -4
 #define ERROR_ARCHIVO_NO_EXISTE -5
 #define ERROR_ARCHIVO_PARTIDAS -6
+#define ERROR_ARCHIVO_APERTURA -7
 
 #define TAM_MAX 21
 
@@ -46,6 +47,6 @@ typedef struct
 int abrir_archivo(FILE **pf, const char *nombre_archivo, const char *modo);
 int lectura_de_configuracion(const char *archivo_config, tConfig *parametros);
 
-int guardarIndiceEnArchivo(const tArbolBinBusq *pt, const char *nombreArchivoIndice);
-void guardarNodoEnArchivo(void *info, unsigned tam, unsigned n, void *params);
+int grabarIndiceEnArchivo(const tArbolBinBusq *pt, const char *nombreArchivoIndice);
+void grabarNodoEnArchivo(void *info, unsigned tam, unsigned n, void *params);
 #endif // GESTION_ARCHIVOS_H_INCLUDED
