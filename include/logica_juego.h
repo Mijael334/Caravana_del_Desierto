@@ -38,6 +38,9 @@ typedef enum
     EVENTO_TURNO_BANDIDO,
     EVENTO_TURNO_MUERTE,
     EVENTO_TURNO_VICTORIA,
+    EVENTO_TURNO_TORMENTA_BLOQUEADA,
+    EVENTO_TURNO_BANDIDO_BLOQUEADO,
+    EVENTO_TURNO_TURNO_PERDIDO,   
 } tEventoTurno;
 
 typedef struct
@@ -59,6 +62,7 @@ typedef struct
     tCola registroMovimientos; 
     tLista ruta;
     tEventoTurno ultimoEvento;
+    tEventoTurno eventoPrevio;
     unsigned ultimosPasos;
     char ultimaDireccion;
 } tPartida;
