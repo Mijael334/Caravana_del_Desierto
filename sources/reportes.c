@@ -12,6 +12,14 @@ int cmpUsuario (const void* a, const void* b)
     return strcmp(u1->username, u2->username);
 }
 
+int cmpUsuarioRanking(const void* a, const void* b)
+{
+    const tRanking* r1 = (const tRanking*)a;
+    const tRanking* r2 = (const tRanking*)b;
+
+    return strcmp(r1->usuario.username, r2->usuario.username);
+}
+
 int acumularPuntos(void** info, unsigned* tamInfo, const void* d, unsigned tam)
 {
     tRanking* rankOrig = (tRanking*) *info;
@@ -26,6 +34,7 @@ int cargarRankingDesdeArch(tListaSE* listaRanking, FILE* arch)
 {
     tReportePartida reporte;
     tRanking jugador;
+    int ret;
 
     fflush(arch);
     fseek(arch, 0, SEEK_SET);
@@ -35,8 +44,9 @@ int cargarRankingDesdeArch(tListaSE* listaRanking, FILE* arch)
         strcpy(jugador.usuario.username, reporte.usuario.username);
         strcpy(jugador.usuario.nickname, reporte.usuario.nickname);
         jugador.puntos = reporte.puntosObtenidos;
-
-        if(insertarEnOrdenLista(listaRanking, &jugador, sizeof(tRanking), cmpUsuario, acumularPuntos) != OK)
+        ret = insertarEnOrdenLista(listaRanking, &jugador, sizeof(tRanking), cmpUsuarioRanking, acumularPuntos);
+        
+        if(ret != OK && ret!=CLA_DUP)
             return ERROR_MEM;
     }
 
@@ -69,7 +79,7 @@ void imprimirRegistroRanking(const void *d, void* paramExtra)
 
     if(*contador < TAM_RANKING)
     {
-        printf(" \t%s\t\t%s\t\t%d\n", r->usuario.username, r->usuario.nickname, r->puntos);
+        printf(" \t%s\t\t\t%s\t\t\t%d\n", r->usuario.username, r->usuario.nickname, r->puntos);
         (*contador)++;
     }
 }
@@ -78,7 +88,7 @@ void mostrarRanking(const tListaSE *ranking, void (*mostrarRegistro)(const void 
 {
     int contador = 0;
     system("CLS");
-    printf("\n=================== RANKING ===================\n\n");
+    printf("\n=============================== RANKING ===============================\n\n");
 
     if(listaVacia(ranking))
     {
@@ -87,11 +97,11 @@ void mostrarRanking(const tListaSE *ranking, void (*mostrarRegistro)(const void 
     else
     {
         printf(" \tNickname\t\tUsername\t\tPuntos\n");
-        printf("  ---------------------------------------------\n");
+        printf("  ---------------------------------------------------------------------\n");
         mostrarLista(ranking, imprimirRegistroRanking, &contador);
     }
 
-    printf("\n===============================================\n");
+    printf("\n=======================================================================\n");
 
     printf("\n   Presione [ESPACIO] para continuar...\n");
     while(getch() != TECLA_ESPACIO);

@@ -18,7 +18,6 @@ int insertarEnOrdenLista(tListaSE *pl, const void *d, unsigned tam, int (*compar
     {
         pl = &(*pl)->sig;
     }
-
     if(*pl && comparar((*pl)->info, d) == 0)
     {
         if(acum)
@@ -27,7 +26,6 @@ int insertarEnOrdenLista(tListaSE *pl, const void *d, unsigned tam, int (*compar
 
         return CLA_DUP;
     }
-
     nue = (tNodoLista *)malloc(sizeof(tNodoLista));
     if(nue == NULL)
     {

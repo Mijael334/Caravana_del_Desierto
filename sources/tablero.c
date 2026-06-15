@@ -217,45 +217,6 @@ void distribuir_elemento(tLista *lista, int cant_posiciones, int cant_maxima, in
 //            }
 //        }
 //        else
-//        {
-//            if(actual->cantBandidos > 0)
-//            {
-//                if(actual->evento != EVENTO_VACIO)
-//                {
-//                    fprintf(destino, "%c (", caracter_evento);
-//                    for(j = 0; j < actual->cantBandidos; j++)
-//                    {
-//                        fprintf(destino, (j == actual->cantBandidos - 1) ? "B" : "B ");
-//                    }
-//                    fprintf(destino, ")\n");
-//                }
-//                else
-//                {
-//                    for(j = 0; j < actual->cantBandidos; j++)
-//                    {
-//                        fprintf(destino, "B ");
-//                    }
-//                    fprintf(destino, "\n");
-//                }
-//            }
-//            else
-//            {
-//                fprintf(destino, "%c\n", caracter_evento);
-//            }
-//        }
-//    }
-//}
-
-//void guardar_tablero_en_archivo(tLista *lista, int cant_posiciones)
-//{
-//    FILE *arch;
-//    if(abrir_archivo(&arch, NOM_ARCH_CARAVANA, "wt") != TODO_OK)
-//    {
-//        return;
-//    }
-//    renderizar_tablero(lista, cant_posiciones, arch);
-//    fclose(arch);
-//}
 
 
 int cmpCasillero (const void* a, const void* b)
