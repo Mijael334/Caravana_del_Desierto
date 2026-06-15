@@ -7,7 +7,7 @@ int abrir_archivo(FILE **fp, const char *nombre_archivo, const char *modo)
     {
         if (errno == ENOENT)
             return ERROR_ARCHIVO_NO_EXISTE;
-        
+
         fprintf(stderr,"Error en al abrir el archivo %s en modo %s \n", nombre_archivo, modo);
         return ERROR_ARCHIVO_CONFIG;
     }
@@ -46,19 +46,19 @@ int lectura_de_configuracion(const char *archivo_config, tConfig *parametros)
     return TODO_OK;
 }
 
-int guardarIndiceEnArchivo(const tArbolBinBusq *pt, const char *nombreArchivoIndice)
+int grabarIndiceEnArchivo(const tArbolBinBusq *pt, const char *nombreArchivoIndice)
 {
     FILE *fInd;
     if(abrir_archivo(&fInd, nombreArchivoIndice, "wb"))
     {
         return ERROR_ARCHIVO_INDICE;
     }
-    recorrerArbolInnorden(pt, 0, fInd, guardarNodoEnArchivo);
+    recorrerArbolInnorden(pt, 0, fInd, grabarNodoEnArchivo);
     fclose(fInd);
     return TODO_OK;
 }
 
-void guardarNodoEnArchivo(void *info, unsigned tam, unsigned n, void *params)
+void grabarNodoEnArchivo(void *info, unsigned tam, unsigned n, void *params)
 {
     FILE *fp = (FILE*)params;
     fwrite(info, tam, 1, fp);
