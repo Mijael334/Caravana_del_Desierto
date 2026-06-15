@@ -217,7 +217,7 @@ int procesarPartida(tJuego *juego)
         mostrarEstadoPartida(&juego->partida);
         renderizar_tablero(&juego->partida.ruta, stdout);
 
-        if(juego->partida.eventoPrevio != EVENTO_TURNO_NADA)     // ← nuevo
+        if(juego->partida.eventoPrevio != EVENTO_TURNO_NADA)
             mostrarMensajeEvento(juego->partida.eventoPrevio);
 
         mostrarMensajeEvento(juego->partida.ultimoEvento);
@@ -481,7 +481,6 @@ void encolarMovimientosBandidos(tCola *cola, tBandido *bandidos, unsigned cantBa
     }
 }
 
-//void desencolarMovimientos(tCola *cola, tBandido *bandidos, unsigned cantBandidos, tEstadoJugador *jugador, tLista *lista, unsigned cantPosiciones, const tPartida *partida);
 void desencolarMovimientos(tPartida *partida, unsigned cantBandidos)
 {
     tMovimiento mov;
