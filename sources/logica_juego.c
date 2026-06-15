@@ -120,6 +120,7 @@ int procesarMenu(tJuego *juego)
                 juego->partida.cantMovsAdelante = juego->partida.cantMovsAtras = 0;
                 juego->partida.puntosEnPartida = 0;
                 juego->partida.ultimoEvento = EVENTO_TURNO_INICIO;
+                juego->partida.eventoPrevio = EVENTO_TURNO_NADA;
                 juego->partida.ultimosPasos = 0;
                 juego->partida.ultimaDireccion = '-';
                 vaciarColaDin(&juego->partida.registroMovimientos);     
@@ -182,6 +183,10 @@ int procesarPartida(tJuego *juego)
         system("CLS");
         mostrarEstadoPartida(&juego->partida);
         renderizar_tablero(&juego->partida.ruta, stdout);
+
+        if(juego->partida.eventoPrevio != EVENTO_TURNO_NADA)     // ← nuevo
+            mostrarMensajeEvento(juego->partida.eventoPrevio);
+
         mostrarMensajeEvento(juego->partida.ultimoEvento);
         printf("\n   Presione [ESPACIO] para continuar...\n");
         while(getch() != 32);
@@ -261,6 +266,7 @@ int actualizarEstadoPartida(tPartida* partida, unsigned cantBandidos, tEstadoJue
 
     casillero = buscarElemPorClaveLista(&partida->ruta, &casilleroNum, cmpCasillero);
     partida->ultimoEvento = EVENTO_TURNO_NADA;
+    partida->eventoPrevio = EVENTO_TURNO_NADA; 
     
     estabaProtegido = partida->jugador.estadoEnPartida.protegido;
 
@@ -281,7 +287,7 @@ int actualizarEstadoPartida(tPartida* partida, unsigned cantBandidos, tEstadoJue
     case EVENTO_TORMENTA:
         if(estabaProtegido)
         {
-            partida->ultimoEvento = EVENTO_TURNO_OASIS;
+            partida->ultimoEvento = EVENTO_TURNO_TORMENTA_BLOQUEADA;
         }
         else if(partida->jugador.estadoEnPartida.afectadoPorTormenta == FALSO)
         {
@@ -289,7 +295,10 @@ int actualizarEstadoPartida(tPartida* partida, unsigned cantBandidos, tEstadoJue
             partida->ultimoEvento = EVENTO_TURNO_TORMENTA;  
         }
         else
+        {
             partida->jugador.estadoEnPartida.afectadoPorTormenta = FALSO;
+            partida->ultimoEvento = EVENTO_TURNO_TURNO_PERDIDO;
+        }
         break;
     case EVENTO_SALIDA:
         *estadoJuego = ESTADO_PUNTAJE_PARTIDA;
@@ -308,6 +317,8 @@ int actualizarEstadoPartida(tPartida* partida, unsigned cantBandidos, tEstadoJue
             partida->jugador.estadoEnPartida.protegido = FALSO;
         return TODO_OK;
     }
+
+    partida->eventoPrevio = partida->ultimoEvento; 
 
     if (casillero->cantBandidos > 0)
     {
@@ -330,7 +341,7 @@ int actualizarEstadoPartida(tPartida* partida, unsigned cantBandidos, tEstadoJue
             }
             else
             {
-                partida->ultimoEvento = EVENTO_TURNO_BANDIDO;  
+                partida->ultimoEvento = EVENTO_TURNO_BANDIDO_BLOQUEADO;  
             }
             
         }

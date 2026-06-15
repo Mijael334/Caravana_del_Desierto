@@ -158,6 +158,15 @@ void mostrarMensajeEvento(tEventoTurno evento)
         case EVENTO_TURNO_VICTORIA:
             printf("   >> Llegaste a la salida, Victoria!\n");
             break;
+        case EVENTO_TURNO_TORMENTA_BLOQUEADA:
+            printf("   >> Caiste en una tormenta pero el oasis te protegio!\n");
+            break;
+        case EVENTO_TURNO_BANDIDO_BLOQUEADO:
+            printf("   >> Un bandido te ataco pero el oasis te protegio!\n");
+            break;
+        case EVENTO_TURNO_TURNO_PERDIDO:
+            printf("   >> Caiste en una tormenta, Perdes el turno.\n");
+            break;
     }
 }
 
