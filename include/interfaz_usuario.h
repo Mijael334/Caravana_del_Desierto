@@ -20,6 +20,14 @@
 #define TIEMPO_ANIMACION_JUGADOR_MS 150
 #define TIEMPO_ANIMACION_BANDIDO_MS 50
 
+typedef enum
+{
+    OP_MENU_NUEVA_PARTIDA = 0,
+    OP_MENU_RANKING,
+    OP_MENU_SALIR,
+    CANT_OP_MENU,
+} tOpcionMenu;
+
 
 
 void mostrarBienvenida(const char *nickname);

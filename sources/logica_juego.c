@@ -15,19 +15,18 @@ int inicializarJuego(tJuego *juego)
 
     int ret;
     FILE* arch;
+    unsigned indiceReg = 0, posNueva;
 
     srand((unsigned)time(NULL));
 
     juego->corriendo = FALSO;
 
-    juego->usuario.username[0] = '\0';
-    juego->usuario.nickname[0] = '\0';
     juego->partida.jugador.puntos = 0;
     juego->partida.bandidos = NULL;
     juego->archPartidas = NULL;
 
     crearColaDin(&juego->partida.movimientos);
-    crearColaDin(&juego->partida.registroMovimientos); 
+    crearColaDin(&juego->partida.registroMovimientos);
     crearArbolBinBusq(&juego->arbolIndUsuarios);
     crearListaSimple(&juego->listaRankingJugadores);
     crearLista(&juego->partida.ruta);
@@ -79,6 +78,19 @@ int inicializarJuego(tJuego *juego)
         return ret;
 
 
+    if( solicitarNombreUsuario(juego->usuario.username, TAM_MAX_NOM + 1, &juego->arbolIndUsuarios, &indiceReg) == CLAVE_ENCONTRADA)
+    {
+        leerUsuarioDeArchivo(&juego->usuario, indiceReg, NOM_ARCH_USUARIOS);
+        mostrarBienvenida(juego->usuario.nickname);
+    }
+    else
+    {
+        leerNicknamePorTeclado(juego->usuario.nickname, TAM_MAX_NOM + 1);
+        agregarUsuarioEnArchivo(&juego->usuario, NOM_ARCH_USUARIOS, &posNueva);
+        registrarNuevoUsuarioEnIndice(&juego->arbolIndUsuarios, juego->usuario.username, posNueva, NOM_ARCH_INDICE_USUARIOS);
+    }
+
+
     juego->corriendo = VERDADERO;
     juego->estadoJuego = ESTADO_MENU;
     return TODO_OK;
@@ -117,43 +129,24 @@ int procesarJuego(tJuego *juego)
 int procesarMenu(tJuego *juego)
 {
     int seleccion, ret = TODO_OK;
-    int encontradoEnIndice;
-    unsigned indiceReg = 0;
-    unsigned posNueva, k;
-    char tituloMenu[TAM_TITULO];   
+
+    unsigned k;
+    char tituloMenu[TAM_TITULO];
     const char *opciones[] = {"Comenzar Nueva Partida", "Ver Ranking", "Salir del juego"};
     const char *opcSalir[] = {"NO, seguir jugando", "SI, salir"};
 
-    if(juego->usuario.username[0] == '\0')
-    {
-        encontradoEnIndice = solicitarNombreUsuario(juego->usuario.username, TAM_MAX_NOM + 1, &juego->arbolIndUsuarios, &indiceReg);
-
-
-        if(encontradoEnIndice == CLAVE_ENCONTRADA)
-        {
-            leerUsuarioDeArchivo(&juego->usuario, indiceReg, NOM_ARCH_USUARIOS);
-            mostrarBienvenida(juego->usuario.nickname);
-        }
-        else
-        {
-            leerNicknamePorTeclado(juego->usuario.nickname, TAM_MAX_NOM + 1);
-            agregarUsuarioEnArchivo(&juego->usuario, NOM_ARCH_USUARIOS, &posNueva);
-            registrarNuevoUsuarioEnIndice(&juego->arbolIndUsuarios, juego->usuario.username, posNueva, NOM_ARCH_INDICE_USUARIOS);
-        }
-    }
-
     sprintf(tituloMenu, "%s - %s", TITULO_JUEGO, juego->usuario.nickname);
-    seleccion = seleccionarOpcionMenu(tituloMenu, opciones, 3);
+    seleccion = (tOpcionMenu) seleccionarOpcionMenu(tituloMenu, opciones, (int) CANT_OP_MENU);
 
     switch (seleccion)
     {
-        case 0:
+        case OP_MENU_NUEVA_PARTIDA:
             for(k = 0; k < juego->configPartida.bandidos_max; k++)
             {
                 (juego->partida.bandidos + k)->vivo = VIVO;
                 (juego->partida.bandidos + k)->posEnRuta = 0;
             }
-        
+
             ret = crear_tablero_circular(&juego->partida.ruta, &juego->configPartida, juego->partida.bandidos);
 
             if(ret == TODO_OK)
@@ -166,7 +159,7 @@ int procesarMenu(tJuego *juego)
                 juego->partida.eventoPrevio = EVENTO_TURNO_NADA;
                 juego->partida.ultimosPasos = 0;
                 juego->partida.ultimaDireccion = '-';
-                vaciarColaDin(&juego->partida.registroMovimientos);     
+                vaciarColaDin(&juego->partida.registroMovimientos);
 
                 guardar_tablero_en_archivo(&juego->partida.ruta);
                 juego->estadoJuego = ESTADO_PARTIDA;
@@ -175,15 +168,14 @@ int procesarMenu(tJuego *juego)
                 juego->corriendo = FALSO;
 
             break;
-        case 1:
+        case OP_MENU_RANKING:
             juego->estadoJuego = ESTADO_RANKING;
             break;
-        case 2:
-            if(seleccionarOpcionMenu("Seguro que querés salir?", opcSalir, 2) == 1)
+        case OP_MENU_SALIR:
+            if(seleccionarOpcionMenu("Seguro que queres salir?", opcSalir, 2) == 1)
                 juego->estadoJuego = ESTADO_SALIR;
             break;
     }
-
 
     return ret;
 }
@@ -227,10 +219,11 @@ int procesarPartida(tJuego *juego)
         mostrarEstadoPartida(&juego->partida);
         renderizar_tablero(&juego->partida.ruta, stdout);
 
-        if(juego->partida.eventoPrevio != EVENTO_TURNO_NADA)
+        if(juego->partida.eventoPrevio != EVENTO_TURNO_NADA && juego->partida.eventoPrevio != juego->partida.ultimoEvento)
             mostrarMensajeEvento(juego->partida.eventoPrevio);
 
         mostrarMensajeEvento(juego->partida.ultimoEvento);
+
         printf("\n   Presione [ESPACIO] para continuar...\n");
         while(getch() != TECLA_ESPACIO);
         finalizarPartida(juego);
@@ -241,7 +234,7 @@ int procesarPartida(tJuego *juego)
 
 int procesarRanking(tJuego* juego)
 {
-    
+
     if (cargarRankingDesdeArch(&juego->listaRankingJugadores, juego->archPartidas) != TODO_OK)
     {
         juego->estadoJuego = ESTADO_SALIR;
@@ -308,33 +301,33 @@ int actualizarEstadoPartida(tPartida* partida, unsigned cantBandidos, tEstadoJue
 
     casillero = buscarElemPorClaveLista(&partida->ruta, &casilleroNum, cmpCasillero);
     partida->ultimoEvento = EVENTO_TURNO_NADA;
-    partida->eventoPrevio = EVENTO_TURNO_NADA; 
-    
+    partida->eventoPrevio = EVENTO_TURNO_NADA;
+
     estabaProtegido = partida->jugador.estadoEnPartida.protegido;
 
     switch (casillero->evento)
     {
     case EVENTO_OASIS:
         partida->jugador.estadoEnPartida.protegido = VERDADERO;
-        partida->ultimoEvento = EVENTO_TURNO_OASIS;  
+        partida->ultimoEvento = EVENTO_TURNO_OASIS;
         break;
     case EVENTO_PREMIO:
         partida->jugador.estadoEnPartida.puntos += PUNTOS_PREMIO;
-        partida->ultimoEvento = EVENTO_TURNO_PREMIO; 
+        partida->ultimoEvento = EVENTO_TURNO_PREMIO;
         break;
     case EVENTO_VIDA_EXTRA:
         partida->jugador.estadoEnPartida.vidas++;
-        partida->ultimoEvento = EVENTO_TURNO_VIDA_EXTRA; 
+        partida->ultimoEvento = EVENTO_TURNO_VIDA_EXTRA;
         break;
     case EVENTO_TORMENTA:
         if(estabaProtegido)
         {
             partida->ultimoEvento = EVENTO_TURNO_TORMENTA_BLOQUEADA;
         }
-        else if(partida->jugador.estadoEnPartida.afectadoPorTormenta == FALSO)
-        {
+        else if(partida->jugador.estadoEnPartida.afectadoPorTormenta == FALSO && partida->jugador.estadoEnPartida.posEnRuta != 1)
+        {                                                                                                                         
             partida->jugador.estadoEnPartida.afectadoPorTormenta = VERDADERO;
-            partida->ultimoEvento = EVENTO_TURNO_TORMENTA;  
+            partida->ultimoEvento = EVENTO_TURNO_TORMENTA;
         }
         else
         {
@@ -360,7 +353,7 @@ int actualizarEstadoPartida(tPartida* partida, unsigned cantBandidos, tEstadoJue
         return TODO_OK;
     }
 
-    partida->eventoPrevio = partida->ultimoEvento; 
+    partida->eventoPrevio = partida->ultimoEvento;
 
     if (casillero->cantBandidos > 0)
     {
@@ -383,11 +376,13 @@ int actualizarEstadoPartida(tPartida* partida, unsigned cantBandidos, tEstadoJue
             }
             else
             {
-                partida->ultimoEvento = EVENTO_TURNO_BANDIDO; 
+                partida->ultimoEvento = EVENTO_TURNO_BANDIDO;
             }
+
+            partida->eventoPrevio = EVENTO_TURNO_NADA;
         }
         else
-            partida->ultimoEvento = EVENTO_TURNO_BANDIDO_BLOQUEADO; 
+            partida->ultimoEvento = EVENTO_TURNO_BANDIDO_BLOQUEADO;
 
         // busca al bandido en base a la posicion
         while (bandido == NULL && i < cantBandidos)
@@ -563,12 +558,12 @@ void limpiarJuego (tJuego* juego)
     vaciarColaDin(&juego->partida.movimientos);
     vaciarColaDin(&juego->partida.registroMovimientos);
     vaciarLista(&juego->listaRankingJugadores);
-    liberarLista(&juego->partida.ruta); 
+    liberarLista(&juego->partida.ruta);
     eliminarArbol(&juego->arbolIndUsuarios);
 
     if(juego->archPartidas)
         fclose(juego->archPartidas);
-        
+
     free(juego->partida.bandidos);
 }
 

@@ -238,10 +238,11 @@ void mostrarTableroEsperandoTurno(tLista *ruta, const tPartida *partida)
         mostrarEstadoPartida(partida);
         renderizar_tablero(ruta, stdout);
 
-        if(partida->eventoPrevio != EVENTO_TURNO_NADA)
+        if(partida->eventoPrevio != EVENTO_TURNO_NADA && partida->eventoPrevio != partida->ultimoEvento)
             mostrarMensajeEvento(partida->eventoPrevio); 
 
         mostrarMensajeEvento(partida->ultimoEvento);
+
         printf("   Toca [ESPACIO] para tirar el dado...\n");
 
         tecla = getch();

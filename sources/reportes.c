@@ -96,7 +96,7 @@ void mostrarRanking(const tListaSE *ranking, void (*mostrarRegistro)(const void 
     }
     else
     {
-        printf(" \tNickname\t\tUsername\t\tPuntos\n");
+        printf(" \tUsername\t\tNickname\t\tPuntos\n");
         printf("  ---------------------------------------------------------------------\n");
         mostrarLista(ranking, imprimirRegistroRanking, &contador);
     }
