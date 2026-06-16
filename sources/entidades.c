@@ -20,7 +20,6 @@ void inicializarJugador (tJugador* jugador, const char* nombre, unsigned puntos,
 int crearBandidos (tBandido** bandidos, unsigned cantBandidos)
 {
     unsigned i;
-    tBandido bandido;
 
     *bandidos = malloc(sizeof(tBandido) * cantBandidos);
 
