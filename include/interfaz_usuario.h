@@ -12,17 +12,17 @@
 
 #define TITULO_JUEGO "CARAVANA DEL DESIERTO"
 
+#define TAM_TITULO 50
+
 #define TECLA_ESPACIO 32
 #define DIFERENCIA_MAYUS_Y_MINUS ('a' - 'A')
 
 #define TIEMPO_ANIMACION_JUGADOR_MS 150
 #define TIEMPO_ANIMACION_BANDIDO_MS 50
 
-#define MAX_TEXTO_MENU 35
 
 
-char menu(const char matriz_menu[][MAX_TEXTO_MENU], const char *titulo);
-char opcion(const char matriz_menu[][MAX_TEXTO_MENU], const char *titulo, const char *mensaje);
+void mostrarBienvenida(const char *nickname);
  
 int seleccionarOpcionMenu(const char *titulo, const char *opciones[], int cantOpciones);
 int solicitarNombreUsuario(char *nombre, int tamMaxNombre, const tArbolBinBusq *arbolIndice, unsigned *indiceReg);

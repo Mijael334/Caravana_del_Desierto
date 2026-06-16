@@ -133,20 +133,6 @@ void liberarLista(tLista *p)
 
 }
 
-//void recorrerLista(const tLista *p, void (*procesar)(void*))
-//{
-//    if(!*p)
-//        return;
-//    tNodoL *act = *p;
-//    procesar(act->info);
-//    act = act->sig;
-//    while(act != *p)
-//    {
-//        procesar(act->info);
-//        act = act->sig;
-//    }
-//}
-
 void recorrerLista(const tLista *p, void (*procesar)(void *, FILE *), FILE *pf)
 {
     if(!*p)

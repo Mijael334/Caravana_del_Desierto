@@ -73,7 +73,7 @@ int inicializarJuego(tJuego *juego)
     if (ret != TODO_OK)
         return ret;
 
-    ret = crearBandidos(&juego->partida.bandidos, juego->configPartida.bandidos_max, juego->configPartida.cant_posiciones);
+    ret = crearBandidos(&juego->partida.bandidos, juego->configPartida.bandidos_max);
 
     if (ret != TODO_OK)
         return ret;
@@ -88,7 +88,7 @@ int inicializarJuego(tJuego *juego)
 
 int procesarJuego(tJuego *juego)
 {
-    int ret;
+    int ret = TODO_OK;
 
     switch (juego->estadoJuego)
     {
@@ -103,6 +103,7 @@ int procesarJuego(tJuego *juego)
         break;
     case ESTADO_RANKING:
         ret = procesarRanking(juego);
+        break;
     default:
         break;
     }
@@ -118,7 +119,8 @@ int procesarMenu(tJuego *juego)
     int seleccion, ret = TODO_OK;
     int encontradoEnIndice;
     unsigned indiceReg = 0;
-    unsigned posNueva;
+    unsigned posNueva, k;
+    char tituloMenu[TAM_TITULO];   
     const char *opciones[] = {"Comenzar Nueva Partida", "Ver Ranking", "Salir del juego"};
     const char *opcSalir[] = {"NO, seguir jugando", "SI, salir"};
 
@@ -130,6 +132,7 @@ int procesarMenu(tJuego *juego)
         if(encontradoEnIndice == CLAVE_ENCONTRADA)
         {
             leerUsuarioDeArchivo(&juego->usuario, indiceReg, NOM_ARCH_USUARIOS);
+            mostrarBienvenida(juego->usuario.nickname);
         }
         else
         {
@@ -139,11 +142,18 @@ int procesarMenu(tJuego *juego)
         }
     }
 
-    seleccion = seleccionarOpcionMenu(TITULO_JUEGO, opciones, 3);
+    sprintf(tituloMenu, "%s - %s", TITULO_JUEGO, juego->usuario.nickname);
+    seleccion = seleccionarOpcionMenu(tituloMenu, opciones, 3);
 
     switch (seleccion)
     {
         case 0:
+            for(k = 0; k < juego->configPartida.bandidos_max; k++)
+            {
+                (juego->partida.bandidos + k)->vivo = VIVO;
+                (juego->partida.bandidos + k)->posEnRuta = 0;
+            }
+        
             ret = crear_tablero_circular(&juego->partida.ruta, &juego->configPartida, juego->partida.bandidos);
 
             if(ret == TODO_OK)
@@ -199,7 +209,7 @@ int procesarPartida(tJuego *juego)
         registro.id = ID_JUGADOR;
         ponerEnColaDin(&juego->partida.registroMovimientos, &registro, sizeof(tMovimiento));
 
-        encolarMovimientoJugador(&juego->partida.movimientos, cantPasos, dirMovimiento, juego->partida.jugador.estadoEnPartida.posEnRuta);
+        encolarMovimientoJugador(&juego->partida.movimientos, cantPasos, dirMovimiento);
     }
 
     encolarMovimientosBandidos(&juego->partida.movimientos, juego->partida.bandidos, juego->configPartida.bandidos_max, juego->partida.jugador.estadoEnPartida.posEnRuta,
@@ -373,10 +383,11 @@ int actualizarEstadoPartida(tPartida* partida, unsigned cantBandidos, tEstadoJue
             }
             else
             {
-                partida->ultimoEvento = EVENTO_TURNO_BANDIDO_BLOQUEADO;  
+                partida->ultimoEvento = EVENTO_TURNO_BANDIDO; 
             }
-
         }
+        else
+            partida->ultimoEvento = EVENTO_TURNO_BANDIDO_BLOQUEADO; 
 
         // busca al bandido en base a la posicion
         while (bandido == NULL && i < cantBandidos)
@@ -416,12 +427,6 @@ void eliminarBandido(tBandido *bandido, tLista *ruta, unsigned cantCasilleros)
     bandido->vivo = MUERTO;
 }
 
-void ingresarNombreJugador(char *nombre)
-{
-    printf("Ingrese su nombre: ");
-    fgets(nombre, TAM_MAX_NOM + 1, stdin);
-}
-
 /*
     logica de movimiento del jugador:
 
@@ -452,12 +457,8 @@ char calcularDireccionBandido(unsigned posBandido, unsigned posJugador, unsigned
         return DIR_ATRAS;
 }
 
-void encolarMovimientoJugador(tCola *cola, unsigned pasos, char direccion, unsigned posJugador)
+void encolarMovimientoJugador(tCola *cola, unsigned pasos, char direccion)
 {
-    // si no hay lugar para retroceder, fuerza direccion adelante
-    if (direccion == DIR_ATRAS && pasos >= posJugador)
-        direccion = DIR_ADELANTE;
-
     tMovimiento mov = {pasos, direccion, ID_JUGADOR};
     ponerEnColaDin(cola, &mov, sizeof(tMovimiento));
 }
@@ -555,21 +556,6 @@ void moverBandido(tBandido *bandido, unsigned pasos, char direccion, unsigned ca
         else
             bandido->posEnRuta -= pasos;
     }
-}
-
-void moverBandidoEnRuta(tBandido *bandido, const tMovimiento *mov, tLista *ruta, unsigned cantPosiciones)
-{
-    tCasillero *casillero, casilleroNum;
-
-    casilleroNum.numeroCasillero = bandido->posEnRuta;
-    casillero = (tCasillero *)buscarElemPorClaveLista(ruta, &casilleroNum, cmpCasillero);
-    casillero->cantBandidos--;
-
-    moverBandido(bandido, mov->cantPasos, mov->direccion, cantPosiciones);
-
-    casilleroNum.numeroCasillero = bandido->posEnRuta;
-    casillero = (tCasillero *)buscarElemPorClaveLista(ruta, &casilleroNum, cmpCasillero);
-    casillero->cantBandidos++;
 }
 
 void limpiarJuego (tJuego* juego)

@@ -91,15 +91,10 @@ int actualizarEstadoPartida(tPartida* partida, unsigned cantBandidos, tEstadoJue
 void finalizarPartida (tJuego* juego);
 void eliminarBandido(tBandido* bandido, tLista* ruta, unsigned cantCasilleros);
 
-int buscarJugadorEnRanking (tLista* rankingJugadores, const char* nombreABusc, int (*cmp) (const void*, const void*));
-
 void desencolarMovimientos(tPartida *partida, unsigned cantBandidos);
-void encolarMovimientoJugador(tCola *cola, unsigned pasos, char direccion, unsigned posJugador);
+void encolarMovimientoJugador(tCola *cola, unsigned pasos, char direccion);
 void encolarMovimientosBandidos(tCola *cola, tBandido *bandidos, unsigned cantBandidos, unsigned posJugador, unsigned cantPosiciones);
 
-void moverBandido(tBandido *bandido, unsigned pasos, char direccion, unsigned cantPosiciones);
-void moverBandidoEnRuta (tBandido* bandido, const tMovimiento* mov, tLista* ruta, unsigned cantPosiciones);
-void moverJugador(tEstadoJugador *jugador, unsigned pasos, char direccion, unsigned cantPosiciones);
 void moverJugadorEnRuta (tEstadoJugador* jugador, tLista* ruta);
 
 void limpiarJuego (tJuego* juego);

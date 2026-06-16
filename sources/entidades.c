@@ -17,13 +17,9 @@ void inicializarJugador (tJugador* jugador, const char* nombre, unsigned puntos,
     jugador->estadoEnPartida.vidas = cantVidas;
 }
 
-int crearBandidos (tBandido** bandidos, unsigned cantBandidos, unsigned cantCasilleros)
+int crearBandidos (tBandido** bandidos, unsigned cantBandidos)
 {
     unsigned i;
-    tBandido bandido;
-
-    bandido.id = INICIO_ID_BANDIDOS;
-    bandido.vivo = VIVO;
 
     *bandidos = malloc(sizeof(tBandido) * cantBandidos);
 
@@ -32,10 +28,9 @@ int crearBandidos (tBandido** bandidos, unsigned cantBandidos, unsigned cantCasi
 
     for (i = 0; i < cantBandidos; i++)
     {
-        bandido.id++;
-        bandido.posEnRuta = generarRandomUniforme(cantCasilleros);
-
-        memcpy(*bandidos + i, &bandido, sizeof(bandido));
+        (*bandidos + i)->id = INICIO_ID_BANDIDOS + i;
+        (*bandidos + i)->vivo = VIVO;
+        (*bandidos + i)->posEnRuta = 0;
     }
     
     return TODO_OK;

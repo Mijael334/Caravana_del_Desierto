@@ -35,7 +35,7 @@ typedef struct
 
 
 void inicializarJugador (tJugador* jugador, const char* nombre, unsigned puntos, unsigned cantVidas);
-int crearBandidos (tBandido** bandidos, unsigned cantBandidos, unsigned cantCasilleros);
+int crearBandidos (tBandido** bandidos, unsigned cantBandidos);
 int generarRandomUniforme (int max_valor);
 int cmpUsuario (const void* a, const void* b);
 int agregarUsuarioEnArchivo(const tUsuario *usuario, const char *nombreArchivo, unsigned *posOut);

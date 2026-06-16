@@ -56,27 +56,3 @@ int registrarNuevoUsuarioEnIndice(tArbolBinBusq *arbol, const char *nombre, unsi
 
     return grabarIndiceEnArchivo(arbol, nombreArchivoIndice);
 }
-
-int crearArchivoIndiceOrdenado(tArbolBinBusq *pa, const char *nombreArchivo)
-{
-    FILE *fInd;
-    tIndice ind;
-    int pos = 0,
-        ret;
-    tUsuario usuario;
-
-    ret = abrir_archivo(&fInd, nombreArchivo, "rb");
-
-    if(ret != TODO_OK)
-        return ret;
-
-    while(fread(&usuario, sizeof(tUsuario), 1, fInd))
-    {
-        strcpy(ind.clave.nombre, usuario.username);
-        ind.indiceRegistro = pos;
-        insertarArbolBinBusq(pa, &ind, sizeof(tIndice),cmpClaveIndice);
-        pos++;
-    }
-    fclose(fInd);
-    return TODO_OK;
-}
