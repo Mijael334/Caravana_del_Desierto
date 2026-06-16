@@ -6,6 +6,7 @@
 #include "../include/interfaz_usuario.h"
 #include "../include/tablero.h"
 #include "../include/logica_juego.h"
+#include "../include/testing.h"
 
 int main()
 {

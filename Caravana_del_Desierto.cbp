@@ -42,6 +42,7 @@
 		<Unit filename="include/logica_juego.h" />
 		<Unit filename="include/reportes.h" />
 		<Unit filename="include/tablero.h" />
+		<Unit filename="include/testing.h" />
 		<Unit filename="include/utilidades.h" />
 		<Unit filename="sources/arbol.c">
 			<Option compilerVar="CC" />
@@ -77,6 +78,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="sources/tablero.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="sources/testing.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Extensions>

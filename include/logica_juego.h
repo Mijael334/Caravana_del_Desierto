@@ -6,6 +6,7 @@
 #include "lista_doble_circular.h"
 #include "lista_enlazada.h"
 #include "gestion_archivos.h"
+#include "indice_jugador.h"
 #include "tablero.h"
 
 #define MSJ_RESULTADO_VICTORIA "VICTORIA"

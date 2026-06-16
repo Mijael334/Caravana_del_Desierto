@@ -3,6 +3,8 @@
 
 #define TODO_OK 0
 #define ERROR_MEM -1
+#define ERROR_TESTING -8
+#define ERROR_TESTING_MOSTRAR -9
 
 #define TAM_MAX_NOM 20
 

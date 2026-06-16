@@ -573,17 +573,21 @@ void mostrarError (int err)
     {
     case TODO_OK:
         break;
-    case ERROR_MEM: puts("HUBO UN ERROR AL RESERVAR MEMORIA.");
+    case ERROR_MEM: fprintf(stderr,"HUBO UN ERROR AL RESERVAR MEMORIA.\n");
         break;
-    case ERROR_ARCHIVO_CONFIG: puts("HUBO UN ERROR AL ABRIR EL ARCHIVO DE CONFIGURACION.");
+    case ERROR_ARCHIVO_CONFIG: fprintf(stderr,"HUBO UN ERROR AL ABRIR EL ARCHIVO DE CONFIGURACION.\n");
         break;
-    case ERROR_ARCHIVO_INDICE: puts("HUBO UN ERROR AL ABRIR EL ARCHIVO DE INDICE DE USUARIOS.");
+    case ERROR_ARCHIVO_INDICE: fprintf(stderr,"HUBO UN ERROR AL ABRIR EL ARCHIVO DE INDICE DE USUARIOS.\n");
         break;
-    case ERROR_ARCHIVO_USUARIOS: puts("HUBO UN ERROR AL ABRIR EL ARCHIVO DE USUARIOS.");
+    case ERROR_ARCHIVO_USUARIOS: fprintf(stderr,"HUBO UN ERROR AL ABRIR EL ARCHIVO DE USUARIOS.\n");
         break;
-    case ERROR_ARCHIVO_APERTURA: puts("HUBO UN ERROR AL ABRIR UN ARCHIVO.");
+    case ERROR_ARCHIVO_APERTURA: fprintf(stderr,"HUBO UN ERROR AL ABRIR UN ARCHIVO.\n");
         break;
-    default: puts("ERROR DESCONOCIDO.");
+    case ERROR_TESTING: fprintf(stderr,"HUBO UN ERROR AL CREAR LOS ARCHIVOS DE TESTING.\n");
+        break;
+    case ERROR_TESTING_MOSTRAR: fprintf(stderr,"HUBO UN ERROR AL MOSTRAR LOS ARCHIVOS.\n");
+        break;
+    default: fprintf(stderr,"ERROR DESCONOCIDO.\n");
         break;
     }
 }
