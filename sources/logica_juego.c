@@ -191,7 +191,16 @@ int procesarPartida(tJuego *juego)
     int cantPasos;
     char dirMovimiento;
 
-    mostrarTableroEsperandoTurno(&juego->partida.ruta, &juego->partida);
+    if(mostrarTableroEsperandoTurno(&juego->partida.ruta, &juego->partida))
+    {
+        const char *opcSalir[] = {"NO, seguir jugando", "SI, abandonar"};
+        if(seleccionarOpcionMenu("Abandonar la partica actual?", opcSalir, 2) == 1)
+        {
+            finalizarPartida(juego);
+            juego->estadoJuego = ESTADO_MENU;
+            return TODO_OK;
+        }
+    }   
 
     if(juego->partida.jugador.estadoEnPartida.afectadoPorTormenta == FALSO)
     {

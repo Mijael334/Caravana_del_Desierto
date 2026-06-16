@@ -15,6 +15,7 @@
 #define TAM_TITULO 50
 
 #define TECLA_ESPACIO 32
+#define TECLA_ABANDONAR 'x'
 #define DIFERENCIA_MAYUS_Y_MINUS ('a' - 'A')
 
 #define TIEMPO_ANIMACION_JUGADOR_MS 150
@@ -38,7 +39,7 @@ int solicitarNombreUsuario(char *nombre, int tamMaxNombre, const tArbolBinBusq *
 void leerNicknamePorTeclado(char *nickname, int tamMaxNickname);
 void mostrarEstadoPartida(const tPartida *partida);
 void mostrarMensajeEvento(tEventoTurno evento);
-void mostrarTableroEsperandoTurno(tLista *ruta, const tPartida *partida);
+int mostrarTableroEsperandoTurno(tLista *ruta, const tPartida *partida);
 int pedirDireccionJugador(tLista *ruta, const tPartida *partida, int cantPasos);
 
 void animarMovimientoJugador(tPartida *partida, unsigned pasos, char direccion);
