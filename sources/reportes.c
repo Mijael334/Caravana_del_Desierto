@@ -79,7 +79,7 @@ void imprimirRegistroRanking(const void *d, void* paramExtra)
 
     if(*contador < TAM_RANKING)
     {
-        printf("  %-20s %-20s %-10u\n", r->usuario.username, r->usuario.nickname, r->puntos);
+        printf("  #%-4d %-20s %-20s %-10u\n", (*contador) + 1, r->usuario.username, r->usuario.nickname, r->puntos);
         (*contador)++;
     }
 }
@@ -96,7 +96,7 @@ void mostrarRanking(const tListaSE *ranking, void (*mostrarRegistro)(const void 
     }
     else
     {
-        printf("  %-20s %-20s %-10s\n", "Username", "NICKNAME", "PUNTOS");
+        printf("  %-5s %-20s %-20s %-10s\n", "TOP","Username", "NICKNAME", "PUNTOS");
         printf("  ---------------------------------------------------------------------\n");
         mostrarLista(ranking, imprimirRegistroRanking, &contador);
     }
