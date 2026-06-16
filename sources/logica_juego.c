@@ -124,6 +124,7 @@ int procesarJuego(tJuego *juego)
         break;
     case ESTADO_PARTIDAS:
         ret = procesarVerPartidas(juego);
+        break;
     default:
         break;
     }

@@ -43,6 +43,7 @@ int lectura_de_configuracion(const char *archivo_config, tConfig *parametros)
             parametros->tormenta_max = valor;
     }
     fclose(fconfig);
+    
     return TODO_OK;
 }
 
