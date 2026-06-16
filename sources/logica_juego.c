@@ -120,6 +120,7 @@ int procesarMenu(tJuego *juego)
     int encontradoEnIndice;
     unsigned indiceReg = 0;
     unsigned posNueva, k;
+    char tituloMenu[TAM_TITULO];   
     const char *opciones[] = {"Comenzar Nueva Partida", "Ver Ranking", "Salir del juego"};
     const char *opcSalir[] = {"NO, seguir jugando", "SI, salir"};
 
@@ -131,6 +132,7 @@ int procesarMenu(tJuego *juego)
         if(encontradoEnIndice == CLAVE_ENCONTRADA)
         {
             leerUsuarioDeArchivo(&juego->usuario, indiceReg, NOM_ARCH_USUARIOS);
+            mostrarBienvenida(juego->usuario.nickname);
         }
         else
         {
@@ -140,7 +142,8 @@ int procesarMenu(tJuego *juego)
         }
     }
 
-    seleccion = seleccionarOpcionMenu(TITULO_JUEGO, opciones, 3);
+    sprintf(tituloMenu, "%s - %s", TITULO_JUEGO, juego->usuario.nickname);
+    seleccion = seleccionarOpcionMenu(tituloMenu, opciones, 3);
 
     switch (seleccion)
     {
@@ -424,12 +427,6 @@ void eliminarBandido(tBandido *bandido, tLista *ruta, unsigned cantCasilleros)
     bandido->vivo = MUERTO;
 }
 
-void ingresarNombreJugador(char *nombre)
-{
-    printf("Ingrese su nombre: ");
-    fgets(nombre, TAM_MAX_NOM + 1, stdin);
-}
-
 /*
     logica de movimiento del jugador:
 
@@ -559,21 +556,6 @@ void moverBandido(tBandido *bandido, unsigned pasos, char direccion, unsigned ca
         else
             bandido->posEnRuta -= pasos;
     }
-}
-
-void moverBandidoEnRuta(tBandido *bandido, const tMovimiento *mov, tLista *ruta, unsigned cantPosiciones)
-{
-    tCasillero *casillero, casilleroNum;
-
-    casilleroNum.numeroCasillero = bandido->posEnRuta;
-    casillero = (tCasillero *)buscarElemPorClaveLista(ruta, &casilleroNum, cmpCasillero);
-    casillero->cantBandidos--;
-
-    moverBandido(bandido, mov->cantPasos, mov->direccion, cantPosiciones);
-
-    casilleroNum.numeroCasillero = bandido->posEnRuta;
-    casillero = (tCasillero *)buscarElemPorClaveLista(ruta, &casilleroNum, cmpCasillero);
-    casillero->cantBandidos++;
 }
 
 void limpiarJuego (tJuego* juego)

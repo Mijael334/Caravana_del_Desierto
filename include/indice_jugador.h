@@ -22,12 +22,8 @@ typedef struct
 }tIndice;
 
 int cmpClaveIndice(const void *a, const void *b);
-int cargarDesdeArchivoBinarioOrdenadoArbol(FILE *arch, tArbolBinBusq *pa, unsigned tam, int limiteInferior, int limiteSuperior);
-int prepararLimitesCargaArbol(FILE *archivoIndice, tArbolBinBusq *pa, unsigned tam);
-int cargarIndiceDesdeArchivo(tArbolBinBusq *pa, const char *nombreArchivoIndice, unsigned tam);
 
 int indexarArchivoUsuariosOrdenado(tArbolBinBusq *pa, const char *nombreArchivoUsuarios);
 void cargarArchivoOrdenadoEnIndiceBalanceado(tArbolBinBusq *pa, FILE *arch, int inicio, int fin);
-int crearArchivoIndiceOrdenado(tArbolBinBusq *pa, const char *nombreArchivo);
 int registrarNuevoUsuarioEnIndice(tArbolBinBusq *arbol, const char *nombre, unsigned posNueva, const char *nombreArchivoIndice);
 #endif // INDICE_JUGADOR_H_INCLUDED

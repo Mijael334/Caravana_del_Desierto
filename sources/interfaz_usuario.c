@@ -2,7 +2,14 @@
 #include <conio.h>
 #include <windows.h>
 
-
+void mostrarBienvenida(const char *nickname)
+{
+    system("CLS");
+    printf("\n\n   === %s ===\n\n", TITULO_JUEGO);
+    printf("   Bienvenido de vuelta, %s!\n\n", nickname);
+    printf("   Presione [ESPACIO] para continuar...\n");
+    while(getch() != TECLA_ESPACIO);
+}
 
 void dibujarOpcionesMenu(const char *titulo, const char *opciones[], int cantOpciones, int seleccion)
 {
@@ -78,7 +85,7 @@ int nombreExisteEnIndice(const char *nombre, const tArbolBinBusq *arbolIndice, u
 
 int confirmarUsername(const char *nombre)
 {
-    char titulo[80];
+    char titulo[TAM_TITULO];
     const char *opciones[] = {"SI", "NO"};
     sprintf(titulo, "Username \"%s\" ya registrado. Sos vos?", nombre);
     return seleccionarOpcionMenu(titulo, opciones, 2) == 0;
@@ -268,7 +275,7 @@ void animarMovimientoJugador(tPartida *partida, unsigned pasos, char direccion)
         Sleep(TIEMPO_ANIMACION_JUGADOR_MS);
     }
 }
-//void animarMovimientoBandido(tLista *ruta, tBandido *bandido, unsigned pasos, char direccion, unsigned cantPosiciones, const tPartida *partida)
+
 void animarMovimientoBandido(tPartida *partida,tBandido *bandido, unsigned pasos, char direccion)
 {
     unsigned i;
