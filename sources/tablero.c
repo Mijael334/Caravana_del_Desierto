@@ -5,16 +5,35 @@ int configuracion_valida(const tConfig *configuracion)
     int disponibles, total_elementos;
     if(configuracion == NULL)
     {
-        return ERROR_ARCHIVO_CONFIG; // no hay arch config
+        return ERROR_CONFIG_INAVLIDA;
     }
-    if(configuracion->cant_posiciones <= 2)
+    if(configuracion->cant_posiciones < MIN_POSICIONES || configuracion->cant_posiciones > MAX_POSICIONES)
     {
-        return ERROR_ARCHIVO_CONFIG; // no se puede usar el tablero
+        return ERROR_CONFIG_INAVLIDA;
     }
-    if(configuracion->premios_max + configuracion->max_vidas_extras + configuracion->oasis_max + configuracion->tormenta_max + configuracion->bandidos_max >= configuracion->cant_posiciones)
+    if((configuracion->premios_max + configuracion->max_vidas_extras + configuracion->oasis_max + configuracion->tormenta_max + configuracion->bandidos_max) >= (configuracion->cant_posiciones - 2))
     {
-        return ERROR_ARCHIVO_CONFIG; //error de parametros en archivos
+        return ERROR_CONFIG_INAVLIDA;
     }
+
+    if(configuracion->premios_max > (configuracion->cant_posiciones * PCT_MAX_PREMIOS))
+        return ERROR_CONFIG_INAVLIDA;
+
+    if(configuracion->max_vidas_extras > (configuracion->cant_posiciones * PCT_MAX_VIDAS_EXT))
+        return ERROR_CONFIG_INAVLIDA;
+
+    if(configuracion->oasis_max > (configuracion->cant_posiciones * PCT_MAX_OASIS))
+        return ERROR_CONFIG_INAVLIDA;
+
+    if(configuracion->tormenta_max > (configuracion->cant_posiciones * PCT_MAX_TORMENTAS))
+        return ERROR_CONFIG_INAVLIDA;
+
+    if(configuracion->vidas_incio < MIN_VIDAS_INICIO || configuracion->vidas_incio > MAX_VIDAS_INICIO)
+        return ERROR_CONFIG_INAVLIDA;
+    
+    if(configuracion->bandidos_max > (configuracion->cant_posiciones * PCT_MAX_BANDIDOS))
+        return ERROR_CONFIG_INAVLIDA;
+
     disponibles = configuracion->cant_posiciones - 2;
     total_elementos = configuracion->premios_max + configuracion->max_vidas_extras + configuracion->oasis_max + configuracion->tormenta_max + configuracion->bandidos_max;
     return total_elementos <= disponibles;
@@ -243,9 +262,6 @@ int crear_tablero_circular(tLista *lista, const tConfig *configuracion, tBandido
     tCasillero clave;
     tCasillero *inicial, *final;
     unsigned i;
-
-    if(!configuracion_valida(configuracion))
-        return ERROR_ARCHIVO_CONFIG;
 
     if(*lista == NULL)
     {

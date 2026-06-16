@@ -72,6 +72,11 @@ int inicializarJuego(tJuego *juego)
     if (ret != TODO_OK)
         return ret;
 
+    ret = configuracion_valida(&juego->configPartida);
+
+    if(ret == ERROR_CONFIG_INAVLIDA)
+        return ERROR_CONFIG_INAVLIDA;
+
     ret = crearBandidos(&juego->partida.bandidos, juego->configPartida.bandidos_max);
 
     if (ret != TODO_OK)
@@ -379,6 +384,7 @@ int actualizarEstadoPartida(tPartida* partida, unsigned cantBandidos, tEstadoJue
                 partida->ultimoEvento = EVENTO_TURNO_BANDIDO;
             }
 
+            partida->jugador.estadoEnPartida.afectadoPorTormenta = FALSO;
             partida->eventoPrevio = EVENTO_TURNO_NADA;
         }
         else
@@ -586,6 +592,8 @@ void mostrarError (int err)
     case ERROR_TESTING: fprintf(stderr,"HUBO UN ERROR AL CREAR LOS ARCHIVOS DE TESTING.\n");
         break;
     case ERROR_TESTING_MOSTRAR: fprintf(stderr,"HUBO UN ERROR AL MOSTRAR LOS ARCHIVOS.\n");
+        break;
+    case ERROR_CONFIG_INAVLIDA: fprintf(stderr,"SE INGRESO UNA CONFIGURACION INVALIDA. ACTUALICE %s.\n", NOM_ARCH_CONFIG);
         break;
     default: fprintf(stderr,"ERROR DESCONOCIDO.\n");
         break;

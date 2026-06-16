@@ -10,6 +10,26 @@
 
 #define MAX_SIMBOLOS 7
 
+#define CANT_MIN_CASILLEROS 2
+
+// Límites de la ruta 
+#define MIN_POSICIONES 15
+#define MAX_POSICIONES 100
+
+#define ERROR_CONFIG_INAVLIDA -10
+
+// Porcentajes máximos sugeridos para la distribución de elementos 
+#define PCT_MAX_BANDIDOS   12/100   // 12% del tablero
+#define PCT_MAX_PREMIOS    20/100   // 20% del tablero
+#define PCT_MAX_OASIS      10/100   // 10% del tablero
+#define PCT_MAX_TORMENTAS  12/100   // 12% del tablero
+#define PCT_MAX_VIDAS_EXT  10/100   // 5% del tablero
+
+// Límite fijo para la configuración inicial de vidas
+#define MIN_VIDAS_INICIO   1
+#define MAX_VIDAS_INICIO   5
+
+
 typedef enum
 {
     EVENTO_VACIO = 0,
