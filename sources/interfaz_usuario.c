@@ -230,6 +230,10 @@ void mostrarTableroEsperandoTurno(tLista *ruta, const tPartida *partida)
         system("CLS");
         mostrarEstadoPartida(partida);
         renderizar_tablero(ruta, stdout);
+
+        if(partida->eventoPrevio != EVENTO_TURNO_NADA)
+            mostrarMensajeEvento(partida->eventoPrevio); 
+
         mostrarMensajeEvento(partida->ultimoEvento);
         printf("   Toca [ESPACIO] para tirar el dado...\n");
 
@@ -238,7 +242,7 @@ void mostrarTableroEsperandoTurno(tLista *ruta, const tPartida *partida)
             listo = VERDADERO;
     }
 }
-//void animarMovimientoJugador(tLista *ruta, tEstadoJugador *jugador, unsigned pasos, char direccion, unsigned cantPosiciones, const tPartida *partida)
+
 void animarMovimientoJugador(tPartida *partida, unsigned pasos, char direccion)
 {
     unsigned i;

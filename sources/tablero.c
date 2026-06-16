@@ -43,11 +43,12 @@ void distribuir_elemento(tLista *lista, int cant_posiciones, int cant_maxima, in
     tCasillero *emergencia;
     int i, colocado;
     int casilleros_utilizables = cant_posiciones - 2;
-    int vueltas_dadas = 0;
+    int vueltas_dadas;
     for(i = 0; i < cant_maxima; i++)
     {
         emergencia = NULL;
         colocado = 0;
+        vueltas_dadas = 0;
         pos_inicial = (generarRandomUniforme(cant_posiciones - 2)) + 2;
         pos_actual = pos_inicial;
         do
@@ -123,102 +124,6 @@ void distribuir_elemento(tLista *lista, int cant_posiciones, int cant_maxima, in
     }
 }
 
-//int crear_tablero_circular(tLista *lista, const tConfig *configuracion, tBandido *bandidos)
-//{
-//    tCasillero casillero_aux;
-//    tCasillero clave;
-//    tCasillero *inicial, *final;
-//    unsigned i;
-//
-//    if(!configuracion_valida(configuracion))
-//        return ERROR_ARCHIVO_CONFIG;
-//
-//
-//    liberarLista(lista);
-//    crearLista(lista);
-//
-//    // creo n casilleros vacios numerados de 1 a n
-//    for(i = 0; i < configuracion->cant_posiciones; i++)
-//    {
-//        casillero_aux.numeroCasillero = i + 1;
-//        casillero_aux.evento = EVENTO_VACIO;
-//        casillero_aux.jugadorAca = 0;
-//        casillero_aux.cantBandidos = 0;
-//        if(insFinLista(lista, &casillero_aux, sizeof(tCasillero)) != OK)
-//        {
-//            liberarLista(lista);
-//            return ERROR_MEM;
-//        }
-//    }
-//
-//    // marco Inicio y Salida
-//    clave.numeroCasillero = 1;
-//    inicial = (tCasillero*) buscarElemPorClaveLista(lista, &clave, cmpCasillero);
-//    inicial->evento = EVENTO_INICIO;
-//    inicial->jugadorAca = 1;
-//    clave.numeroCasillero = configuracion->cant_posiciones;
-//    final = (tCasillero*) buscarElemPorClaveLista(lista, &clave, cmpCasillero);
-//    final->evento = EVENTO_SALIDA;
-//    // distribuir eventos
-//    distribuir_elemento(lista, configuracion->cant_posiciones, configuracion->tormenta_max, criterio_tormenta_ideal, EVENTO_TORMENTA, 0, NULL);
-//    distribuir_elemento(lista, configuracion->cant_posiciones, configuracion->premios_max, criterio_casillero_libre, EVENTO_PREMIO, 0, NULL);
-//    distribuir_elemento(lista, configuracion->cant_posiciones, configuracion->max_vidas_extras, criterio_casillero_libre, EVENTO_VIDA_EXTRA, 0, NULL);
-//    distribuir_elemento(lista, configuracion->cant_posiciones, configuracion->oasis_max, criterio_casillero_libre, EVENTO_OASIS, 0, NULL);
-//    distribuir_elemento(lista, configuracion->cant_posiciones, configuracion->bandidos_max, criterio_bandido_ideal, EVENTO_VACIO, 1, bandidos);
-//    return TODO_OK;
-//}
-
-//void renderizar_tablero(tLista *lista, int cant_posiciones, FILE *destino)
-//{
-//    const char simbolos_eventos[] = { '.',
-//                                    'O',
-//                                    'T',
-//                                    'V',
-//                                    'I',
-//                                    'S',
-//                                    'P'
-//                                    };
-//    tCasillero clave;
-//    tCasillero *actual;
-//    char caracter_evento;
-//    int i, j;
-//    if(*lista == NULL || destino == NULL)
-//    {
-//        return;
-//    }
-//    for(i = 0; i < cant_posiciones; i++)
-//    {
-//        clave.numeroCasillero = i + 1;
-//        actual = (tCasillero *)buscarElemPorClaveLista(lista, &clave, cmpCasillero);
-//        if(!actual)
-//        {
-//            continue;
-//        }
-//        caracter_evento = simbolos_eventos[actual->evento];
-//        fprintf(destino, "%02d:", actual->numeroCasillero);
-//        if(actual->jugadorAca)
-//        {
-//            if(actual->cantBandidos > 0)
-//            {
-//                fprintf(destino, "[");
-//                for(j = 0; j < actual->cantBandidos; j++)
-//                {
-//                    fprintf(destino, "B ");
-//                }
-//                fprintf(destino, "J]\n");
-//            }
-//            else if(actual->evento == EVENTO_VACIO)
-//            {
-//                fprintf(destino, "[J]\n");
-//            }
-//            else
-//            {
-//                fprintf(destino, "[%c J]\n", caracter_evento);
-//            }
-//        }
-//        else
-
-
 int cmpCasillero (const void* a, const void* b)
 {
     const tCasillero* c1 = (const tCasillero*) a;
@@ -262,7 +167,7 @@ void imprimirCasillero(void *info, FILE *destino)
         }
         else if(actual->evento == EVENTO_VACIO)
         {
-            fprintf(destino, "J\n");   
+            fprintf(destino, "[J]\n");  
         }
         else
         {
@@ -284,7 +189,7 @@ void imprimirCasillero(void *info, FILE *destino)
             }
             else if(actual->cantBandidos == 1) 
             {
-                fprintf(destino, "B\n");
+                fprintf(destino, "[B]\n");
             }
             else
             {

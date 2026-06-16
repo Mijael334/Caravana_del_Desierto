@@ -118,7 +118,7 @@ int procesarMenu(tJuego *juego)
     int seleccion, ret = TODO_OK;
     int encontradoEnIndice;
     unsigned indiceReg = 0;
-    unsigned posNueva;
+    unsigned posNueva, k;
     const char *opciones[] = {"Comenzar Nueva Partida", "Ver Ranking", "Salir del juego"};
     const char *opcSalir[] = {"NO, seguir jugando", "SI, salir"};
 
@@ -144,6 +144,12 @@ int procesarMenu(tJuego *juego)
     switch (seleccion)
     {
         case 0:
+            for(k = 0; k < juego->configPartida.bandidos_max; k++)
+            {
+                (juego->partida.bandidos + k)->vivo = VIVO;
+                (juego->partida.bandidos + k)->posEnRuta = 0;
+            }
+        
             ret = crear_tablero_circular(&juego->partida.ruta, &juego->configPartida, juego->partida.bandidos);
 
             if(ret == TODO_OK)
@@ -199,7 +205,7 @@ int procesarPartida(tJuego *juego)
         registro.id = ID_JUGADOR;
         ponerEnColaDin(&juego->partida.registroMovimientos, &registro, sizeof(tMovimiento));
 
-        encolarMovimientoJugador(&juego->partida.movimientos, cantPasos, dirMovimiento, juego->partida.jugador.estadoEnPartida.posEnRuta);
+        encolarMovimientoJugador(&juego->partida.movimientos, cantPasos, dirMovimiento);
     }
 
     encolarMovimientosBandidos(&juego->partida.movimientos, juego->partida.bandidos, juego->configPartida.bandidos_max, juego->partida.jugador.estadoEnPartida.posEnRuta,
@@ -373,10 +379,11 @@ int actualizarEstadoPartida(tPartida* partida, unsigned cantBandidos, tEstadoJue
             }
             else
             {
-                partida->ultimoEvento = EVENTO_TURNO_BANDIDO_BLOQUEADO;  
+                partida->ultimoEvento = EVENTO_TURNO_BANDIDO; 
             }
-
         }
+        else
+            partida->ultimoEvento = EVENTO_TURNO_BANDIDO_BLOQUEADO; 
 
         // busca al bandido en base a la posicion
         while (bandido == NULL && i < cantBandidos)
@@ -452,12 +459,8 @@ char calcularDireccionBandido(unsigned posBandido, unsigned posJugador, unsigned
         return DIR_ATRAS;
 }
 
-void encolarMovimientoJugador(tCola *cola, unsigned pasos, char direccion, unsigned posJugador)
+void encolarMovimientoJugador(tCola *cola, unsigned pasos, char direccion)
 {
-    // si no hay lugar para retroceder, fuerza direccion adelante
-    if (direccion == DIR_ATRAS && pasos >= posJugador)
-        direccion = DIR_ADELANTE;
-
     tMovimiento mov = {pasos, direccion, ID_JUGADOR};
     ponerEnColaDin(cola, &mov, sizeof(tMovimiento));
 }
