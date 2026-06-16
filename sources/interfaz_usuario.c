@@ -227,9 +227,10 @@ int pedirDireccionJugador(tLista *ruta, const tPartida *partida, int cantPasos)
     return seleccion;
 }
 
-void mostrarTableroEsperandoTurno(tLista *ruta, const tPartida *partida)
+int mostrarTableroEsperandoTurno(tLista *ruta, const tPartida *partida)
 {
     int listo = FALSO;
+    int abandonar = FALSO;
     char tecla;
 
     while(!listo)
@@ -243,12 +244,22 @@ void mostrarTableroEsperandoTurno(tLista *ruta, const tPartida *partida)
 
         mostrarMensajeEvento(partida->ultimoEvento);
 
-        printf("   Toca [ESPACIO] para tirar el dado...\n");
+        printf("   [ESPACIO] Tirar el dado\t[X] Abandonar partida\n");
 
         tecla = getch();
+        if(tecla >= 'A' && tecla <= 'Z')
+            tecla += DIFERENCIA_MAYUS_Y_MINUS;
+
         if(tecla == TECLA_ESPACIO)
             listo = VERDADERO;
+        else if(tecla == TECLA_ABANDONAR)
+        {
+            abandonar = VERDADERO;
+            listo = VERDADERO;
+        }
     }
+
+    return abandonar;
 }
 
 void animarMovimientoJugador(tPartida *partida, unsigned pasos, char direccion)

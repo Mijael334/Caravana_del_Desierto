@@ -25,6 +25,7 @@ typedef enum
     ESTADO_PARTIDA,
     ESTADO_PUNTAJE_PARTIDA,
     ESTADO_RANKING,
+    ESTADO_PARTIDAS,
     ESTADO_SALIR,
 } tEstadoJuego;
 
@@ -87,6 +88,7 @@ int procesarMenu(tJuego* juego);
 int procesarPartida (tJuego* juego);
 int procesarPuntajePartida(const tUsuario* usuario, tPartida* partida, tEstadoJuego* estadoJuego, FILE* archPartidas);
 int procesarRanking(tJuego* juego);
+int procesarVerPartidas(tJuego *juego);
 
 int actualizarEstadoPartida(tPartida* partida, unsigned cantBandidos, tEstadoJuego* estadoJuego);
 void finalizarPartida (tJuego* juego);
