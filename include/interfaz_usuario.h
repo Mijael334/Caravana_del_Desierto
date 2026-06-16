@@ -24,6 +24,7 @@ typedef enum
 {
     OP_MENU_NUEVA_PARTIDA = 0,
     OP_MENU_RANKING,
+    OP_MENU_PARTIDAS,
     OP_MENU_SALIR,
     CANT_OP_MENU,
 } tOpcionMenu;

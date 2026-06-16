@@ -3,6 +3,7 @@
 #include "../include/interfaz_usuario.h"
 #include "../include/gestion_archivos.h"
 #include "../include/reportes.h"
+#include "../include/testing.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -116,6 +117,8 @@ int procesarJuego(tJuego *juego)
     case ESTADO_RANKING:
         ret = procesarRanking(juego);
         break;
+    case ESTADO_PARTIDAS:
+        ret = procesarVerPartidas(juego);
     default:
         break;
     }
@@ -132,7 +135,7 @@ int procesarMenu(tJuego *juego)
 
     unsigned k;
     char tituloMenu[TAM_TITULO];
-    const char *opciones[] = {"Comenzar Nueva Partida", "Ver Ranking", "Salir del juego"};
+    const char *opciones[] = {"Comenzar Nueva Partida", "Ver Ranking","Ver Partidas", "Salir del juego"};
     const char *opcSalir[] = {"NO, seguir jugando", "SI, salir"};
 
     sprintf(tituloMenu, "%s - %s", TITULO_JUEGO, juego->usuario.nickname);
@@ -170,6 +173,9 @@ int procesarMenu(tJuego *juego)
             break;
         case OP_MENU_RANKING:
             juego->estadoJuego = ESTADO_RANKING;
+            break;
+        case OP_MENU_PARTIDAS:
+            juego->estadoJuego = ESTADO_PARTIDAS;
             break;
         case OP_MENU_SALIR:
             if(seleccionarOpcionMenu("Seguro que queres salir?", opcSalir, 2) == 1)
@@ -250,6 +256,36 @@ int procesarRanking(tJuego* juego)
     return TODO_OK;
 }
 
+int procesarVerPartidas(tJuego *juego)
+{
+    tReportePartida reporte;
+    unsigned cantPartidas = 0;
+
+    fflush(juego->archPartidas);
+    fseek(juego->archPartidas, 0, SEEK_SET);
+
+    system("CLS");
+    puts("========================================== MOSTRANDO PARTIDAS =============================================\n");
+    printf("%-10s %-20s %-20s %-10s %-10s %-10s %-10s %-10s\n\n","ID", "USERNAME", "NICKNAME", "PUNTOS", "VIDAS", "FORWARD","BACKWARD", "RESULTADO");
+
+    while(fread(&reporte, sizeof(tReportePartida), 1, juego->archPartidas))
+    {
+        mostrarPartidas(&reporte, stdout);
+        cantPartidas++;
+    }
+
+    if(cantPartidas == 0)
+        printf("\nNo hay partidas registradas.\n");
+    else
+        printf("\nTotal de partidas: %u\n", cantPartidas);
+    
+    printf("\n   Presione [ESPACIO] para continuar...\n");
+    while(getch() != TECLA_ESPACIO);
+
+    juego->estadoJuego = ESTADO_MENU;
+
+    return TODO_OK;
+}
 
 int procesarPuntajePartida(const tUsuario* usuario, tPartida* partida, tEstadoJuego* estadoJuego, FILE* archPartidas)
 {
