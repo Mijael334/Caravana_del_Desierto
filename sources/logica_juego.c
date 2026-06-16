@@ -73,7 +73,7 @@ int inicializarJuego(tJuego *juego)
     if (ret != TODO_OK)
         return ret;
 
-    ret = crearBandidos(&juego->partida.bandidos, juego->configPartida.bandidos_max, juego->configPartida.cant_posiciones);
+    ret = crearBandidos(&juego->partida.bandidos, juego->configPartida.bandidos_max);
 
     if (ret != TODO_OK)
         return ret;
@@ -88,7 +88,7 @@ int inicializarJuego(tJuego *juego)
 
 int procesarJuego(tJuego *juego)
 {
-    int ret;
+    int ret = TODO_OK;
 
     switch (juego->estadoJuego)
     {
@@ -103,6 +103,7 @@ int procesarJuego(tJuego *juego)
         break;
     case ESTADO_RANKING:
         ret = procesarRanking(juego);
+        break;
     default:
         break;
     }
