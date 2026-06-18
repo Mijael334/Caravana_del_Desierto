@@ -1,13 +1,7 @@
 #include "../include/logica_juego.h"
-#include "../include/indice_jugador.h"
 #include "../include/interfaz_usuario.h"
-#include "../include/gestion_archivos.h"
-#include "../include/reportes.h"
 #include "../include/testing.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <conio.h>
 #include "time.h"
 
@@ -163,7 +157,6 @@ int procesarMenu(tJuego *juego)
                 inicializarJugador(&juego->partida.jugador, juego->usuario.nickname, juego->partida.jugador.puntos, juego->configPartida.vidas_incio);
                 juego->partida.cantCasilleros = juego->configPartida.cant_posiciones;
                 juego->partida.cantMovsAdelante = juego->partida.cantMovsAtras = 0;
-                juego->partida.puntosEnPartida = 0;
                 juego->partida.ultimoEvento = EVENTO_TURNO_INICIO;
                 juego->partida.eventoPrevio = EVENTO_TURNO_NADA;
                 juego->partida.ultimosPasos = 0;
@@ -389,6 +382,7 @@ int actualizarEstadoPartida(tPartida* partida, unsigned cantBandidos, tEstadoJue
     case EVENTO_SALIDA:
         *estadoJuego = ESTADO_PUNTAJE_PARTIDA;
         partida->ultimoEvento = EVENTO_TURNO_VICTORIA;
+        partida->jugador.estadoEnPartida.puntos += PUNTOS_POR_VIDA * partida->jugador.estadoEnPartida.vidas;
         break;
     default:
         break;

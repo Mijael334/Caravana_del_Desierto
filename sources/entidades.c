@@ -59,7 +59,10 @@ int agregarUsuarioEnArchivo(const tUsuario *usuario, const char *nombreArchivo, 
     if(arch == NULL)
         return ERROR_ARCHIVO_USUARIOS;
  
+    fseek(arch, 0, SEEK_END);
+
     offset = ftell(arch);
+    
     if(offset < 0)
     {
         fclose(arch);
