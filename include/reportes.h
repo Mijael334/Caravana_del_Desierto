@@ -1,7 +1,6 @@
 #ifndef REPORTES_H_INCLUDED
 #define REPORTES_H_INCLUDED
 
-#include "utilidades.h"
 #include "lista_enlazada.h"
 #include "gestion_archivos.h"
 

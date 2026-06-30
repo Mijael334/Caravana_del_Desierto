@@ -5,10 +5,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "../include/arbol.h"
-#include "../include/indice_jugador.h"
-#include "../include/tablero.h"
-#include "../include/logica_juego.h"
+#include "indice_jugador.h"
+#include "tablero.h"
+#include "logica_juego.h"
 
 #define TITULO_JUEGO "CARAVANA DEL DESIERTO"
 
@@ -29,8 +28,6 @@ typedef enum
     OP_MENU_SALIR,
     CANT_OP_MENU,
 } tOpcionMenu;
-
-
 
 void mostrarBienvenida(const char *nickname);
  

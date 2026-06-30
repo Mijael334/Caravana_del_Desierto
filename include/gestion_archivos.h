@@ -2,10 +2,8 @@
 #define GESTION_ARCHIVOS_H_INCLUDED
 
 #include "utilidades.h"
-#include <stdio.h>
-#include <string.h>
-#include "../include/arbol.h"
-#include "../include/cola_dinamica.h"
+#include "arbol.h"
+#include "cola_dinamica.h"
 
 #define ERROR_ARCHIVO_CONFIG -2
 #define ERROR_ARCHIVO_USUARIOS -3

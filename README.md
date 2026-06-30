@@ -163,7 +163,10 @@ Eventos sin ocupantes se imprimen sin corchetes: `P`, `T`, `O`, `V`, `.`.
 **Persistencia de partidas:** `partidas.dat` con registros `tReportePartida` (id, usuario, puntos, vidas restantes, casillas adelante, casillas atrás, resultado). El id se calcula al momento de grabar como `ftell / sizeof + 1`.
 
 
-**Ranking:** se construye en runtime leyendo `partidas.dat`, acumulando puntos por usuario en una lista simple, y ordenándola por puntos descendente. Se muestra el top 10 con su posición (#1, #2, ...).
+**Ranking:** se construye en runtime leyendo `partidas.dat`, acumulando puntos por usuario en una lista simple, y ordenándola por puntos descendente. Se muestra el top 10 con su posición (#1, #2, ...). Los puntos incluyen los premios capturados durante la partida más el bonus por victoria.
+
+
+**Bonus por victoria:** al alcanzar la Ciudad Refugio, el jugador suma puntos extra equivalentes a las vidas restantes multiplicadas por una constante (`PUNTOS_POR_VIDA`). Premia llegar con salud y diferencia en el ranking a quien gana de quien muere con los mismos premios.
 
 
 ## Funcionalidades adicionales

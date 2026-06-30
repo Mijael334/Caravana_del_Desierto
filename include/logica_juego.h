@@ -1,11 +1,6 @@
 #ifndef LOGICA_JUEGO_H_INCLUDED
 #define LOGICA_JUEGO_H_INCLUDED
 
-#include "entidades.h"
-#include "cola_dinamica.h"
-#include "lista_doble_circular.h"
-#include "lista_enlazada.h"
-#include "gestion_archivos.h"
 #include "indice_jugador.h"
 #include "tablero.h"
 
@@ -18,6 +13,7 @@
 #define DIR_ATRAS 'B'
 
 #define PUNTOS_PREMIO 1
+#define PUNTOS_POR_VIDA 3
 
 typedef enum
 {
@@ -57,7 +53,6 @@ typedef struct
     tJugador jugador;
     tBandido* bandidos;
     unsigned cantCasilleros;
-    unsigned puntosEnPartida;
     int cantMovsAdelante;
     int cantMovsAtras;
     tCola movimientos;

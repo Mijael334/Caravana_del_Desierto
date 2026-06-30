@@ -1,6 +1,4 @@
 #include "../include/reportes.h"
-#include "../include/lista_enlazada.h"
-#include "../include/gestion_archivos.h"
 #include "../include/interfaz_usuario.h"
 #include <conio.h>
 
